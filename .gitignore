@@ -1,0 +1,19 @@
+.vagrant
+.git
+Open pgAdmin.bat
+bin/win32/msys-*.dll
+bin/win32/ssh.exe
+bin/win32/PgAdminPortable
+volatile/*
+source/eagg/*
+source/grid/
+source/natural-england/*
+source/os/*
+source/osm/*
+source/prow/*/*
+source/typefaces/*
+bin/linux/Cascadenik
+bin/linux/Mapnik/constants/*
+bin/linux/Mapnik/output/*
+bin/linux/LASTools
+source/env.sh
