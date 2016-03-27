@@ -63,7 +63,10 @@ FROM
 			ST_Multi(ST_MakeValid(ST_Union(ST_MakeValid(s.geom)))) AS s_geom,
 			ST_Area( ST_Intersection( o.way, ST_Union(ST_MakeValid(s.geom ))) ) / ST_Area(o.way) AS Per_SV_of_OSM,
 			ST_Area( ST_Intersection( o.way, ST_Union(ST_MakeValid(s.geom ))) ) / ST_Area(ST_Union(ST_MakeValid(s.geom))) AS Per_OSM_of_SV,
-			o.layer AS o_layer
+			CASE WHEN o.layer ~ '^[0-9]+$' 
+				THEN o.layer::integer 
+				ELSE 0
+			END AS o_layer
 		FROM
 			_src_osm_polygon_building o
 		LEFT JOIN
