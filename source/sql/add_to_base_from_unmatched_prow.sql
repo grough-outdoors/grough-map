@@ -80,10 +80,10 @@ AS SELECT
 		THEN base_prow
 		ELSE ST_Intersection(
 			base_prow,
-			ST_SymDifference(
-				ST_Buffer(base_prow, 0.5, 'endcap=flat join=round'), 
-				ST_Buffer(match_prow, 0.5, 'endcap=flat join=round')
-			)
+			ST_MakeValid(ST_SymDifference(
+				ST_MakeValid(ST_Buffer(base_prow, 0.5, 'endcap=flat join=round')), 
+				ST_MakeValid(ST_Buffer(match_prow, 0.5, 'endcap=flat join=round'))
+			))
 		)
 	END 
 	, 2)))).geom AS edge_geom,

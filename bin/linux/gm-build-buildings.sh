@@ -33,6 +33,22 @@ EoSQL
 
 
 echo "-----------------------------------"
+echo "--> Ensuring validity of features..."
+echo "-----------------------------------"
+echo "--> Removing invalid geometries..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	DELETE FROM
+		buildings
+	WHERE
+		ST_GeometryType(building_geom) != 'ST_MultiPolygon';
+
+	UPDATE
+		buildings
+	SET
+		building_geom = ST_MakeValid(building_geom);
+EoSQL
+
+echo "-----------------------------------"
 echo "--> Filling significant gaps with OS data..."
 echo "-----------------------------------"
 echo "--> Creating generalised subset table for buildings..."
@@ -40,7 +56,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/add_missing_parts_of_build
 
 echo "--> Clustering..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-	CLUSTER VERBOSE buildings;
+	ALTER TABLE public.buildings CLUSTER VERBOSE ON "Idx: buildings::building_geom";
 EoSQL
 
 echo "--> Cleaning up..."

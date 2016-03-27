@@ -14,7 +14,7 @@ SELECT
 FROM (
 	SELECT
 		o.gid,
-		(ST_Dump(ST_Difference(ST_Multi(ST_MakeValid(o.geom)), existing.existing_geom))).geom AS missing_geom
+		(ST_Dump(ST_MakeValid(ST_Difference(ST_Multi(ST_MakeValid(o.geom)), existing.existing_geom)))).geom AS missing_geom
 	FROM
 		_src_os_opmplc_building o
 	LEFT JOIN (
