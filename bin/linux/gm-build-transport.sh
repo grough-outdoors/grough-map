@@ -89,14 +89,18 @@ EoSQL
 
 
 echo "-----------------------------------"
-echo "--> Matching OSM data against OS data..."
+echo "--> Importing OS Open Roads for gaps and correction..."
 echo "-----------------------------------"
-echo "--> Spatially matching..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -c "" > /dev/null
-echo "--> Reclassifying pedestrianised streets..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -c "" > /dev/null
-echo "--> Storing unmatched data..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -c "" > /dev/null
+echo "--> Identifying matches between OS Open Roads and existing edges..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/match_base_to_oproad.sql" > /dev/null
+echo "--> Updating and adding edges from OS Open Roads..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/add_to_base_from_unmatched_openroads.sql" > /dev/null
+echo "--> Vacuuming..."	
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	ALTER TABLE edge
+	  CLUSTER ON "Idx: edge::edge_geom";
+	VACUUM FULL ANALYZE edge;
+EoSQL
 
 echo "-----------------------------------"
 echo "--> Importing LA PRoW datasets..."

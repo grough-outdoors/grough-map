@@ -11,6 +11,7 @@ SELECT
 	e.edge_source_id,
 	e.edge_oneway,
 	e.edge_roundabout,
+	e.edge_slip,
 	c.class_name,
 	a.access_name,
 	c.class_name || ' - ' || a.access_name AS class_access_name

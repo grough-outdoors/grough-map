@@ -20,7 +20,7 @@ FROM (
 	LEFT JOIN (
 		SELECT
 			o.gid,
-			ST_Union(b.building_geom) AS existing_geom
+			ST_Union(ST_MakeValid(b.building_geom)) AS existing_geom
 		FROM
 			_src_os_opmplc_building o
 		LEFT JOIN
@@ -28,7 +28,7 @@ FROM (
 		ON
 			o.geom && b.building_geom
 		AND
-			ST_Intersects(o.geom, b.building_geom)
+			ST_Intersects(ST_MakeValid(o.geom), b.building_geom) -- Source table is not Multi so can't make valid in advance
 		GROUP BY
 			o.gid
 	) existing

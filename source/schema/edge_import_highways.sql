@@ -61,7 +61,6 @@ ALTER TABLE ONLY edge_import_highways ALTER COLUMN import_id SET DEFAULT nextval
 --
 
 COPY edge_import_highways (import_id, highway, class_id) FROM stdin;
-33	unclassified	8
 1	unsurfaced	8
 2	footway	10
 3	motorway	1
@@ -95,6 +94,7 @@ COPY edge_import_highways (import_id, highway, class_id) FROM stdin;
 30	byway	8
 31	bus_guideway	6
 32	path	10
+33	unclassified	6
 \.
 
 
