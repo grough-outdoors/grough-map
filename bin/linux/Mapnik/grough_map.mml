@@ -3,6 +3,7 @@
 	"buffer-size": "200",
 	"Stylesheet": [
 		"grough_map.mss",
+		"grough_map_transport.mss",
 		"grough_map_building.mss"
 	],
 	"Layer": [{
