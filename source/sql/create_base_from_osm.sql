@@ -57,21 +57,21 @@ LEFT JOIN
 ON
 	a.access_id = 
 	CASE WHEN c.class_name IN ('Path', 'Steps') THEN -- Footpath
-	          CASE WHEN o.bicycle IN ('yes', 'designated') THEN 8									-- Legal bridleway
+	          CASE WHEN o.highway IN ('cycleway') THEN 8							-- Cycle path (bridleway)
+				   WHEN o.bicycle IN ('yes', 'designated') THEN 8									-- Legal bridleway
 	               WHEN o.access IN ('yes', 'discouraged', 'designated') OR o.foot IN ('yes', 'discouraged', 'designated') THEN 4	-- Legal public footpath
-		       WHEN o.access IN ('permissive', 'customers') OR o.foot IN ('permissive', 'customers') THEN 5			-- Private permissive path
-		       WHEN o.access IN ('no', 'private') OR o.foot IN ('no', 'private') THEN 11					-- Private restricted use path
-	               ELSE 11
+			       WHEN o.access IN ('permissive', 'customers') OR o.foot IN ('permissive', 'customers') THEN 5			-- Private permissive path
+		           WHEN o.access IN ('no', 'private') OR o.foot IN ('no', 'private') THEN 11					-- Private restricted use path
+	               ELSE 3
 	          END
 	      WHEN c.class_name IN ('Track', 'Service road') THEN -- Tracks and bridleways
 	          CASE WHEN o.access IN ('no') THEN 2											-- No access track
 	               WHEN o.highway IN ('service', 'services', 'depot', 'construction_route', 'access') THEN 2			-- Private access roads
 	               WHEN o.highway IN ('bridleway') THEN 2										-- Explicit bridleway
-	               WHEN ( o.bicycle IN ('yes', 'designated') OR o.horse IN ('yes', 'designated') ) AND o.motorcar IN ('yes', 'designated', 'discouraged') AND o.highway  = 'byway' THEN 6 -- Byway open to all traffic
-	               WHEN ( o.bicycle IN ('yes', 'designated') OR o.horse IN ('yes', 'designated') ) AND ( o.motorcar IN ('permissive', 'private', 'no') OR o.motorcar IS NULL ) AND o.highway  = 'byway' THEN 10 -- Legal bridleway OR restricted byway.. don't know which
-	               WHEN ( o.bicycle IN ('yes', 'designated') OR o.horse IN ('yes', 'designated') ) AND ( o.motorcar IN ('permissive', 'private', 'no') OR o.motorcar IS NULL ) AND o.highway != 'byway' THEN 8 -- Legal bridleway OR restricted byway.. don't know which
+	               WHEN ( o.bicycle IN ('yes', 'designated') OR o.horse IN ('yes', 'designated') OR o.highway = 'cycleway' ) AND o.motorcar IN ('yes', 'designated', 'discouraged') AND o.highway  = 'byway' THEN 6 -- Byway open to all traffic
+	               WHEN ( o.bicycle IN ('yes', 'designated') OR o.horse IN ('yes', 'designated') OR o.highway = 'cycleway' ) AND ( o.motorcar IN ('permissive', 'private', 'no') OR o.motorcar IS NULL ) AND o.highway  = 'byway' THEN 10 -- Legal bridleway OR restricted byway.. don't know which
+	               WHEN ( o.bicycle IN ('yes', 'designated') OR o.horse IN ('yes', 'designated') OR o.highway = 'cycleway' ) AND ( o.motorcar IN ('permissive', 'private', 'no') OR o.motorcar IS NULL ) AND o.highway != 'byway' THEN 8 -- Legal bridleway OR restricted byway.. don't know which
 	               WHEN o.foot IN ('yes', 'discouraged', 'designated') AND ( o.bicycle IN ('no', 'dismount') OR o.bicycle IS NULL ) THEN 4		-- Legal public footpath
-	               WHEN o.highway IN ('cycleway') THEN 8							-- Cycle path (bridleway)
 	               ELSE 12
 	          END
 	      WHEN c.class_name IN ('Local street', 'Motorway', 'Minor road', 'B road', 'A road', 'Trunk road', 'Service road', 'Parking') THEN  -- Proper roads

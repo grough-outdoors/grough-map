@@ -6,86 +6,104 @@
 		"grough_map_transport.mss",
 		"grough_map_building.mss"
 	],
-	"Layer": [{
+	"Layer": [
+	
+	{
+		"id": "building_-4", "name": "building_-4", "class": "building",
+		"Datasource": { "table": "\"map_render_building_l-4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},{
 		"id": "edge_outer_-4", "name": "edge_outer_-4", "class": "edge-outer",
 		"Datasource": { "table": "\"map_render_edge_l-4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_inner_-4", "name": "edge_inner_-4", "class": "edge-inner",
 		"Datasource": { "table": "\"map_render_edge_l-4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
-	},{
-		"id": "building_-4", "name": "building_-4", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l-4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	
+	{
+		"id": "building_-3", "name": "building_-3", "class": "building",
+		"Datasource": { "table": "\"map_render_building_l-3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_outer_-3", "name": "edge_outer_-3", "class": "edge-outer",
 		"Datasource": { "table": "\"map_render_edge_l-3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_inner_-3", "name": "edge_inner_-3", "class": "edge-inner",
 		"Datasource": { "table": "\"map_render_edge_l-3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
-	},{
-		"id": "building_-3", "name": "building_-3", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l-3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	
+	{
+		"id": "building_-2", "name": "building_-2", "class": "building",
+		"Datasource": { "table": "\"map_render_building_l-2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_outer_-2", "name": "edge_outer_-2", "class": "edge-outer",
 		"Datasource": { "table": "\"map_render_edge_l-2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_inner_-2", "name": "edge_inner_-2", "class": "edge-inner",
 		"Datasource": { "table": "\"map_render_edge_l-2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
-	},{
-		"id": "building_-2", "name": "building_-2", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l-2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	
+	{
+		"id": "building_-1", "name": "building_-1", "class": "building",
+		"Datasource": { "table": "\"map_render_building_l-1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_outer_-1", "name": "edge_outer_-1", "class": "edge-outer",
 		"Datasource": { "table": "\"map_render_edge_l-1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_inner_-1", "name": "edge_inner_-1", "class": "edge-inner",
 		"Datasource": { "table": "\"map_render_edge_l-1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
-	},{
-		"id": "building_-1", "name": "building_-1", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l-1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	
+	{
+		"id": "building_0", "name": "building_0", "class": "building",
+		"Datasource": { "table": "\"map_render_building_l0\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_outer_0", "name": "edge_outer_0", "class": "edge-outer",
 		"Datasource": { "table": "\"map_render_edge_l0\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_inner_0", "name": "edge_inner_0", "class": "edge-inner",
 		"Datasource": { "table": "\"map_render_edge_l0\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
-	},{
-		"id": "building_0", "name": "building_0", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l0\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	
+	{
+		"id": "building_1", "name": "building_1", "class": "building",
+		"Datasource": { "table": "\"map_render_building_l1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_outer_1", "name": "edge_outer_1", "class": "edge-outer",
 		"Datasource": { "table": "\"map_render_edge_l1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_inner_1", "name": "edge_inner_1", "class": "edge-inner",
 		"Datasource": { "table": "\"map_render_edge_l1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
-	},{
-		"id": "building_1", "name": "building_1", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	
+	{
+		"id": "building_2", "name": "building_2", "class": "building",
+		"Datasource": { "table": "\"map_render_building_l2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_outer_2", "name": "edge_outer_2", "class": "edge-outer",
 		"Datasource": { "table": "\"map_render_edge_l2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_inner_2", "name": "edge_inner_2", "class": "edge-inner",
 		"Datasource": { "table": "\"map_render_edge_l2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
-	},{
-		"id": "building_2", "name": "building_2", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	
+	{
+		"id": "building_3", "name": "building_3", "class": "building",
+		"Datasource": { "table": "\"map_render_building_l3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_outer_3", "name": "edge_outer_3", "class": "edge-outer",
 		"Datasource": { "table": "\"map_render_edge_l3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_inner_3", "name": "edge_inner_3", "class": "edge-inner",
 		"Datasource": { "table": "\"map_render_edge_l3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
-	},{
-		"id": "building_3", "name": "building_3", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	
+	{
+		"id": "building_4", "name": "building_4", "class": "building",
+		"Datasource": { "table": "\"map_render_building_l4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_outer_4", "name": "edge_outer_4", "class": "edge-outer",
 		"Datasource": { "table": "\"map_render_edge_l4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{
 		"id": "edge_inner_4", "name": "edge_inner_4", "class": "edge-inner",
 		"Datasource": { "table": "\"map_render_edge_l4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
-	},{
-		"id": "building_4", "name": "building_4", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	}]
 }

@@ -56,7 +56,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/add_missing_parts_of_build
 
 echo "--> Clustering..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-	ALTER TABLE public.buildings CLUSTER VERBOSE ON "Idx: buildings::building_geom";
+	ALTER TABLE public.buildings CLUSTER ON "Idx: buildings::building_geom";
 EoSQL
 
 echo "--> Cleaning up..."
