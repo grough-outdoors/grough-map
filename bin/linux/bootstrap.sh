@@ -179,6 +179,12 @@ echo "-----------------------------------"
 echo "--> Installing GDAL binaries..."  
 echo "-----------------------------------"
 sudo apt-get install -y gdal-bin
+sudo apt-get install -y python-gdal
+
+echo "-----------------------------------"
+echo "--> Installing ImageMagick..."  
+echo "-----------------------------------"
+sudo apt-get -y install imagemagick
 
 echo "-----------------------------------"
 echo "--> Converting all line endings..."  

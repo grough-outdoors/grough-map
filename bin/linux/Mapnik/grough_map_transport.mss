@@ -68,7 +68,7 @@
 @edge_access_decorator_path_dash_line:		9;
 @edge_access_decorator_path_dash_space:		5;
 
-@edge_access_decorator_legalpath_colour:	'green';
+@edge_access_decorator_legalpath_colour:	'#70a050';
 @edge_access_decorator_legalpath_dash_line:	@edge_access_decorator_path_dash_line;
 @edge_access_decorator_legalpath_dash_space:@edge_access_decorator_path_dash_space;
 

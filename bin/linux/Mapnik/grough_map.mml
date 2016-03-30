@@ -3,10 +3,22 @@
 	"buffer-size": "200",
 	"Stylesheet": [
 		"grough_map.mss",
+		"grough_map_relief.mss",
 		"grough_map_transport.mss",
-		"grough_map_building.mss"
+		"grough_map_building.mss",
+		"grough_map_grid.mss"
 	],
 	"Layer": [
+	
+	{
+		"name": "relief",
+		"id": "relief",
+		"class": "relief",
+		"Datasource": {
+			"file": "relief/ReliefGeo.tif",
+			"type": "gdal"
+		}
+	},
 	
 	{
 		"id": "building_-4", "name": "building_-4", "class": "building",
@@ -105,5 +117,10 @@
 	},{
 		"id": "edge_inner_4", "name": "edge_inner_4", "class": "edge-inner",
 		"Datasource": { "table": "\"map_render_edge_l4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	
+	{
+		"id": "grid_lines", "name": "grid_lines", "class": "grid",
+		"Datasource": { "table": "\"map_render_grid_lines\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	}]
 }

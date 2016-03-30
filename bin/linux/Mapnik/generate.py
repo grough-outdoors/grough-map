@@ -69,6 +69,30 @@ print( str(map_ll_x) + ',' + str(map_ll_y) + ',' + str(map_ur_x) + ',' + str(map
 print( str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y), file=open('constants/extent_sql.cnf', 'w'), end='' )
 print( str(27700), file=open('constants/target_srid.cnf', 'w'), end='' )
 
+print('Creating SQL view for gridlines')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_grid_lines" AS
+		SELECT  
+			( ( ST_XMin( tile_geom )::integer % 100000 ) / 10000 )::text || ( subgrid_east / 1000 ) AS grid_id_east,
+			( ( ST_YMin( tile_geom )::integer % 100000 ) / 10000 )::text || ( subgrid_north / 1000 ) AS grid_id_north,
+			ST_SetSRID( 
+				ST_MakeBox2D(
+					ST_Point( ST_XMin( tile_geom ) + subgrid_east       , ST_YMin( tile_geom ) + subgrid_north ),
+					ST_Point( ST_XMin( tile_geom ) + subgrid_east + 1000, ST_YMin( tile_geom ) + subgrid_north + 1000 )
+				),
+			27700 ) AS grid_box
+		FROM 
+			grid
+		LEFT JOIN 
+			generate_series(0,9000,1000) AS subgrid_east ON true 
+		LEFT JOIN 
+			generate_series(0,9000,1000) AS subgrid_north ON true
+		WHERE 
+			tile_name = '""" + map_ref_idx + """';
+	"""
+)
+pg_conn.commit()
+
 for level in xrange(-4, 5):
     print('Creating SQL view for edges at level ', level)
     pg_cursor.execute("""\
@@ -91,21 +115,23 @@ for level in xrange(-4, 5):
     )
     pg_conn.commit()
 
+
+# TODO: Test for the grid file existing	
 # Generate a relief image
-print('Creating interpolated surface elevation file...')
-#call( "gdalwarp -ts 2000 2000 -r cubicspline -overwrite -of HFA ../OS\ datasets/1\:50\,000\ elevation/ASCII/" + map_ref_idx + ".asc relief/__dem.img", shell=True)
 print('Creating hillshade file...')
-#call( "gdaldem hillshade -compute_edges -alt 30 relief/__dem.img relief/__aspect_grey.tif", shell=True )
+call( "gdaldem hillshade -compute_edges -alt 30 /vagrant/source/terrain-composite/grid/" + map_ref_idx + ".img relief/__aspect_grey.tif", shell=True )
 print('Creating aspect file...')
-#call( "gdaldem color-relief relief/__dem.img grough_relief.txt relief/__relief.tif", shell=True )
+call( "gdaldem color-relief /vagrant/source/terrain-composite/grid/" + map_ref_idx + ".img grough_relief.txt relief/__relief.tif", shell=True )
 print('Colouring aspect file...')
-#call( "gm convert relief/__aspect_grey.tif -recolor \"0.5 0.5 0.5, 0.5 0.5 0.5, 0.0 0.0 0.0\" relief/__aspect.tif", shell=True )
+call( "convert relief/__aspect_grey.tif -recolor \"0.5 0.5 0.5, 0.5 0.5 0.5, 0.0 0.0 0.0\" relief/__aspect.tif", shell=True )
 print('Merging relief files together (1)...')
-#call( "convert -size 2000x2000 xc:white -colorspace RGB -alpha set -depth 8 -type TrueColor -compose over \( relief/__relief.tif -alpha set -channel A -evaluate set 20% \) -composite relief/_relief1.tif", shell=True )
+call( "convert -size 5000x5000 xc:white -colorspace RGB -alpha set -depth 8 -type TrueColor -compose over \( relief/__relief.tif -alpha set -channel A -evaluate set 20% \) -composite relief/_relief1.tif", shell=True )
 print('Merging relief files together (2)...')
-#call( "convert relief/_relief1.tif -colorspace RGB -alpha set -depth 8 -type TrueColor -compose Overlay \( relief/__aspect.tif -alpha set -channel A -evaluate set 80% \) -composite relief/_relief2.tif", shell=True )
+call( "convert relief/_relief1.tif -colorspace RGB -alpha set -depth 8 -type TrueColor -compose Overlay \( relief/__aspect.tif -alpha set -channel A -evaluate set 80% \) -composite relief/_relief2.tif", shell=True )
 print('Merging relief files together (3)...')
-#call( "convert -size 2000x2000 xc:white \( relief/_relief2.tif -alpha set -channel A -evaluate set 50% \) -composite relief/Relief.tif", shell=True )
+call( "convert -size 5000x5000 xc:white \( relief/_relief2.tif -alpha set -channel A -evaluate set 50% \) -composite -depth 8 -layers flatten relief/Relief.tif", shell=True )
+print('Adding georeference information...')
+call( "gdal_translate -ot Byte -a_srs EPSG:27700 -a_ullr `gdalinfo relief/__aspect_grey.tif | awk '/(Upper Left)|(Lower Right)/' | awk '{gsub(/,|\)|\(/,\" \");print $3 \" \" $4}' | sed ':a;N;$!ba;s/\\n/ /g'` relief/Relief.tif relief/ReliefGeo.tif", shell=True )
 print('Finished creating hillshade overlay')
 
 print('Creating map raster...')
