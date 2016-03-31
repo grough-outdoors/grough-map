@@ -71,12 +71,9 @@ COPY edge_import_highways (import_id, highway, class_id) FROM stdin;
 8	motorway_link	1
 19	road	8
 10	steps	11
-11	bridleway	8
-12	pedestrian	10
 13	ford	9
 34	raceway	7
 9	trail	10
-14	cycleway	8
 15	trunk_link	2
 16	living_street	6
 17	residential	6
@@ -94,6 +91,9 @@ COPY edge_import_highways (import_id, highway, class_id) FROM stdin;
 30	byway	8
 31	bus_guideway	6
 32	path	10
+14	cycleway	10
+12	pedestrian	6
+11	bridleway	10
 33	unclassified	6
 \.
 

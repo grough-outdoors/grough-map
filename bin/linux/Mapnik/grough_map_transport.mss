@@ -1,84 +1,88 @@
-@edge_default_border_thickness:				1.5;
-@edge_default_width:						1.5;
-@edge_default_fill_colour:					'white';
-@edge_default_casing_colour:				'#707070';
+@edge_default_border_thickness:						1.5;
+@edge_default_width:								1.5;
+@edge_default_fill_colour:							'white';
+@edge_default_casing_colour:						'#707070';
 
-@edge_bridge_border_thickness:				2.0;
+@edge_bridge_border_thickness:						2.0;
 
-@edge_lanes_line_width:						1.0;
-@edge_lanes_line_colour:					@edge_default_casing_colour;
-@edge_lanes_line_blend:						'src-over';
-@edge_lanes_line_dash_line:					5;
-@edge_lanes_line_dash_space:				15;
+@edge_lanes_line_width:								1.0;
+@edge_lanes_line_colour:							@edge_default_casing_colour;
+@edge_lanes_line_blend:								'src-over';
+@edge_lanes_line_dash_line:							5;
+@edge_lanes_line_dash_space:						15;
 
-@edge_railway_width_dual:					2.5;
-@edge_railway_width_single:					1.5;
-@edge_railway_fill_colour:					'#b0b0b0';
-@edge_railway_border_colour:				'#b0b0b0';
-@edge_railway_dash_line:					10;
-@edge_railway_dash_space:					10;
+@edge_railway_width_dual:							2.5;
+@edge_railway_width_single:							1.5;
+@edge_railway_fill_colour:							'#b0b0b0';
+@edge_railway_border_colour:						'#b0b0b0';
+@edge_railway_dash_line:							10;
+@edge_railway_dash_space:							10;
 
-@edge_motorway_width_dual:					11;
-@edge_motorway_width_single:				8;
-@edge_motorway_fill_colour:					'#2571F5';
+@edge_motorway_width_dual:							11;
+@edge_motorway_width_single:						8;
+@edge_motorway_fill_colour:							'#2571F5';
 
-@edge_trunk_width_dual:						10;
-@edge_trunk_width_single:					7;
-@edge_trunk_fill_colour:					'#6DE35D';
+@edge_trunk_width_dual:								10;
+@edge_trunk_width_single:							7;
+@edge_trunk_fill_colour:							'#6DE35D';
 
-@edge_a_road_width_dual:					10;
-@edge_a_road_width_single:					7;
-@edge_a_road_fill_colour:					'#E35D5D';
+@edge_a_road_width_dual:							10;
+@edge_a_road_width_single:							7;
+@edge_a_road_fill_colour:							'#E35D5D';
 
-@edge_b_road_width_dual:					9;
-@edge_b_road_width_single:					6;
-@edge_b_road_fill_colour:					'#FAD234';
+@edge_b_road_width_dual:							9;
+@edge_b_road_width_single:							6;
+@edge_b_road_fill_colour:							'#FAD234';
 
-@edge_local_street_width:					8;
-@edge_local_street_fill_colour:				'#EDEA1A';
+@edge_local_street_width:							8;
+@edge_local_street_fill_colour:						'#EDEA1A';
 
-@edge_minor_road_width:						6;
-@edge_minor_road_fill_colour:				'#e0e0e0';
+@edge_minor_road_width:								6;
+@edge_minor_road_fill_colour:						'#e0e0e0';
 
-@edge_service_road_width:					5;
-@edge_service_road_fill_colour:				@edge_default_fill_colour;
+@edge_service_road_width:							5;
+@edge_service_road_fill_colour:						@edge_default_fill_colour;
 
-@edge_parking_width:						3;
-@edge_parking_fill_colour:					@edge_default_fill_colour;
-@edge_parking_border_colour:				'#a0a0a0';
-@edge_parking_dash_line:					10;
-@edge_parking_dash_space:					10;
+@edge_parking_width:								3;
+@edge_parking_fill_colour:							@edge_default_fill_colour;
+@edge_parking_border_colour:						'#a0a0a0';
+@edge_parking_dash_line:							10;
+@edge_parking_dash_space:							10;
 
-@edge_track_width:							4;
-@edge_track_fill_colour:					@edge_default_fill_colour;
-@edge_track_border_colour:					'#a0a0a0';
-@edge_track_dash_line:						10;
-@edge_track_dash_space:						10;
+@edge_track_width:									4;
+@edge_track_fill_colour:							@edge_default_fill_colour;
+@edge_track_border_colour:							'#a0a0a0';
+@edge_track_dash_line:								10;
+@edge_track_dash_space:								10;
 
-@edge_path_width:							2.0;
-@edge_path_fill_colour:						@edge_default_fill_colour;
-@edge_path_border_colour:					'red';
-@edge_path_dash_line:						5;
-@edge_path_dash_space:						5;
+@edge_path_width:									2.0;
+@edge_path_fill_colour:								@edge_default_fill_colour;
+@edge_path_border_colour:							'red';
+@edge_path_dash_line:								5;
+@edge_path_dash_space:								5;
 
-@edge_access_decorator_minor_width:			1.5;
-@edge_access_decorator_major_width:			3.0;
+@edge_access_decorator_construction_colour:			'white';
+@edge_access_decorator_construction_dash_line:		10;
+@edge_access_decorator_construction_dash_space:		10;
 
-@edge_access_decorator_path_colour:			'#707070';
-@edge_access_decorator_path_dash_line:		9;
-@edge_access_decorator_path_dash_space:		5;
+@edge_access_decorator_minor_width:					1.5;
+@edge_access_decorator_major_width:					3.0;
 
-@edge_access_decorator_legalpath_colour:	'#70a050';
-@edge_access_decorator_legalpath_dash_line:	@edge_access_decorator_path_dash_line;
-@edge_access_decorator_legalpath_dash_space:@edge_access_decorator_path_dash_space;
+@edge_access_decorator_path_colour:					'#707070';
+@edge_access_decorator_path_dash_line:				9;
+@edge_access_decorator_path_dash_space:				5;
 
-@edge_access_decorator_bridleway_colour:	@edge_access_decorator_legalpath_colour;
-@edge_access_decorator_bridleway_dash_line:	@edge_access_decorator_path_dash_line * 2;
-@edge_access_decorator_bridleway_dash_space:@edge_access_decorator_path_dash_space;
+@edge_access_decorator_legalpath_colour:			'#70a050';
+@edge_access_decorator_legalpath_dash_line:			@edge_access_decorator_path_dash_line;
+@edge_access_decorator_legalpath_dash_space:		@edge_access_decorator_path_dash_space;
 
-@edge_access_decorator_permpath_colour:		'orange';
-@edge_access_decorator_permpath_dash_line:	@edge_access_decorator_path_dash_line;
-@edge_access_decorator_permpath_dash_space: @edge_access_decorator_path_dash_space;
+@edge_access_decorator_bridleway_colour:			@edge_access_decorator_legalpath_colour;
+@edge_access_decorator_bridleway_dash_line:			@edge_access_decorator_path_dash_line * 2;
+@edge_access_decorator_bridleway_dash_space:		@edge_access_decorator_path_dash_space;
+
+@edge_access_decorator_permpath_colour:				'orange';
+@edge_access_decorator_permpath_dash_line:			@edge_access_decorator_path_dash_line;
+@edge_access_decorator_permpath_dash_space: 		@edge_access_decorator_path_dash_space;
 
 .edge-outer {
 	::outline {
@@ -236,11 +240,23 @@
 		::inline { line-width: @edge_motorway_width_single; }
 		::lane-divide-left { line-offset: @edge_motorway_width_single / 2 + @edge_default_border_thickness / 2; }
 		::lane-divide-right { line-offset: @edge_motorway_width_single / -2 + @edge_default_border_thickness / -2; }
+		[access_name='Under construction'] {
+			decoration/line-width: @edge_motorway_width_single;
+			decoration/line-dasharray: @edge_access_decorator_construction_dash_line, @edge_access_decorator_construction_dash_space;
+			decoration/line-color: @edge_access_decorator_construction_colour;
+			decoration/line-cap: butt;		
+		}
 	}
 	[edge_oneway=0] {
 		::inline { line-width: @edge_motorway_width_dual; }
 		::lane-divide-left { line-offset: @edge_motorway_width_dual / 2 + @edge_default_border_thickness / 2; }
 		::lane-divide-right { line-offset: @edge_motorway_width_dual / -2 + @edge_default_border_thickness / -2; }
+		[access_name='Under construction'] {
+			decoration/line-width: @edge_motorway_width_dual;
+			decoration/line-dasharray: @edge_access_decorator_construction_dash_line, @edge_access_decorator_construction_dash_space;
+			decoration/line-color: @edge_access_decorator_construction_colour;
+			decoration/line-cap: butt;		
+		}
 	}
 }
 
@@ -269,11 +285,23 @@
 		::inline { line-width: @edge_trunk_width_single; }
 		::lane-divide-left { line-offset: @edge_trunk_width_single / 2 + @edge_default_border_thickness / 2; }
 		::lane-divide-right { line-offset: @edge_trunk_width_single / -2 + @edge_default_border_thickness / -2; }
+		[access_name='Under construction'] {
+			decoration/line-width: @edge_trunk_width_single;
+			decoration/line-dasharray: @edge_access_decorator_construction_dash_line, @edge_access_decorator_construction_dash_space;
+			decoration/line-color: @edge_access_decorator_construction_colour;
+			decoration/line-cap: butt;		
+		}
 	}
 	[edge_oneway=0] {
 		::inline { line-width: @edge_trunk_width_dual; }
 		::lane-divide-left { line-offset: @edge_trunk_width_dual / 2 + @edge_default_border_thickness / 2; }
 		::lane-divide-right { line-offset: @edge_trunk_width_dual / -2 + @edge_default_border_thickness / -2; }
+		[access_name='Under construction'] {
+			decoration/line-width: @edge_trunk_width_dual;
+			decoration/line-dasharray: @edge_access_decorator_construction_dash_line, @edge_access_decorator_construction_dash_space;
+			decoration/line-color: @edge_access_decorator_construction_colour;
+			decoration/line-cap: butt;		
+		}
 	}
 }
 
@@ -335,11 +363,23 @@
 		::inline { line-width: @edge_b_road_width_single; }
 		::lane-divide-left { line-offset: @edge_b_road_width_single / 2 + @edge_default_border_thickness / 2; }
 		::lane-divide-right { line-offset: @edge_b_road_width_single / -2 + @edge_default_border_thickness / -2; }
+		[access_name='Under construction'] {
+			decoration/line-width: @edge_b_road_width_single;
+			decoration/line-dasharray: @edge_access_decorator_construction_dash_line, @edge_access_decorator_construction_dash_space;
+			decoration/line-color: @edge_access_decorator_construction_colour;
+			decoration/line-cap: butt;		
+		}
 	}
 	[edge_oneway=0] {
 		::inline { line-width: @edge_b_road_width_dual; }
 		::lane-divide-left { line-offset: @edge_b_road_width_dual / 2 + @edge_default_border_thickness / 2; }
 		::lane-divide-right { line-offset: @edge_b_road_width_dual / -2 + @edge_default_border_thickness / -2; }
+		[access_name='Under construction'] {
+			decoration/line-width: @edge_b_road_width_dual;
+			decoration/line-dasharray: @edge_access_decorator_construction_dash_line, @edge_access_decorator_construction_dash_space;
+			decoration/line-color: @edge_access_decorator_construction_colour;
+			decoration/line-cap: butt;		
+		}
 	}
 }
 
@@ -358,8 +398,16 @@
 }
 
 .edge-inner[class_name="Minor road"] {
-	::inline { line-color: @edge_minor_road_fill_colour; }
-	::inline { line-width: @edge_minor_road_width; }
+	::inline { 
+		line-color: @edge_minor_road_fill_colour;
+		line-width: @edge_minor_road_width; 
+		[access_name='Under construction'] {
+			decoration/line-width: @edge_minor_road_width;
+			decoration/line-dasharray: @edge_access_decorator_construction_dash_line, @edge_access_decorator_construction_dash_space;
+			decoration/line-color: @edge_access_decorator_construction_colour;
+			decoration/line-cap: butt;		
+		}
+	}
 }
 
 .edge-outer[class_name="Local street"] {
@@ -377,8 +425,16 @@
 }
 
 .edge-inner[class_name="Local street"] {
-	::inline { line-color: @edge_local_street_fill_colour; }
-	::inline { line-width: @edge_local_street_width; }
+	::inline { 
+		line-color: @edge_local_street_fill_colour; 
+		line-width: @edge_local_street_width; 
+		[access_name='Under construction'] {
+			decoration/line-width: @edge_local_street_width;
+			decoration/line-dasharray: @edge_access_decorator_construction_dash_line, @edge_access_decorator_construction_dash_space;
+			decoration/line-color: @edge_access_decorator_construction_colour;
+			decoration/line-cap: butt;		
+		}
+	}
 }
 
 .edge-outer[class_name="Service road"] {
@@ -394,8 +450,16 @@
 }
 
 .edge-inner[class_name="Service road"] {
-	::inline { line-color: @edge_service_road_fill_colour; }
-	::inline { line-width: @edge_service_road_width; }
+	::inline { 
+		line-color: @edge_service_road_fill_colour;
+		line-width: @edge_service_road_width;
+		[access_name='Under construction'] {
+			decoration/line-width: @edge_service_road_width;
+			decoration/line-dasharray: @edge_access_decorator_construction_dash_line, @edge_access_decorator_construction_dash_space;
+			decoration/line-color: @edge_access_decorator_construction_colour;
+			decoration/line-cap: butt;		
+		}
+	}
 }
 
 .edge-outer[class_name="Parking"] {
@@ -415,10 +479,11 @@
 }
 
 .edge-inner[class_name="Parking"] {
-	::inline { line-color: @edge_parking_fill_colour; }
-	::inline { line-width: @edge_parking_width; }
+	::inline { 
+		line-width: @edge_parking_width;
+		line-color: @edge_parking_fill_colour; 
+	}
 }
-
 
 .edge-outer[class_name="Track"] {
 	[edge_bridge=1] {
@@ -437,8 +502,10 @@
 }
 
 .edge-inner[class_name="Track"] {
-	::inline { line-color: @edge_track_fill_colour; }
-	::inline { line-width: @edge_track_width; }
+	::inline { 
+		line-color: @edge_track_fill_colour;
+		line-width: @edge_track_width; 
+	}
 }
 
 .edge-outer[class_name="Path"] {
@@ -496,6 +563,14 @@
 		decoration/line-dasharray: @edge_access_decorator_path_dash_line, @edge_access_decorator_path_dash_space;
 		decoration/line-color: @edge_access_decorator_path_colour;
 		decoration/line-cap: butt;		
+		
+		[class_name="Track"] {
+			[access_name="Byway open to all traffic"],
+			[access_name="Public road"], 
+			[access_name="Private road"] {
+				decoration/line-opacity: 0;
+			}
+		}
 		
 		[access_name="Footpath"] {
 			decoration/line-width: @edge_access_decorator_major_width;
