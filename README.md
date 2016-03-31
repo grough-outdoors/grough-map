@@ -34,7 +34,8 @@ Build each composite map layer...
 - gm-build-contours	(TODO)
 - gm-build-transport (TO FINISH)
 - gm-build-buildings (TO FINISH)
-- gm-build-surfaces	(TODO)
+- gm-build-surface	(TO FINISH)
+- gm-build-terrain (TO FINISH)
 - gm-build-natural (TODO)
 
 For each tile to be generated...  

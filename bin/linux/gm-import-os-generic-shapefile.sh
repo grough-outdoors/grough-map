@@ -1,9 +1,15 @@
 #!/bin/bash
 
 tablePrefix=_src_os_$1
+filterTerm='*.shp'
+
+if [ -n $3 ]
+then
+	filterTerm=$3
+fi
 
 echo "     --> Finding shapefiles..."
-IFS=$'\n'; for f in $(find ./ -name '*.shp')
+IFS=$'\n'; for f in $(find ./ -name $filterTerm)
 do 
 	echo "         --> Found $f..." 
 	baseName=`basename $f`

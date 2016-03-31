@@ -1,7 +1,7 @@
 #!/bin/bash
 
 tileName=$1
-targetResolution="2"
+targetResolution="5"
 blendDistance=50
 blendCells=$(($blendDistance/(10000 / 1600) - 1))
 scratchDir="/vagrant/volatile/"
@@ -20,8 +20,8 @@ rm ${tileName}_Contours.*  > /dev/null 2> /dev/null
 rm ${tileName}_Final.* > /dev/null 2> /dev/null
 mkdir scratch
 
-gdalbuildvrt -resolution highest -a_srs EPSG:27700 scratch/${tileName}.vrt $eaTileDir/LIDAR-DTM-2M-${tileName}/*.asc
-gdalbuildvrt -resolution highest -a_srs EPSG:27700 -srcnodata "-9998" -vrtnodata "-9998" -hidenodata scratch/${tileName}_Mask.vrt $eaTileDir/LIDAR-DTM-2M-${tileName}/*.asc
+gdalbuildvrt -resolution user -tr $targetResolution $targetResolution -a_srs EPSG:27700 scratch/${tileName}.vrt $eaTileDir/LIDAR-DTM-2M-${tileName}/*.asc
+gdalbuildvrt -resolution user -tr $targetResolution $targetResolution -a_srs EPSG:27700 -srcnodata "-9998" -vrtnodata "-9998" -hidenodata scratch/${tileName}_Mask.vrt $eaTileDir/LIDAR-DTM-2M-${tileName}/*.asc
 gdal_calc.py -A scratch/${tileName}_Mask.vrt --outfile=scratch/${tileName}_Mask.tif --calc="255*(maximum(A<0, A==-9998))" --type=Byte --NoDataValue=0
 gdal_polygonize.py -f "ESRI Shapefile" scratch/${tileName}_Mask.tif scratch/mask.shp
 ogr2ogr -f "ESRI Shapefile" scratch/mask_larger.shp scratch/mask.shp -dialect sqlite -sql "SELECT ST_Union(ST_Buffer(Geometry, ${blendDistance})) from mask"
@@ -44,6 +44,17 @@ mv scratch/mask.shp $targetDir/coverage/${tileName}.shp
 mv scratch/mask.shx $targetDir/coverage/${tileName}.shx
 mv scratch/mask.dbf $targetDir/coverage/${tileName}.dbf
 mv scratch/mask.prj $targetDir/coverage/${tileName}.prj
+
+IFS=' ' read -r -a finalBounds <<< "$finalExtent"
+deleteBox="ST_SetSRID(ST_MakeBox2D(ST_Point(${finalBounds[0]}, ${finalBounds[1]}), ST_Point(${finalBounds[2]}, ${finalBounds[3]})), 27700)"
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DELETE FROM elevation WHERE elevation_geom && $deleteBox"
+shp2pgsql -S -s 27700 -d -W LATIN1 -N skip "$targetDir/contours/${tileName}_Contours.shp" _src_contours >> scratch/_src_contours.sql 2> /dev/null
+psql -Ugrough-map grough-map -h 127.0.0.1 -f scratch/_src_contours.sql
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	INSERT INTO elevation (elevation_level, elevation_geom)
+	SELECT level, geom FROM _src_contours;
+EoSQL
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS _src_contours;"
 
 rm -rf scratch > /dev/null 2> /dev/null
 rm ${tileName}_Contours.* > /dev/null 2> /dev/null

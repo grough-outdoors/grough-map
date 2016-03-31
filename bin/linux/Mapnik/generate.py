@@ -93,6 +93,26 @@ pg_cursor.execute("""\
 )
 pg_conn.commit()
 
+print('Creating SQL view for surface features')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_surface\" AS 
+	SELECT * 
+	FROM surface_extended
+	WHERE surface_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
+	"""
+)
+pg_conn.commit()
+
+print('Creating SQL view for elevation features')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_elevation\" AS 
+	SELECT * 
+	FROM elevation
+	WHERE elevation_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
+	"""
+)
+pg_conn.commit()
+
 for level in xrange(-4, 5):
     print('Creating SQL view for edges at level ', level)
     pg_cursor.execute("""\
@@ -125,11 +145,11 @@ call( "gdaldem color-relief /vagrant/source/terrain-composite/grid/" + map_ref_i
 print('Colouring aspect file...')
 call( "convert relief/__aspect_grey.tif -recolor \"0.5 0.5 0.5, 0.5 0.5 0.5, 0.0 0.0 0.0\" relief/__aspect.tif", shell=True )
 print('Merging relief files together (1)...')
-call( "convert -size 5000x5000 xc:white -colorspace RGB -alpha set -depth 8 -type TrueColor -compose over \( relief/__relief.tif -alpha set -channel A -evaluate set 20% \) -composite relief/_relief1.tif", shell=True )
+call( "convert -size 2000x2000 xc:white -colorspace RGB -alpha set -depth 8 -type TrueColor -compose over \( relief/__relief.tif -alpha set -channel A -evaluate set 20% \) -composite relief/_relief1.tif", shell=True )
 print('Merging relief files together (2)...')
 call( "convert relief/_relief1.tif -colorspace RGB -alpha set -depth 8 -type TrueColor -compose Overlay \( relief/__aspect.tif -alpha set -channel A -evaluate set 80% \) -composite relief/_relief2.tif", shell=True )
 print('Merging relief files together (3)...')
-call( "convert -size 5000x5000 xc:white \( relief/_relief2.tif -alpha set -channel A -evaluate set 50% \) -composite -depth 8 -layers flatten relief/Relief.tif", shell=True )
+call( "convert -size 2000x2000 xc:white \( relief/_relief2.tif -alpha set -channel A -evaluate set 50% \) -composite -depth 8 -layers flatten relief/Relief.tif", shell=True )
 print('Adding georeference information...')
 call( "gdal_translate -ot Byte -a_srs EPSG:27700 -a_ullr `gdalinfo relief/__aspect_grey.tif | awk '/(Upper Left)|(Lower Right)/' | awk '{gsub(/,|\)|\(/,\" \");print $3 \" \" $4}' | sed ':a;N;$!ba;s/\\n/ /g'` relief/Relief.tif relief/ReliefGeo.tif", shell=True )
 print('Finished creating hillshade overlay')

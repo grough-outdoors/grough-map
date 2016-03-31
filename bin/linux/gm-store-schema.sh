@@ -22,4 +22,14 @@ pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t edge_import_highways > edge_impo
 echo "--> Storing edge import railways..."
 pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t edge_import_railways > edge_import_railways.sql
 
-echo "--> Export complete. Run gm-restore-schema to return."
+echo "--> Storing surface classes..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t surface_classes > surface_classes.sql
+
+echo "--> Storing surface schema..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t surface --schema-only > surface.sql
+
+echo "--> Storing elevation schema..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t elevation --schema-only > elevation.sql
+
+echo ""
+echo "Export complete. Run gm-restore-schema to return."

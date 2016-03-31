@@ -6,9 +6,16 @@
 		"grough_map_relief.mss",
 		"grough_map_transport.mss",
 		"grough_map_building.mss",
+		"grough_map_surface.mss",
+		"grough_map_elevation.mss",
 		"grough_map_grid.mss"
 	],
 	"Layer": [
+	
+	{
+		"id": "surface", "name": "surface", "class": "surface",
+		"Datasource": { "table": "\"map_render_surface\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
 	
 	{
 		"name": "relief",
@@ -18,6 +25,11 @@
 			"file": "relief/ReliefGeo.tif",
 			"type": "gdal"
 		}
+	},
+	
+	{
+		"id": "elevation", "name": "elevation", "class": "contour",
+		"Datasource": { "table": "\"map_render_elevation\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},
 	
 	{
