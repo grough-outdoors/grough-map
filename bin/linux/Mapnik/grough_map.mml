@@ -33,6 +33,11 @@
 	},
 	
 	{
+		"id": "watercourse_line", "name": "watercourse_line", "class": "watercourse-line",
+		"Datasource": { "table": "\"map_render_watercourse\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	
+	{
 		"id": "building_-4", "name": "building_-4", "class": "building",
 		"Datasource": { "table": "\"map_render_building_l-4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},{

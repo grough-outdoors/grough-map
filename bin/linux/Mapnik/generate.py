@@ -103,10 +103,22 @@ pg_cursor.execute("""\
 )
 pg_conn.commit()
 
+print('Creating SQL view for watercourse features')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_watercourse\" AS 
+	SELECT * 
+	FROM watercourse_extended
+	WHERE watercourse_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
+	"""
+)
+pg_conn.commit()
+
 print('Creating SQL view for elevation features')
 pg_cursor.execute("""\
 	CREATE OR REPLACE VIEW "map_render_elevation\" AS 
-	SELECT * 
+	SELECT 
+		*,
+		CASE WHEN elevation_level::integer % 50 = 0 THEN true ELSE false END AS elevation_major
 	FROM elevation
 	WHERE elevation_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
 	"""

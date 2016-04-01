@@ -33,7 +33,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 EoSQL
 
 echo "--> Importing landforms..."
-# TODO: Need VMD
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/add_vmd_ornaments_to_surface_layer.sql" > /dev/null
 
 echo "--> Importing moorland..."
 # TODO: Need to process LiDAR

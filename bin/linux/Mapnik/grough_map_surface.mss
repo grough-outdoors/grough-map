@@ -11,12 +11,16 @@
 @river_default_casing_colour:			'#116899';
 
 @tidal_default_border_thickness:		2.0;
-@tidal_default_fill_colour:				'#c0e0ef';
-@tidal_default_casing_colour:			'#116899';
+@tidal_default_fill_colour:				@river_default_fill_colour;
+@tidal_default_casing_colour:			@river_default_casing_colour;
 
 @landform_default_border_thickness:		0.0;
-@landform_default_fill_colour:			'black';
+@landform_default_fill_colour:			'#707070';
+@landform_default_fill_opacity:			0.5;
 @landform_default_casing_colour:		'black';
+
+@stream_default_thickness:				1.5;
+@stream_default_colour:					@river_default_casing_colour;
 
 .surface[class_name="Woodland"] {
 	line-width: @woodland_default_border_thickness;
@@ -44,6 +48,12 @@
 
 .surface[class_name="Landform"] {
 	polygon-fill: @landform_default_fill_colour;
+	polygon-opacity: @landform_default_fill_opacity;
 	line-width: @landform_default_border_thickness;
 	line-color: @landform_default_casing_colour;
+}
+
+.watercourse-line[class_draw_line=1] {
+	line-width: @stream_default_thickness;
+	line-color: @stream_default_colour;
 }
