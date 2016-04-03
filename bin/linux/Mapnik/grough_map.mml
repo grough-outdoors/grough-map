@@ -8,7 +8,8 @@
 		"grough_map_building.mss",
 		"grough_map_surface.mss",
 		"grough_map_elevation.mss",
-		"grough_map_grid.mss"
+		"grough_map_grid.mss",
+		"grough_map_linear_labels.mss"
 	],
 	"Layer": [
 	
@@ -139,5 +140,14 @@
 	{
 		"id": "grid_lines", "name": "grid_lines", "class": "grid",
 		"Datasource": { "table": "\"map_render_grid_lines\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	
+	{
+		"id": "watercourse_labels", "name": "watercourse_labels", "class": "watercourse-label",
+		"Datasource": { "table": "\"map_render_watercourse\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	{
+		"id": "edge_labels", "name": "edge_labels", "class": "edge-label",
+		"Datasource": { "table": "\"map_render_edge_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	}]
 }

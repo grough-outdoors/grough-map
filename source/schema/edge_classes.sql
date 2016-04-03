@@ -63,21 +63,21 @@ ALTER TABLE ONLY edge_classes ALTER COLUMN class_id SET DEFAULT nextval('edge_cl
 --
 
 COPY edge_classes (class_id, class_name, class_default_access_id, class_draw_order, class_label) FROM stdin;
-11	Steps	3	2	\N
-14	Parking	2	3	\N
-9	Ford	6	4	\N
-8	Track	6	5	\N
-17	Right of way	4	6	\N
-7	Service road	2	7	\N
-6	Minor road	1	8	\N
-5	Local street	1	9	\N
-4	B road	1	10	\N
-3	A road	1	11	\N
-2	Trunk road	1	12	\N
-1	Motorway	1	13	\N
-13	Railway	9	-1	\N
-16	Other railway	9	-1	\N
-10	Path	3	1	\N
+11	Steps	3	2	f
+14	Parking	2	3	f
+9	Ford	6	4	f
+8	Track	6	5	t
+17	Right of way	4	6	t
+7	Service road	2	7	f
+6	Minor road	1	8	f
+5	Local street	1	9	t
+4	B road	1	10	t
+3	A road	1	11	t
+2	Trunk road	1	12	t
+1	Motorway	1	13	t
+13	Railway	9	-1	t
+16	Other railway	9	-1	f
+10	Path	3	1	t
 \.
 
 

@@ -28,8 +28,6 @@ EoSQL
 echo "--> Matching streams to named watercourses..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/match_opmlc_to_oprvrs.sql" > /dev/null
 
-# TODO: Match against OpenStreetMap
-
 echo "--> Adding streams to the main database..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	INSERT INTO
@@ -51,11 +49,35 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		m.oprvrs_id = w.gid
 EoSQL
 
-# TODO: Match against polygons
+echo "--> Adding rivers, lakes and canals to the main database..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	INSERT INTO
+		watercourse (watercourse_class_id, watercourse_width, watercourse_geom, watercourse_name)
+	SELECT
+		CASE WHEN form='lake' THEN 4
+			 WHEN form='inlandRiver' THEN 3
+			 WHEN form='canal' THEN 6
+			 WHEN form='tidalRiver' THEN 1
+		END AS watercourse_class_id,
+		NULL AS watercourse_width,
+		ST_Multi(w.geom) AS watercourse_geom,
+		w.name AS watercourse_name
+	FROM
+		_src_os_oprvrs_watercourse_link w
+	LEFT JOIN
+		opmlc_oprvrs_matching pm
+	ON
+		w.gid = pm.oprvrs_id
+	WHERE
+		pm.oprvrs_id IS NULL
+EoSQL
 
-# TODO: Add centrelines for polygons
+echo "--> Calculating a minimum width for larger river systems..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/calculate_widths_for_watercourses.sql" > /dev/null
 
 # TODO: Smooth the lines somehow??
+
+# TODO: Match against OpenStreetMap
 
 echo "--> Indexing and clustering..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL

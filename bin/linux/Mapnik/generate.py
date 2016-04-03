@@ -125,6 +125,16 @@ pg_cursor.execute("""\
 )
 pg_conn.commit()
 
+print('Creating SQL view for edge labels')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_edge_labels\" AS 
+	SELECT * 
+	FROM edge_label
+	WHERE edge_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+	"""
+)
+pg_conn.commit()
+
 for level in xrange(-4, 5):
     print('Creating SQL view for edges at level ', level)
     pg_cursor.execute("""\

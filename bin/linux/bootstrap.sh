@@ -120,43 +120,25 @@ echo "-----------------------------------"
 sudo apt-get install -y python-psycopg2
 
 echo "-----------------------------------"
-echo "--> Installing Cascadenik..."
-echo "-----------------------------------"
-echo "--> Removing old version..."
-rm -rf /vagrant/bin/linux/Cascadenik/
-echo "--> Making new directory..."
-mkdir /vagrant/bin/linux/Cascadenik/
-echo "--> Downloading latest version..."
-cd /vagrant/bin/linux/Cascadenik/
-curl -L -o "cascadenik.zip" "https://github.com/mapnik/Cascadenik/archive/master.zip"
-echo "--> Extracting..."
-unzip cascadenik.zip
-echo "--> Rearranging..."
-rm -rf cascadenik.zip
-mv Cascadenik-master/* ./
-rm -rf Cascadenik-master
-echo "--> Installing CSS utils..."
-sudo apt-get install -y python-setuptools
-sudo easy_install cssutils
-
-echo "-----------------------------------"
 echo "--> Installing LASTools..."
 echo "-----------------------------------"
-echo "--> Removing old version..."
-rm -rf /vagrant/bin/linux/LASTools/
-echo "--> Making new directory..."
-mkdir /vagrant/bin/linux/LASTools/
-echo "--> Downloading latest version..."
-cd /vagrant/bin/linux/LASTools/
-curl -L -o "lastools.zip" "http://www.cs.unc.edu/~isenburg/lastools/download/lastools.zip"
-echo "--> Extracting..."
-unzip lastools.zip
-echo "--> Rearranging..."
-rm -rf lastools.zip
-mv LASTools/* ./
-rm -rf LASTools
-echo "--> Building..."
-make
+if [ ! -e "/vagrant/bin/linux/LASTools/" ]; then
+	echo "--> Removing old version..."
+	rm -rf /vagrant/bin/linux/LASTools/
+	echo "--> Making new directory..."
+	mkdir /vagrant/bin/linux/LASTools/
+	echo "--> Downloading latest version..."
+	cd /vagrant/bin/linux/LASTools/
+	curl -L -o "lastools.zip" "http://www.cs.unc.edu/~isenburg/lastools/download/lastools.zip"
+	echo "--> Extracting..."
+	unzip lastools.zip
+	echo "--> Rearranging..."
+	rm -rf lastools.zip
+	mv LASTools/* ./
+	rm -rf LASTools
+	echo "--> Building..."
+	make
+fi
 cd /vagrant
 
 echo "-----------------------------------"

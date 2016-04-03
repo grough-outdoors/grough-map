@@ -23,7 +23,8 @@ CREATE TABLE watercourse (
     watercourse_id bigint NOT NULL,
     watercourse_class_id smallint,
     watercourse_width integer,
-    watercourse_geom geometry(MultiLineString,27700)
+    watercourse_geom geometry(MultiLineString,27700),
+    watercourse_name character varying(100)
 );
 
 

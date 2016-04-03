@@ -22,7 +22,8 @@ SET default_with_oids = false;
 CREATE TABLE watercourse_classes (
     class_id integer NOT NULL,
     class_name character varying(100),
-    class_draw_order integer
+    class_draw_order integer,
+    class_draw_line boolean
 );
 
 
@@ -60,7 +61,13 @@ ALTER TABLE ONLY watercourse_classes ALTER COLUMN class_id SET DEFAULT nextval('
 -- Data for Name: watercourse_classes; Type: TABLE DATA; Schema: public; Owner: grough-map
 --
 
-COPY watercourse_classes (class_id, class_name, class_draw_order) FROM stdin;
+COPY watercourse_classes (class_id, class_name, class_draw_order, class_draw_line) FROM stdin;
+1	Tidal river/estuary	3	f
+3	River	4	f
+4	Lake	2	f
+5	Reservoir	1	f
+2	Stream	6	t
+6	Canal	5	f
 \.
 
 
@@ -68,7 +75,7 @@ COPY watercourse_classes (class_id, class_name, class_draw_order) FROM stdin;
 -- Name: watercourse_classes_class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('watercourse_classes_class_id_seq', 1, false);
+SELECT pg_catalog.setval('watercourse_classes_class_id_seq', 6, true);
 
 
 --
