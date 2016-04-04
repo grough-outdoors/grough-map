@@ -106,9 +106,51 @@ pg_conn.commit()
 print('Creating SQL view for watercourse features')
 pg_cursor.execute("""\
 	CREATE OR REPLACE VIEW "map_render_watercourse\" AS 
-	SELECT * 
-	FROM watercourse_extended
-	WHERE watercourse_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
+	SELECT 
+		w.*,
+		SB.watercourse_label_side
+	FROM 
+		watercourse_extended w
+	LEFT JOIN
+	(
+		SELECT
+			watercourse_id,
+			CASE WHEN Sum(watercourse_label_direction) > 0 THEN 'r'
+				 WHEN Sum(watercourse_label_direction) < 0 THEN 'l'
+				 ELSE 'b'
+			END AS watercourse_label_side
+		FROM
+		(
+			SELECT
+				watercourse_id,
+				CASE WHEN 
+					degrees(ST_Azimuth(
+						ST_Line_Interpolate_Point(w.watercourse_split_geom, 0.5),
+						ST_Line_Interpolate_Point(w.watercourse_split_geom, least(1.0, 0.5 + 100.0 / ST_Length(watercourse_split_geom)))
+					)) >
+					degrees(ST_Azimuth(
+						ST_Line_Interpolate_Point(w.watercourse_split_geom, 0.5),
+						ST_ClosestPoint(e.edge_geom, ST_Line_Interpolate_Point(w.watercourse_split_geom, 0.5))
+					)) 
+				THEN 1
+				ELSE -1
+				END AS watercourse_label_direction
+			FROM
+				( SELECT *, (ST_Dump(watercourse_geom)).geom AS watercourse_split_geom FROM watercourse ) w, edge e
+			WHERE
+				watercourse_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+			AND
+				w.watercourse_geom && e.edge_geom
+			AND
+				ST_DWithin(w.watercourse_geom, e.edge_geom, 50.0)
+		) SA
+		GROUP BY
+			watercourse_id
+	) SB
+	ON
+		SB.watercourse_id = w.watercourse_id
+	WHERE 
+		watercourse_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
 	"""
 )
 pg_conn.commit()
@@ -128,9 +170,38 @@ pg_conn.commit()
 print('Creating SQL view for edge labels')
 pg_cursor.execute("""\
 	CREATE OR REPLACE VIEW "map_render_edge_labels\" AS 
-	SELECT * 
-	FROM edge_label
-	WHERE edge_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+	SELECT
+		l.*,
+		SA.edge_geom
+	FROM
+		edge_label l
+	INNER JOIN
+	(
+		SELECT 
+			a.edge_id,
+			CASE WHEN a.edge_class_id IN (1,2,3,4) THEN a.edge_geom
+				 WHEN ST_GeometryType(ST_Multi(ST_Difference(a.edge_geom, ST_Union(ST_Buffer(b.edge_geom, 40.0, 'endcap=square join=mitre mitre_limit=20.0'))))) != 'ST_MultiLineString' THEN NULL
+				 ELSE ST_Multi(ST_Difference(a.edge_geom, ST_Union(ST_Buffer(b.edge_geom, 40.0, 'endcap=square join=mitre mitre_limit=20.0')))) 
+			END AS edge_geom
+		FROM 
+			edge a, edge b
+		WHERE
+			a.edge_geom && ST_MakeBox2D(ST_Point(""" + str(map_ll_x) + """, """ + str(map_ll_y) + """), ST_Point(""" + str(map_ur_x) + """, """ + str(map_ur_y) + """))
+		AND
+			a.edge_name IS NOT NULL
+		AND
+			( a.edge_name != b.edge_name OR a.edge_class_id != b.edge_class_id OR b.edge_name IS NULL )
+		AND
+			a.edge_geom && b.edge_geom
+		AND
+			a.edge_id != b.edge_id
+		AND
+			ST_DWithin(a.edge_geom, b.edge_geom, 20.0)
+		GROUP BY
+			a.edge_id, a.edge_geom
+	) SA
+	ON
+		l.edge_id = SA.edge_id;
 	"""
 )
 pg_conn.commit()

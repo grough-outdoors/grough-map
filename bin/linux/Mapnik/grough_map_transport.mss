@@ -65,16 +65,21 @@
 @edge_access_decorator_construction_dash_line:		10;
 @edge_access_decorator_construction_dash_space:		10;
 
-@edge_access_decorator_minor_width:					2.0;
-@edge_access_decorator_major_width:					4.5;
+@edge_access_decorator_minor_width:					3.5;
+@edge_access_decorator_major_width:					4.75;
 
 @edge_access_decorator_path_colour:					#707070;
-@edge_access_decorator_path_dash_line:				15;
-@edge_access_decorator_path_dash_space:				10;
+@edge_access_decorator_path_dash_line:				18;
+@edge_access_decorator_path_dash_space:				13;
 
 @edge_access_decorator_legalpath_colour:			#70a050;
 @edge_access_decorator_legalpath_dash_line:			@edge_access_decorator_path_dash_line;
 @edge_access_decorator_legalpath_dash_space:		@edge_access_decorator_path_dash_space;
+
+@edge_access_decorator_pedestrianised_width:		@edge_service_road_width;
+@edge_access_decorator_pedestrianised_colour:		@edge_access_decorator_legalpath_colour;
+@edge_access_decorator_pedestrianised_dash_line:	5;
+@edge_access_decorator_pedestrianised_dash_space:	5;
 
 @edge_access_decorator_bridleway_colour:			@edge_access_decorator_legalpath_colour;
 @edge_access_decorator_bridleway_dash_line:			@edge_access_decorator_path_dash_line * 2;
@@ -587,7 +592,8 @@
 
 .edge-inner[class_name="Path"],
 .edge-inner[class_name="Right of way"],
-.edge-inner[class_name="Track"] {
+.edge-inner[class_name="Track"],
+.edge-inner[access_name="Pedestrianised road"] {
 	::inline {
 		decoration/line-width: @edge_access_decorator_minor_width;
 		decoration/line-dasharray: @edge_access_decorator_path_dash_line, @edge_access_decorator_path_dash_space;
@@ -607,6 +613,12 @@
 			decoration/line-width: @edge_access_decorator_major_width;
 			decoration/line-dasharray: @edge_access_decorator_legalpath_dash_line, @edge_access_decorator_legalpath_dash_space;
 			decoration/line-color: @edge_access_decorator_legalpath_colour;
+		}
+		
+		[access_name="Pedestrianised road"] {
+			decoration/line-width: @edge_access_decorator_pedestrianised_width;
+			decoration/line-dasharray: @edge_access_decorator_pedestrianised_dash_line, @edge_access_decorator_pedestrianised_dash_space;
+			decoration/line-color: @edge_access_decorator_pedestrianised_colour;
 		}
 		
 		[access_name="Legal footpath"] {

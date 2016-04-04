@@ -10,13 +10,14 @@
 @edge_label_default_halo_colour:			white;
 @edge_label_default_distance:				2000;
 @edge_label_default_wrap_width:				0; /* Disabled */
-@edge_label_default_typeface:				'Open Sans Light';
+@edge_label_default_typeface:				'Open Sans Regular';
 @edge_label_default_avoid_edges:			true;
+@edge_label_default_minimum_padding:		50;
 
 @edge_label_motorway_colour:				darken(@edge_motorway_fill_colour, 20%);
-@edge_label_trunk_colour:					darken(@edge_trunk_fill_colour, 40%);
+@edge_label_trunk_colour:					darken(@edge_trunk_fill_colour, 20%);
 @edge_label_a_road_colour:					darken(@edge_a_road_fill_colour, 20%);
-@edge_label_b_road_colour:					darken(@edge_b_road_fill_colour, 40%);
+@edge_label_b_road_colour:					darken(@edge_b_road_fill_colour, 20%);
 @edge_label_other_road_colour:				@edge_label_default_colour;
 @edge_label_path_colour:					#707070;
 
@@ -44,14 +45,16 @@
 @watercourse_label_default_placement:		line;
 @watercourse_label_default_size:			40;
 @watercourse_label_default_offset_x:		0;
-@watercourse_label_default_offset_y:		@stream_default_thickness + @watercourse_label_default_size / 2;
-@watercourse_label_default_max_delta:		15;
+@watercourse_label_default_offset_y_l:		@stream_default_thickness + @watercourse_label_default_size / 2;
+@watercourse_label_default_offset_y_r:		0 - @stream_default_thickness - @watercourse_label_default_size / 2;
+@watercourse_label_default_max_delta:		25;
 @watercourse_label_default_halo_radius:		2;
 @watercourse_label_default_halo_colour:		white;
 @watercourse_label_default_distance:		2000;
 @watercourse_label_default_wrap_width:		0; /* Disabled */
 @watercourse_label_default_typeface:		'Open Sans Regular';
-@watercourse_label_default_avoid_edges:		true;
+@watercourse_label_default_minimum_padding:	50;
+@watercourse_label_default_avoid_edges:		false;
 
 @watercourse_label_large_typeface:			'Exo Light';
 @watercourse_label_large_halo_radius:		0;
@@ -71,6 +74,7 @@
 	text-min-distance: @edge_label_default_distance;
 	text-wrap-width: @edge_label_default_wrap_width;
 	text-avoid-edges: @edge_label_default_avoid_edges;
+	text-min-padding: @edge_label_default_minimum_padding;
 	
 	[edge_tunnel=1], 
 	[edge_bridge=1] {
@@ -121,13 +125,19 @@
 	text-fill: @watercourse_label_default_colour;
 	text-size: @watercourse_label_default_size;
 	text-placement: @watercourse_label_default_placement;
-	text-dy: @watercourse_label_default_size;
 	text-max-char-angle-delta: @watercourse_label_default_max_delta;
 	text-halo-radius: @watercourse_label_default_halo_radius;
 	text-halo-fill: @watercourse_label_default_halo_colour;
 	text-min-distance: @watercourse_label_default_distance;
 	text-wrap-width: @watercourse_label_default_wrap_width;
 	text-avoid-edges: @watercourse_label_default_avoid_edges;
+	text-min-padding: @watercourse_label_default_minimum_padding;
+	
+	[class_name='Stream'] {
+		text-dy: @watercourse_label_default_offset_y_r;
+		[watercourse_label_side='r'] { text-dy: @watercourse_label_default_offset_y_r; }
+		[watercourse_label_side='l'] { text-dy: @watercourse_label_default_offset_y_l; }
+	}
 	
 	[class_name='River'],
 	[class_name='Lake'],
@@ -140,6 +150,13 @@
 			[watercourse_width >= 15][watercourse_width < 25] { text-dy: 25 + @watercourse_label_default_size / 2; }
 			[watercourse_width >= 25][watercourse_width < 35] { text-dy: 35 + @watercourse_label_default_size / 2; }
 			[watercourse_width >= 35] { text-dy: @watercourse_label_default_size + @watercourse_label_default_size / 2; }
+			[watercourse_label_side='r'] { 
+				[watercourse_width < 5] { text-dy: -5 - @watercourse_label_default_size / 2; }
+				[watercourse_width >= 5][watercourse_width < 15] { text-dy: -15 - @watercourse_label_default_size / 2; }
+				[watercourse_width >= 15][watercourse_width < 25] { text-dy: -25 - @watercourse_label_default_size / 2; }
+				[watercourse_width >= 25][watercourse_width < 35] { text-dy: -35 - @watercourse_label_default_size / 2; }
+				[watercourse_width >= 35] { text-dy: 0 - @watercourse_label_default_size - @watercourse_label_default_size / 2; }
+			}
 		}
 		[watercourse_width > @watercourse_label_default_size] {
 			text-face-name: @watercourse_label_large_typeface;

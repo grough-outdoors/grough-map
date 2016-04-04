@@ -3,8 +3,12 @@
 @woodland_default_casing_colour:		'black';
 
 @foreshore_default_border_thickness:	2.0;
-@foreshore_default_fill_colour:			'#FFFCD7';
-@foreshore_default_casing_colour:		'#116899';
+@foreshore_default_fill_colour:			'#D4D4D4';
+@foreshore_default_casing_colour:		'#C7C7C7';
+
+@beach_default_border_thickness:		2.0;
+@beach_default_fill_colour:				'#FFFCD7';
+@beach_default_casing_colour:			'#116899';
 
 @river_default_border_thickness:		2.0;
 @river_default_fill_colour:				'#c0e0ef';
@@ -32,6 +36,12 @@
 	line-width: @foreshore_default_border_thickness;
 	line-color: @foreshore_default_casing_colour;
 	polygon-fill: @foreshore_default_fill_colour;
+}
+
+.surface[class_name="Beach"] {
+	line-width: @beach_default_border_thickness;
+	line-color: @beach_default_casing_colour;
+	polygon-fill: @beach_default_fill_colour;
 }
 
 .surface[class_name="River"] {

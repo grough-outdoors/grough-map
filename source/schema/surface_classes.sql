@@ -60,7 +60,7 @@ ALTER TABLE ONLY surface_classes ALTER COLUMN class_id SET DEFAULT nextval('surf
 -- Name: surface_class_class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('surface_class_class_id_seq', 6, true);
+SELECT pg_catalog.setval('surface_class_class_id_seq', 17, true);
 
 
 --
@@ -69,11 +69,22 @@ SELECT pg_catalog.setval('surface_class_class_id_seq', 6, true);
 
 COPY surface_classes (class_id, class_name, class_draw_order) FROM stdin;
 4	Moorland	1
-3	Landform	6
 2	Woodland	2
 5	Tidal water	3
 6	River	4
 1	Foreshore	5
+7	Beach	6
+8	Quarry	7
+11	Heath	8
+3	Landform	9
+9	Pier	10
+13	Golf course	11
+12	Sports ground	12
+14	Taxiway	13
+15	Runway	14
+17	Toll plaza	15
+10	Dam	17
+16	Cemetery	16
 \.
 
 

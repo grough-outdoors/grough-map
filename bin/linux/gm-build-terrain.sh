@@ -50,6 +50,7 @@ else
 		# Try to download LiDAR data
 		echo "No LiDAR directory found... attempting to download..."
 		$binDir/gm-download-eagg.sh $tileName
+		$binDir/gm-download-nrw.sh $tileName
 		if [ -e "${eaTileDir}/LIDAR-DTM-2M-${tileName}.zip" ]; then
 			echo "Extracting LiDAR..."
 			unzip -o "${eaTileDir}/LIDAR-DTM-2M-${tileName}.zip" -d "${eaTileDir}/LIDAR-DTM-2M-${tileName}/"
@@ -76,9 +77,9 @@ if [ `ls ${eaTileDir}/LIDAR-DTM-2M-${tileName}/*.asc | wc -l` -gt 0 ]; then
 		gdalwarp -of HFA -r cubicspline -s_srs EPSG:27700 -ts 1600 1600 scratch/${tileName}_Pass2.img scratch/${tileName}_Pass3.img
 		gdalwarp -of HFA -r cubicspline -s_srs EPSG:27700 -ts 3200 3200 scratch/${tileName}_Pass3.img scratch/${tileName}_Pass4.img
 		gdalwarp -of HFA -r cubicspline -s_srs EPSG:27700 -ts 5000 5000 scratch/${tileName}_Pass4.img scratch/${tileName}_Pass5.img
-		gdalwarp -s_srs EPSG:27700 -tr ${targetResolution} ${targetResolution} -r cubicspline -cutline scratch/mask_larger.shp -cblend ${blendCells} -dstalpha -crop_to_cutline scratch/${tileName}_Pass5.img scratch/${tileName}_Blend.tif
+		gdalwarp -s_srs EPSG:27700 -tr ${targetResolution} ${targetResolution} -te $finalExtent -r cubicspline -cutline scratch/mask_larger.shp -cblend ${blendCells} -dstalpha -crop_to_cutline scratch/${tileName}_Pass5.img scratch/${tileName}_Blend.tif
 		# HT: http://reprojected.com/blog/2012/09/12/extracting-extent-from-gdalinfo-on-the-command-line/
-		gdalwarp -of HFA -s_srs EPSG:27700 -tr ${targetResolution} ${targetResolution} -te $finalExtent scratch/${tileName}.vrt scratch/${tileName}_Blend.tif ${tileName}_Final.img
+		gdalwarp -of HFA -s_srs EPSG:27700 -tr ${targetResolution} ${targetResolution} -te $finalExtent scratch/${tileName}_Pass5.img scratch/${tileName}.vrt scratch/${tileName}_Blend.tif ${tileName}_Final.img
 	else
 		echo "No gaps exist in the LiDAR coverage -- LiDAR only"
 		gdalwarp -of HFA -s_srs EPSG:27700 -tr ${targetResolution} ${targetResolution} -te $finalExtent scratch/${tileName}.vrt ${tileName}_Final.img
@@ -111,7 +112,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	INSERT INTO elevation (elevation_level, elevation_geom)
 	SELECT 
 		c.level, 
-		ST_Simplify(c.geom, 2.5)
+		ST_Simplify(ST_Difference(c.geom, ST_MakeValid(ST_Buffer(s.surface_geom, -50.0))), 2.5)
 	FROM 
 		_src_contours c
 	LEFT JOIN
@@ -119,7 +120,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	ON
 		s.surface_geom && c.geom
 	AND
-		ST_Within(c.geom, s.surface_geom)
+		ST_Intersects(c.geom, s.surface_geom)
 	AND
 		s.surface_class_id IN (5, 6)
 	WHERE

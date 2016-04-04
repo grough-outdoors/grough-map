@@ -4,14 +4,20 @@ SELECT
 	e.edge_class_id,
 	e.edge_access_id,
 	CASE WHEN c.class_name NOT IN ('Motorway', 'A road', 'B road', 'Trunk road')
-		THEN regexp_replace(e.edge_name, '\([^\(]+\)$', '', 'g')::character varying
+		THEN 
+			CASE WHEN trim(e.edge_name) SIMILAR TO '([A-Z0-9]+[0-9]+|[0-9]+)' THEN null
+			     ELSE regexp_replace(e.edge_name, '\([^\(]+\)$', '', 'g')::character varying
+			END
 		ELSE e.edge_name
 	END AS edge_name,
 	CASE WHEN c.class_name IN ('Motorway', 'A road', 'B road', 'Trunk road')
 		THEN regexp_replace(e.edge_name, '(^[^\(]+\(|\)$)', '', 'g')::character varying
-		ELSE regexp_replace(e.edge_name, '\([^\(]+\)$', '', 'g')::character varying
+		ELSE 
+			CASE WHEN trim(e.edge_name) SIMILAR TO '([A-Z0-9]+[0-9]+|[0-9]+)' THEN null
+			     ELSE regexp_replace(e.edge_name, '\([^\(]+\)$', '', 'g')::character varying
+			END
 	END AS edge_name_short,
-	e.edge_geom,
+	--e.edge_geom,
 	e.edge_level + e.edge_bridge::integer AS edge_level,
 	e.edge_bridge,
 	e.edge_tunnel,
