@@ -16,31 +16,36 @@ High quality mapping for the outdoors. Map tiles are generated using composite d
 Load in the basic schema required...
 - gm-restore-schema
 
+Download and pull in OSM data
+- gm-update-osm 
+
 Fetch the required data from the web...
 - gm-download-grid
 - gm-download-ne
 - gm-download-os (Requires source_email.txt)
 - gm-download-osm
-- gm-download-ea 		(TODO)
+- gm-download-ea <tile>
+- gm-download-nrw <tile>
 - gm-download-prow	(TODO: Only covers updates from GeoServer)
-  
+ 
 Import source data to the database...
 - gm-import-grid
-- gm-import-ne		(TODO)
+- gm-import-ne (TODO)
 - gm-import-os
 - gm-import-prow
   
 Build each composite map layer...
-- gm-build-contours	(TODO)
-- gm-build-transport (TO FINISH)
-- gm-build-buildings (TO FINISH)
-- gm-build-surface	(TO FINISH)
-- gm-build-terrain (TO FINISH)
-- gm-build-natural (TODO)
+- gm-build-transport
+- gm-build-buildings
+- gm-build-surface
+- gm-build-watercourses
+- gm-build-terrain (for each tile, or automatic during gm-tile)
 
 For each tile to be generated...  
-- gm-tile	(TODO)
+- gm-tile <tile>
 
 ## Licence
 
-To be confirmed.
+All the code in this repository is licensed under the [GNU General Public License v3](http://www.gnu.org/licenses/gpl-3.0.en.html). You are free to use and distribute it, including for commercial use, but any changes you make must be made available under the GPL with build and install instructions.
+
+OpenStreetMap data is used by these tools, and as such many of the map layers (but not all) are covered by the [Open Database License](http://wiki.openstreetmap.org/wiki/Open_Data_License/Community_Guidelines), which may require you to share improvements you make to the database.

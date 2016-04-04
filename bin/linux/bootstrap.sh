@@ -173,4 +173,17 @@ echo "--> Converting all line endings..."
 echo "-----------------------------------"
 dos2unix /vagrant/bin/linux/*.sh
 
+echo "-----------------------------------"
+echo "--> Creating links..."  
+echo "-----------------------------------"
+sudo rm -f /bin/gm-*
+for f in /vagrant/bin/linux/gm-*.sh; do
+	if [ `basename $f | grep -o '[-]' | cut -d : -f 1 | uniq -c | sed 's/ -//g'` -le 2 ]; then
+		n=`basename $f`
+		echo Found tool ${n%.*}
+		sudo ln -s $f /bin/${n%.*}
+		sudo chmod +x /bin/${n%.*}
+	fi
+done
+
 echo "--> Installation complete."

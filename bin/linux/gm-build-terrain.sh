@@ -38,9 +38,10 @@ fi
 finalExtent=`gdalinfo $osTileDir/${tileName}.asc | awk '/(Lower Left)|(Upper Right)/' | awk '{gsub(/,|\)|\(/," ");print $3 " " $4}' | sed ':a;N;$!ba;s/\n/ /g'`
 
 # Check for archived LiDAR data
-if [ -e "${eaTileDir}/LIDAR-DTM-2M-${tileName}.zip" ]; then
-	echo "Extracting ZIP file with EA LiDAR data..."
+if [ -e "${eaTileDir}/LIDAR-DTM-2M-${tileName}.zip" ] || [ -e "${eaTileDir}/2m_res_${tileName}_dtm.zip" ]; then
+	echo "Extracting ZIP file with EA/NRW LiDAR data..."
 	unzip -o "${eaTileDir}/LIDAR-DTM-2M-${tileName}.zip" -d "${eaTileDir}/LIDAR-DTM-2M-${tileName}/"
+	unzip -o "${eaTileDir}/2m_res_${tileName}_dtm.zip" -d "${eaTileDir}/LIDAR-DTM-2M-${tileName}/"
 else
 	# Check for pre-extracted LiDAR data
 	if [ -d "${eaTileDir}/LIDAR-DTM-2M-${tileName}/" ]; then
@@ -73,7 +74,9 @@ if [ `ls ${eaTileDir}/LIDAR-DTM-2M-${tileName}/*.asc | wc -l` -gt 0 ]; then
 		gdalwarp -of HFA -r cubicspline -s_srs EPSG:27700 -ts 400 400 $osTileDir/${tileName}.asc scratch/${tileName}_Pass1.img
 		gdalwarp -of HFA -r cubicspline -s_srs EPSG:27700 -ts 800 800 scratch/${tileName}_Pass1.img scratch/${tileName}_Pass2.img
 		gdalwarp -of HFA -r cubicspline -s_srs EPSG:27700 -ts 1600 1600 scratch/${tileName}_Pass2.img scratch/${tileName}_Pass3.img
-		gdalwarp -s_srs EPSG:27700 -tr ${targetResolution} ${targetResolution} -r cubicspline -cutline scratch/mask_larger.shp -cblend ${blendCells} -dstalpha -crop_to_cutline scratch/${tileName}_Pass3.img scratch/${tileName}_Blend.tif
+		gdalwarp -of HFA -r cubicspline -s_srs EPSG:27700 -ts 3200 3200 scratch/${tileName}_Pass3.img scratch/${tileName}_Pass4.img
+		gdalwarp -of HFA -r cubicspline -s_srs EPSG:27700 -ts 5000 5000 scratch/${tileName}_Pass4.img scratch/${tileName}_Pass5.img
+		gdalwarp -s_srs EPSG:27700 -tr ${targetResolution} ${targetResolution} -r cubicspline -cutline scratch/mask_larger.shp -cblend ${blendCells} -dstalpha -crop_to_cutline scratch/${tileName}_Pass5.img scratch/${tileName}_Blend.tif
 		# HT: http://reprojected.com/blog/2012/09/12/extracting-extent-from-gdalinfo-on-the-command-line/
 		gdalwarp -of HFA -s_srs EPSG:27700 -tr ${targetResolution} ${targetResolution} -te $finalExtent scratch/${tileName}.vrt scratch/${tileName}_Blend.tif ${tileName}_Final.img
 	else
@@ -85,7 +88,9 @@ else
 	gdalwarp -of HFA -r cubicspline -s_srs EPSG:27700 -ts 400 400 $osTileDir/${tileName}.asc scratch/${tileName}_Pass1.img
 	gdalwarp -of HFA -r cubicspline -s_srs EPSG:27700 -ts 800 800 scratch/${tileName}_Pass1.img scratch/${tileName}_Pass2.img
 	gdalwarp -of HFA -r cubicspline -s_srs EPSG:27700 -ts 1600 1600 scratch/${tileName}_Pass2.img scratch/${tileName}_Pass3.img
-	gdalwarp -of HFA -s_srs EPSG:27700 -tr ${targetResolution} ${targetResolution} -te $finalExtent scratch/${tileName}_Pass3.img ${tileName}_Final.img
+	gdalwarp -of HFA -r cubicspline -s_srs EPSG:27700 -ts 3200 3200 scratch/${tileName}_Pass3.img scratch/${tileName}_Pass4.img
+	gdalwarp -of HFA -r cubicspline -s_srs EPSG:27700 -ts 5000 5000 scratch/${tileName}_Pass4.img scratch/${tileName}_Pass5.img
+	gdalwarp -of HFA -s_srs EPSG:27700 -tr ${targetResolution} ${targetResolution} -te $finalExtent scratch/${tileName}_Pass5.img ${tileName}_Final.img
 fi
 
 gdal_contour -a LEVEL -i 5 ${tileName}_Final.img ${tileName}_Contours.shp
@@ -104,7 +109,21 @@ shp2pgsql -S -s 27700 -d -W LATIN1 -N skip "$targetDir/contours/${tileName}_Cont
 psql -Ugrough-map grough-map -h 127.0.0.1 -f scratch/_src_contours.sql > /dev/null
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	INSERT INTO elevation (elevation_level, elevation_geom)
-	SELECT level, geom FROM _src_contours;
+	SELECT 
+		c.level, 
+		ST_Simplify(c.geom, 2.5)
+	FROM 
+		_src_contours c
+	LEFT JOIN
+		surface s
+	ON
+		s.surface_geom && c.geom
+	AND
+		ST_Within(c.geom, s.surface_geom)
+	AND
+		s.surface_class_id IN (5, 6)
+	WHERE
+		s.surface_id IS NULL;
 EoSQL
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS _src_contours;"
 
@@ -112,7 +131,7 @@ rm -rf scratch > /dev/null 2> /dev/null
 rm ${tileName}_Contours.* > /dev/null 2> /dev/null
 rm ${tileName}_Final.* > /dev/null 2> /dev/null
 
-if [ -e "${eaTileDir}/LIDAR-DTM-2M-${tileName}.zip" ]; then
+if [ -e "${eaTileDir}/LIDAR-DTM-2M-${tileName}.zip" ] || [ -e "${eaTileDir}/2m_res_${tileName}_dtm.zip" ]; then
 	echo "Removing ZIP file extracts..."
 	rm -rf "${eaTileDir}/LIDAR-DTM-2M-${tileName}/"
 fi
