@@ -35,7 +35,14 @@ echo "Starting map generation process..."
 cd $mapnikDir
 $mapnikCommand $tileName
 
-echo "Moving output..."
-mv "$mapnikOutputDir/$tileName.png" "$outputDir"
+if [ `echo $2 | tr '[:lower:]' '[:upper:]'` = "geotiff" ]; then
+	echo "Moving output..."
+	mv "$mapnikOutputDir/$tileName.png" "$outputDir"
+else
+	echo "Converting output..."
+	convert "$mapnikOutputDir/$tileName.png" -compress LZW "$outputDir/$tileName.tiff"
+	echo "Assigning georeference..."
+	gdal_edit.py -a_srs EPSG:27700 -a_ullr `gdalinfo ${terrainDir}/${tileName}.img | awk '/(Upper Left)|(Lower Right)/' | awk '{gsub(/,|\)|\(/," ");print $3 " " $4}' | sed ':a;N;$!ba;s/\\n/ /g'` "$outputDir/$tileName.tiff"
+fi
 
 cd $currentDir
