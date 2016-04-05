@@ -37,5 +37,11 @@ pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t watercourse --schema-only > wate
 echo "--> Storing watercourse classes..."
 pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t watercourse_classes > watercourse_classes.sql
 
+echo "--> Storing place schema..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t place --schema-only > place.sql
+
+echo "--> Storing place classes..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t place_classes > place_classes.sql
+
 echo ""
 echo "Export complete. Run gm-restore-schema to return."
