@@ -145,7 +145,7 @@
 	[class_name='Reservoir'],
 	[class_name='Tidal river/estuary'] {
 		[watercourse_width < @watercourse_label_default_size] {
-			[watercourse_width < 5] { text-dy: 5 + @watercourse_label_default_size / 2; }
+			[watercourse_width < 5] { text-dy: 10 + @watercourse_label_default_size / 2; }
 			[watercourse_width >= 5][watercourse_width < 15] { text-dy: 15 + @watercourse_label_default_size / 2; }
 			[watercourse_width >= 15][watercourse_width < 25] { text-dy: 25 + @watercourse_label_default_size / 2; }
 			[watercourse_width >= 25][watercourse_width < 35] { text-dy: 35 + @watercourse_label_default_size / 2; }

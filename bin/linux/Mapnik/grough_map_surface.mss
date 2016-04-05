@@ -3,8 +3,8 @@
 @woodland_default_casing_colour:		'black';
 
 @foreshore_default_border_thickness:	2.0;
-@foreshore_default_fill_colour:			'#D4D4D4';
-@foreshore_default_casing_colour:		'#C7C7C7';
+@foreshore_default_fill_colour:			'#F1F3F4';
+@foreshore_default_casing_colour:		'#C8CFD6';
 
 @beach_default_border_thickness:		2.0;
 @beach_default_fill_colour:				'#FFFCD7';

@@ -107,10 +107,33 @@ print('Creating SQL view for watercourse features')
 pg_cursor.execute("""\
 	CREATE OR REPLACE VIEW "map_render_watercourse\" AS 
 	SELECT 
-		w.*,
-		SB.watercourse_label_side
+		w.*
 	FROM 
 		watercourse_extended w
+	WHERE 
+		watercourse_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
+	"""
+)
+pg_conn.commit()
+
+print('Creating SQL view for watercourse feature labels')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_watercourse_labels\" AS 
+	SELECT 
+		w.watercourse_id,
+		w.watercourse_class_id,
+		w.watercourse_width,
+		CASE WHEN ST_GeometryType(SB.watercourse_geom_trim) = 'ST_MultiLineString'
+		     THEN SB.watercourse_geom_trim
+			 ELSE w.watercourse_geom
+		END as watercourse_geom,
+		w.watercourse_name,
+		w.class_name,
+		w.class_draw_order,
+		w.class_draw_line,
+		SB.watercourse_label_side 
+	FROM 
+		watercourse_label w
 	LEFT JOIN
 	(
 		SELECT
@@ -118,7 +141,8 @@ pg_cursor.execute("""\
 			CASE WHEN Sum(watercourse_label_direction) > 0 THEN 'r'
 				 WHEN Sum(watercourse_label_direction) < 0 THEN 'l'
 				 ELSE 'b'
-			END AS watercourse_label_side
+			END AS watercourse_label_side,
+			ST_Multi(ST_Difference(watercourse_geom, ST_Union(watercourse_edge_near))) AS watercourse_geom_trim
 		FROM
 		(
 			SELECT
@@ -134,7 +158,9 @@ pg_cursor.execute("""\
 					)) 
 				THEN 1
 				ELSE -1
-				END AS watercourse_label_direction
+				END AS watercourse_label_direction,
+				watercourse_geom,
+				ST_Buffer(e.edge_geom, 25.0) AS watercourse_edge_near
 			FROM
 				( SELECT *, (ST_Dump(watercourse_geom)).geom AS watercourse_split_geom FROM watercourse ) w, edge e
 			WHERE
@@ -145,7 +171,7 @@ pg_cursor.execute("""\
 				ST_DWithin(w.watercourse_geom, e.edge_geom, 50.0)
 		) SA
 		GROUP BY
-			watercourse_id
+			watercourse_id, watercourse_geom
 	) SB
 	ON
 		SB.watercourse_id = w.watercourse_id
