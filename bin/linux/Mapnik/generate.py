@@ -69,6 +69,32 @@ print( str(map_ll_x) + ',' + str(map_ll_y) + ',' + str(map_ur_x) + ',' + str(map
 print( str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y), file=open('constants/extent_sql.cnf', 'w'), end='' )
 print( str(27700), file=open('constants/target_srid.cnf', 'w'), end='' )
 
+print('Creating SQL table for label areas')
+pg_cursor.execute("DROP VIEW IF EXISTS map_render_place;")
+pg_cursor.execute("DROP TABLE IF EXISTS _tmp_label_zone;")
+pg_conn.commit()
+pg_cursor.execute("""\
+	CREATE TABLE _tmp_label_zone AS SELECT
+		ST_MakeValid(label_zone)::geometry(Polygon, 27700) AS label_zone
+	FROM (
+		SELECT
+			(ST_Dump(ST_Difference(
+				g.tile_geom,
+				( SELECT ST_Union(ST_Buffer(e.edge_geom, 100.0, 'endcap=square join=bevel')) AS edge_zone FROM
+				  edge e WHERE e.edge_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, 27700) )
+			))).geom AS label_zone
+		FROM
+			grid g
+		WHERE
+			g.tile_name = '""" + map_ref_idx + """'
+	) SA
+	WHERE
+		ST_XMax(label_zone) - ST_XMin(label_zone) > 100.0
+	AND ST_YMax(label_zone) - ST_YMin(label_zone) > 100.0;
+	"""
+)
+pg_conn.commit()
+
 print('Creating SQL view for gridlines')
 pg_cursor.execute("""\
 	CREATE OR REPLACE VIEW "map_render_grid_lines" AS
@@ -130,6 +156,59 @@ pg_cursor.execute("""\
 	SELECT * 
 	FROM surface_extended
 	WHERE surface_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
+	"""
+)
+pg_conn.commit()
+
+print('Creating SQL view for place features')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_place\" AS 
+	SELECT 
+		p.place_id,
+		p.place_name,
+		p.place_class_id,
+		CASE WHEN l.place_id IS NULL THEN p.place_centre_geom
+			 ELSE l.place_geom
+		END::geometry(Point, 27700) as place_geom,
+		degrees(ST_Azimuth(l.place_geom, p.place_centre_geom)) AS place_direction,
+		p.class_name
+	FROM 
+		place_extended p
+	LEFT JOIN
+	(
+		SELECT
+			first(place_id) AS place_id,
+			first(place_geom) AS place_geom
+		FROM
+		(
+			SELECT
+				place_id,
+				place_geom
+			FROM
+			(
+				SELECT
+					place_id,
+					place_centre_geom,
+					ST_ClosestPoint(ST_Intersection(place_geom, z.label_zone), place_centre_geom) AS place_geom
+				FROM
+					place p
+				LEFT JOIN
+					_tmp_label_zone z
+				ON
+					z.label_zone && p.place_geom
+				WHERE
+					p.place_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+			) SA
+			ORDER BY
+				ST_Distance(place_geom, place_centre_geom) ASC
+		) SB
+		GROUP BY
+			place_id
+	) l
+	ON
+		p.place_id = l.place_id
+	WHERE 
+		p.place_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
 	"""
 )
 pg_conn.commit()
