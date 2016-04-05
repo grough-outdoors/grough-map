@@ -112,7 +112,18 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	INSERT INTO elevation (elevation_level, elevation_geom)
 	SELECT 
 		c.level, 
-		ST_Simplify(ST_Difference(c.geom, ST_MakeValid(ST_Buffer(s.surface_geom, -50.0))), 2.5)
+		(ST_Dump(
+			ST_Simplify(
+				CASE WHEN Count(s.surface_geom) > 0
+					THEN ST_Difference(
+						c.geom, 
+						ST_MakeValid(ST_Buffer(ST_Collect(s.surface_geom), -50.0))
+					)
+					ELSE c.geom
+				END, 
+				2.5)
+			)
+		).geom
 	FROM 
 		_src_contours c
 	LEFT JOIN
@@ -123,8 +134,8 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		ST_Intersects(c.geom, s.surface_geom)
 	AND
 		s.surface_class_id IN (5, 6)
-	WHERE
-		s.surface_id IS NULL;
+	GROUP BY
+		c.level, c.geom;
 EoSQL
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS _src_contours;"
 

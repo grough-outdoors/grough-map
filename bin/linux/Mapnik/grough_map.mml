@@ -149,5 +149,9 @@
 	{
 		"id": "edge_labels", "name": "edge_labels", "class": "edge-label",
 		"Datasource": { "table": "\"map_render_edge_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	{
+		"id": "grid_labels", "name": "grid_labels", "class": "grid-label",
+		"Datasource": { "table": "\"map_render_grid_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	}]
 }

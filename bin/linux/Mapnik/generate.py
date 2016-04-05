@@ -93,6 +93,37 @@ pg_cursor.execute("""\
 )
 pg_conn.commit()
 
+print('Creating SQL view for grid labels')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_grid_labels" AS
+		SELECT  
+			( ( ( ST_XMin( tile_geom )::integer + subgrid_step ) % 100000 ) / 10000 )::text || ( ( subgrid_step / 1000 ) % 10 ) AS grid_id_text,
+			'e' AS grid_id_dir,
+			ST_SetSRID( 
+				ST_MakePoint( ST_XMin( tile_geom ) + subgrid_step, ST_YMin( tile_geom ) + 3300 ),
+			27700 ) AS grid_text_point
+		FROM 
+			grid
+		LEFT JOIN 
+			generate_series(0,10000,1000) AS subgrid_step ON true 
+		WHERE 
+			tile_name = '""" + map_ref_idx + """'
+		UNION SELECT  
+			( ( ( ST_YMin( tile_geom )::integer + subgrid_step ) % 100000 ) / 10000 )::text || ( ( subgrid_step / 1000 ) % 10 ) AS grid_id_text,
+			'n' AS grid_id_dir,
+			ST_SetSRID( 
+				ST_MakePoint( ST_XMin( tile_geom ) + 3300, ST_YMin( tile_geom ) +  + subgrid_step ),
+			27700 ) AS grid_text_point
+		FROM 
+			grid
+		LEFT JOIN 
+			generate_series(0,10000,1000) AS subgrid_step ON true 
+		WHERE 
+			tile_name = '""" + map_ref_idx + """';
+	"""
+)
+pg_conn.commit()
+
 print('Creating SQL view for surface features')
 pg_cursor.execute("""\
 	CREATE OR REPLACE VIEW "map_render_surface\" AS 
