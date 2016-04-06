@@ -11,13 +11,13 @@
 @place_label_halo_radius:			2;
 @place_label_halo_colour:			white;
 
-@place_label_default_size:			30;
+@place_label_default_size:			28;
 @place_label_city_size:				70;
 @place_label_town_size:				55;
 @place_label_village_size:			43;
 @place_label_suburb_size:			40;
-@place_label_hamlet_size:			30;
-@place_label_settlement_size:		25;
+@place_label_hamlet_size:			32;
+@place_label_settlement_size:		28;
 @place_label_hill_size:				50;
 @place_label_mountain_size:			60;
 
