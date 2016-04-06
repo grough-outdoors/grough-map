@@ -24,7 +24,7 @@
 
 @edge_trunk_width_dual:								10;
 @edge_trunk_width_single:							7;
-@edge_trunk_fill_colour:							#6DE35D;
+@edge_trunk_fill_colour:							#62CC53;
 
 @edge_a_road_width_dual:							10;
 @edge_a_road_width_single:							7;

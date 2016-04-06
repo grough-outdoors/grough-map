@@ -50,6 +50,16 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	SELECT ST_Multi(geom), 6 FROM _src_os_opmplc_surface_water_area;
 EoSQL
 
+echo "--> Removing any non-polygons..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	DELETE FROM	
+		surface
+	WHERE
+		ST_GeometryType(surface_geom) != 'ST_MultiPolygon'
+	OR
+		ST_GeometryType(surface_geom) IS NULL;
+EoSQL
+
 echo "--> Indexing and clustering..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	CREATE INDEX "Idx: surface::surface_geom"
