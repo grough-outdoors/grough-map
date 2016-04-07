@@ -1,0 +1,47 @@
+-------
+LICENCE
+-------
+
+   Copyright © 2016, grough Limited.
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software Foundation,
+   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+
+--------
+GUIDANCE
+--------
+
+   All the code is licensed under the GNU General Public 
+   License v3. You are free to use and distribute it, 
+   including for commercial use, but any changes you make 
+   must be made available under the GPL with build and 
+   install instructions.
+   
+   This copyright notice must remain in place when you 
+   redistribute your changes.
+
+   OpenStreetMap data is used by these tools, and as such 
+   many of the map layers (but not all) are covered by the 
+   Open Database License, which may require you to share 
+   improvements you make to the database.
+
+   Where grough Limited distributes tiles generated using 
+   these tools, they are licensed under Creative Commons
+   Attribution v4.
+
+   When using the map tiles, please acknowledge these as:
+   '© grough © OpenStreetMap © Ordnance Survey', with links:
+    - http://map.grough.co.uk/
+    - http://openstreetmap.org/copyright
+    - http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/
