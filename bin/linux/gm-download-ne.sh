@@ -1,42 +1,33 @@
 #!/bin/bash
 
-echo "Preparing to download Natural England products..."
+echo "Preparing to download Natural England data..."
 
-echo "-----------------------------------"
-echo "--> Downloading archives..."
-echo "-----------------------------------"
-cd /vagrant/source/natural-england/
+targetDir=/vagrant/source/natural-england/
 
-echo "Downloading CRoW act access layer..."
-curl -o "crow_all.zip" "http://www.geostore.com/inspiredata/ea_inspire_shape_zipped/CROW_Access_Layer.zip"
-
-echo "Downloading country parks..."
-# TODO
-
-echo "Downloading millennium greens..."
-# TODO
-
-echo "Downloading nature reserves..."
-# TODO
-
-echo "Downloading registered battlefields..."
-# TODO
-
-echo "Downloading registered parks and gardens..."
-# TODO
-
-echo "Downloading world heritage sites..."
-# TODO
-
-echo "-----------------------------------"
-echo "--> Filing archive files..."
-echo "-----------------------------------"
-for z in *.zip
+cd $targetDir
+echo "Requesting catalogue data..."
+IFS=$'\n'; for f in `curl 'http://www.geostore.com/environment-agency/rest/catalogue' | python -c """
+import json, sys, re
+obj = json.load(sys.stdin)
+listMasks = [
+	'National Parks \(England\)',
+	'CRoW(.*)Access Layer',
+	'Nature Reserves',
+	'Country Parks',
+	'National Trails',
+	'Doorstep Greens',
+	'Millennium Greens'
+]
+for i in range(len(obj)):
+	for idx, regex in enumerate(listMasks):
+		pattern = re.compile(regex)
+		if pattern.match(obj[i]['descriptiveName']): 
+			print obj[i]['formattedFiles']['ESRI_Shapefile']
+"""`
 do
-	IFS='_' read -ra FileComponents <<< "$z"
-	echo "Filing $z..."
-	mkdir ${FileComponents[0]} > /dev/null 2> /dev/null
-	mv "$z" "${FileComponents[0]}/"
+	echo "Downloading ${f}..."
+	curl -O "$f"
 done
+cd -
 
-echo "--> Download complete. Run gm-import-ne."
+echo "--> Downloads are complete."

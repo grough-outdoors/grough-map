@@ -43,5 +43,20 @@ pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t place --schema-only > place.sql
 echo "--> Storing place classes..."
 pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t place_classes > place_classes.sql
 
+echo "--> Storing point feature schema..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t feature_point --schema-only > feature_point.sql
+
+echo "--> Storing linear feature schema..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t feature_linear --schema-only > feature_linear.sql
+
+echo "--> Storing feature classes..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t feature_classes > feature_classes.sql
+
+echo "--> Storing zone schema..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t zone --schema-only > zone.sql
+
+echo "--> Storing zone classes..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t zone_classes > zone_classes.sql
+
 echo ""
 echo "Export complete. Run gm-restore-schema to return."

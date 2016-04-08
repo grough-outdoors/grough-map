@@ -39,6 +39,7 @@ Build each composite map layer...
 - gm-build-buildings
 - gm-build-surface
 - gm-build-watercourses
+- gm-build-features
 - gm-build-terrain (for each tile, or automatic during gm-tile)
 
 For each tile to be generated...  

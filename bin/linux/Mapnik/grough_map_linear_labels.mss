@@ -47,7 +47,7 @@
 @watercourse_label_default_offset_x:		0;
 @watercourse_label_default_offset_y_l:		@stream_default_thickness + @watercourse_label_default_size / 2;
 @watercourse_label_default_offset_y_r:		0 - @stream_default_thickness - @watercourse_label_default_size / 2;
-@watercourse_label_default_max_delta:		25;
+@watercourse_label_default_max_delta:		200;
 @watercourse_label_default_halo_radius:		2;
 @watercourse_label_default_halo_colour:		white;
 @watercourse_label_default_distance:		2000;

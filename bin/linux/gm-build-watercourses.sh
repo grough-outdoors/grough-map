@@ -60,7 +60,14 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 			 WHEN form='tidalRiver' THEN 1
 		END AS watercourse_class_id,
 		NULL AS watercourse_width,
-		ST_Multi(w.geom) AS watercourse_geom,
+		ST_CollectionExtract(
+			ST_Multi(
+				CASE WHEN Count(pm.oprvrs_id) = 0 THEN w.geom
+					 ELSE ST_Difference(w.geom, ST_Buffer(ST_Collect(pm.geom_oprvrs), 1.0))
+				END
+			),
+			2
+		)AS watercourse_geom,
 		w.name AS watercourse_name
 	FROM
 		_src_os_oprvrs_watercourse_link w
@@ -68,8 +75,10 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		opmlc_oprvrs_matching pm
 	ON
 		w.gid = pm.oprvrs_id
-	WHERE
-		pm.oprvrs_id IS NULL
+	GROUP BY
+		w.gid,
+		w.form,
+		w.name;
 EoSQL
 
 echo "--> Calculating a minimum width for larger river systems..."
@@ -78,6 +87,59 @@ psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/calculate_widths_for_water
 # TODO: Smooth the lines somehow??
 
 # TODO: Match against OpenStreetMap
+
+echo "--> Extracting OSM features for watercourses..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	DROP TABLE IF EXISTS _src_osm_polygon_water;
+	DROP TABLE IF EXISTS _src_osm_line_water;
+	CREATE TABLE
+		_src_osm_polygon_water
+	AS SELECT 
+		"water",
+		"waterway",
+		"natural",
+		"landuse",
+		"name",
+		ST_Multi("way") AS "way"
+	FROM
+		_src_osm_polygon
+	WHERE
+		"way" IS NOT NULL AND (
+			"water" IS NOT NULL OR
+			"waterway" IS NOT NULL OR
+			"natural"='water' OR
+			"landuse"='reservoir' OR
+			"landuse"='pond'
+		);
+	CREATE TABLE
+		_src_osm_line_water
+	AS SELECT 
+		"water",
+		"waterway",
+		"natural",
+		"landuse",
+		"name",
+		ST_Multi("way") AS "way"
+	FROM
+		_src_osm_line
+	WHERE
+		"way" IS NOT NULL AND (
+			"water" IS NOT NULL OR
+			"waterway" IS NOT NULL OR
+			"natural"='water' OR
+			"landuse"='reservoir' OR
+			"landuse"='pond'
+		);
+	DELETE FROM _src_osm_line_water WHERE ST_GeometryType(way) <> 'ST_MultiLineString';
+	SELECT populate_geometry_columns('_src_osm_polygon_water'::regclass); 
+	SELECT populate_geometry_columns('_src_osm_line_water'::regclass); 
+EoSQL
+
+echo "--> Setting lakes and reservoir names from OSM where errors occured..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/update_lakes_reservoirs_from_osm.sql" > /dev/null
+
+echo "--> Removing watercourse lines near the extremities of larger waterbodies..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/limit_watercourses_to_centrelines.sql" > /dev/null
 
 echo "--> Indexing and clustering..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
@@ -90,9 +152,11 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 EoSQL
 
 echo "--> Removing temporary tables..."
-#psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-#	DROP TABLE opmlc_oprvrs_matching;
-#EoSQL
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	DROP TABLE opmlc_oprvrs_matching;
+	DROP TABLE _src_osm_polygon_water;
+	DROP TABLE _src_osm_line_water;
+EoSQL
 
 echo "--> Cleaning up..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL

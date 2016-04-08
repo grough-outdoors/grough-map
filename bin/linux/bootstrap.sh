@@ -42,7 +42,7 @@ function createDatabaseServer {
 	echo "-----------------------------------"
 	echo "--> Applying PostGIS extensions to grough-map database..."
 	echo "-----------------------------------"
-	sudo -u postgres psql -c "CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology;" $DB_NAME
+	sudo -u postgres psql -c "CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology; CREATE EXTENSION fuzzystrmatch; CREATE EXTENSION unaccent;" $DB_NAME
 
 	echo "-----------------------------------"
 	echo "--> Changing PostgreSQL settings..."  
