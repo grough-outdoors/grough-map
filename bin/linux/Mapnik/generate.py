@@ -226,6 +226,88 @@ pg_cursor.execute("""\
 )
 pg_conn.commit()
 
+print('Creating SQL views for linear features')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_feature_line_subsurface\" AS 
+	SELECT 
+		f.*
+	FROM 
+		feature_linear_extended f
+	WHERE 
+		feature_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+	AND	
+		class_subsurface = true;
+	"""
+)
+pg_conn.commit()
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_feature_line_surface\" AS 
+	SELECT 
+		f.*
+	FROM 
+		feature_linear_extended f
+	WHERE 
+		feature_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+	AND	
+		class_surface = true;
+	"""
+)
+pg_conn.commit()
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_feature_line_overhead\" AS 
+	SELECT 
+		f.*
+	FROM 
+		feature_linear_extended f
+	WHERE 
+		feature_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+	AND	
+		class_overhead = true;
+	"""
+)
+pg_conn.commit()
+
+print('Creating SQL views for point features')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_feature_point_subsurface\" AS 
+	SELECT 
+		f.*
+	FROM 
+		feature_point_extended f
+	WHERE 
+		feature_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+	AND	
+		class_subsurface = true;
+	"""
+)
+pg_conn.commit()
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_feature_point_surface\" AS 
+	SELECT 
+		f.*
+	FROM 
+		feature_point_extended f
+	WHERE 
+		feature_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+	AND	
+		class_surface = true;
+	"""
+)
+pg_conn.commit()
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_feature_point_overhead\" AS 
+	SELECT 
+		f.*
+	FROM 
+		feature_point_extended f
+	WHERE 
+		feature_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+	AND	
+		class_overhead = true;
+	"""
+)
+pg_conn.commit()
+
 print('Creating SQL view for watercourse feature labels')
 pg_cursor.execute("""\
 	CREATE OR REPLACE VIEW "map_render_watercourse_labels\" AS 

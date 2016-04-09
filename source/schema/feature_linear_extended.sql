@@ -3,7 +3,11 @@ SELECT
 	f.feature_id,
 	f.feature_class_id,
 	f.feature_geom,
-	c.class_name
+	c.class_name,
+	c.class_draw_order,
+	c.class_subsurface,
+	c.class_surface,
+	c.class_overhead
 FROM
 	feature_linear f
 LEFT JOIN

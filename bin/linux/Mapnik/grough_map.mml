@@ -10,7 +10,8 @@
 		"grough_map_elevation.mss",
 		"grough_map_grid.mss",
 		"grough_map_linear_labels.mss",
-		"grough_map_place.mss"
+		"grough_map_place.mss",
+		"grough_map_feature.mss"
 	],
 	"Layer": [
 	
@@ -32,6 +33,24 @@
 	{
 		"id": "elevation", "name": "elevation", "class": "contour",
 		"Datasource": { "table": "\"map_render_elevation\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	
+	{
+		"id": "feature_line_subsurface", "name": "feature_line_subsurface", "class": "feature-line",
+		"Datasource": { "table": "\"map_render_feature_line_subsurface\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	{
+		"id": "feature_point_surface", "name": "feature_point_surface", "class": "feature-point",
+		"Datasource": { "table": "\"map_render_feature_point_subsurface\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	
+	{
+		"id": "feature_line_surface", "name": "feature_line_surface", "class": "feature-line",
+		"Datasource": { "table": "\"map_render_feature_line_surface\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	{
+		"id": "feature_point_surface", "name": "feature_point_surface", "class": "feature-point",
+		"Datasource": { "table": "\"map_render_feature_point_surface\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},
 	
 	{
@@ -136,6 +155,15 @@
 	},{
 		"id": "edge_inner_4", "name": "edge_inner_4", "class": "edge-inner",
 		"Datasource": { "table": "\"map_render_edge_l4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	
+	{
+		"id": "feature_line_overhead", "name": "feature_line_overhead", "class": "feature-line",
+		"Datasource": { "table": "\"map_render_feature_line_overhead\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	{
+		"id": "feature_point_overhead", "name": "feature_point_overhead", "class": "feature-point",
+		"Datasource": { "table": "\"map_render_feature_point_overhead\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},
 	
 	{

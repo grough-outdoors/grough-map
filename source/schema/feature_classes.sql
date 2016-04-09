@@ -68,6 +68,7 @@ COPY feature_classes (class_id, class_name, class_draw_order) FROM stdin;
 5	Gate	\N
 6	Stile	\N
 7	Cattle grid	\N
+8	Earthworks	\N
 \.
 
 
@@ -75,7 +76,7 @@ COPY feature_classes (class_id, class_name, class_draw_order) FROM stdin;
 -- Name: feature_classes_class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('feature_classes_class_id_seq', 7, true);
+SELECT pg_catalog.setval('feature_classes_class_id_seq', 8, true);
 
 
 --
