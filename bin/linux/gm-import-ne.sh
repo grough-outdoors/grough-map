@@ -3,72 +3,70 @@
 echo "Preparing to import Natural England products..."
 
 fileBaseDir=/vagrant/source/natural-england/
-binDir=../../bin/linux
-
-for s in $binDir/gm-import-ne-*
-do
-	dos2unix $s
-done
-
-if [ -z $1 ]
-then
-	searchTerm="*/"
-else
-	searchTerm=$1
-fi
+binDir=/vagrant/bin/linux/
+tablePrefix=_src_ne
 
 echo "-----------------------------------"
 echo "--> Extracting archives..."
 echo "-----------------------------------"
 cd $fileBaseDir
-for d in $searchTerm
+
+echo " --> Proceeding to extract archives..."
+for z in *.zip
 do
-	productName=${d%/}
-	echo "Found product $productName..."
-	if [ -e $binDir/gm-import-ne-$productName.sh ]
-	then
-		echo " --> Found an import script"
-		cd "$fileBaseDir/$d"
-		echo " --> Proceeding to extract archives..."
-		for z in *.zip
-		do
-			echo "     --> Extracting $z..."
-			unzip -o "$z"
-		done
-		
-		echo " --> Running product import script..."
-		$fileBaseDir/$binDir/gm-import-ne-$productName.sh $productName
-		echo " --> Cleaning extracted files..."
-		
-		for e in */
-		do
-			echo "     --> Deleting directory $e..."
-			rm -rf "$e"
-		done
-		for f in `ls -I*.zip -I*.sql`
-		do
-			echo "     --> Deleting file $f..."
-			rm -rf "$f"
-		done
-		
-		echo " --> Importing to SQL server..."
-		for f in *.sql
-		do
-			echo "     --> Importing SQL file $f..."
-			psql -Ugrough-map grough-map -h 127.0.0.1 -f $f > /dev/null 
-		done
-		
-		echo " --> Removing SQL files..."
-		for f in *.sql
-		do
-			echo "     --> Deleting SQL file $f..."
-			rm -rf "$f"
-		done
-		
-		cd $fileBaseDir
-	else
-		echo " --> Skipping as no import script exists"
+	echo "     --> Extracting $z..."
+	unzip -o "$z"
+	if [[ $z = 'CROW_Access_Layer.zip' ]]; then
+		echo "        --> Dissolving boundaries in dataset..."
+		ogr2ogr CROW_Dissolved.shp CROW_Access_Layer.shp -dialect sqlite -sql "SELECT ST_Union(geometry) FROM 'CROW_Access_Layer' GROUP BY ''"
 	fi
 done
+
+echo " --> Generating SQL files..."
+echo "     --> Finding shapefiles..."
+IFS=$'\n'; for f in $(find ./ -name '*.shp')
+do 
+	echo "         --> Found $f..." 
+	baseName=`basename $f`
+	reformedName=`echo $baseName | sed -e 's/\..*$//g' -e 's/[A-Z][A-Z]_//g' -e 's/[A-Z]/_\l&/g' -e 's/[^a-z0-9_]//g' -e 's/\(_\+\)/_/g'`
+		
+	tableName=$tablePrefix$reformedName
+	echo "         --> Committing to table $tableName..." 
+	if [ ! -e $tableName.sql ]
+	then
+		echo "DROP TABLE IF EXISTS $tableName;" > $tableName.sql
+		shp2pgsql -s 27700 -p -W LATIN1 -N skip $f $tableName >> $tableName.sql
+	fi
+	shp2pgsql -s 27700 -a -W LATIN1 -N skip $f $tableName >> $tableName.sql
+done
+
+echo " --> Cleaning extracted files..."
+
+for e in */
+do
+	echo "     --> Deleting directory $e..."
+	rm -rf "$e"
+done
+for f in `ls -I*.zip -I*.sql`
+do
+	echo "     --> Deleting file $f..."
+	rm -rf "$f"
+done
+
+echo " --> Importing to SQL server..."
+for f in *.sql
+do
+	echo "     --> Importing SQL file $f..."
+	psql -Ugrough-map grough-map -h 127.0.0.1 -f $f > /dev/null 
+done
+
+echo " --> Removing SQL files..."
+for f in *.sql
+do
+	echo "     --> Deleting SQL file $f..."
+	rm -rf "$f"
+done
+
+cd $fileBaseDir
 
 echo "--> Import complete."
