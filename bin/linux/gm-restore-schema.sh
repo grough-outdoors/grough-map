@@ -3,18 +3,93 @@
 echo "Preparing to restore main schema..."
 
 fileBaseDir=/vagrant/source/schema/
-binDir=../../bin/linux
 
 echo "-----------------------------------"
 echo "--> Restoring..."
 echo "-----------------------------------"
-cd $fileBaseDir
-for d in *.sql
-do
-	echo " Found item '"$d"'"
-	echo " --> Importing..."
-	
-	psql -Ugrough-map grough-map -h 127.0.0.1 -f $d > /dev/null 
-done
+
+echo "--> Restoring edge classes..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_classes.sql" > /dev/null 
+
+echo "--> Restoring edge access types..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_access.sql" > /dev/null 
+
+echo "--> Restoring edge schema..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge.sql" > /dev/null 
+
+echo "--> Restoring edge import highways..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_import_highways.sql" > /dev/null 
+
+echo "--> Restoring edge import railways..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_import_railways.sql" > /dev/null 
+
+echo "--> Restoring surface classes..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}surface_classes.sql" > /dev/null 
+
+echo "--> Restoring surface schema..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}surface.sql" > /dev/null 
+
+echo "--> Restoring elevation schema..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}elevation.sql" > /dev/null 
+
+echo "--> Restoring watercourse schema..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}watercourse.sql" > /dev/null 
+
+echo "--> Restoring watercourse classes..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}watercourse_classes.sql" > /dev/null 
+
+echo "--> Restoring place schema..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}place.sql" > /dev/null 
+
+echo "--> Restoring place classes..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}place_classes.sql" > /dev/null 
+
+echo "--> Restoring point feature schema..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_point.sql" > /dev/null 
+
+echo "--> Restoring linear feature schema..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_linear.sql" > /dev/null 
+
+echo "--> Restoring feature classes..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_classes.sql" > /dev/null 
+
+echo "--> Restoring zone schema..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}zone.sql" > /dev/null 
+
+echo "--> Restoring zone classes..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}zone_classes.sql" > /dev/null 
+
+echo "--> Restoring feature import classes..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_import.sql" > /dev/null 
+
+echo "--> Restoring view for edge extended..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_extended.sql" > /dev/null 
+
+echo "--> Restoring view for edge labels..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_label.sql" > /dev/null 
+
+echo "--> Restoring view for feature linear extended..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_linear_extended.sql" > /dev/null 
+
+echo "--> Restoring view for feature point extended..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_point_extended.sql" > /dev/null
+
+echo "--> Restoring view for place extended..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}place_extended.sql" > /dev/null 
+
+echo "--> Restoring view for surface extended..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}surface_extended.sql" > /dev/null 
+
+echo "--> Restoring view for watercourse extended..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}watercourse_extended.sql" > /dev/null 
+
+echo "--> Restoring view for zone extended..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}zone_extended.sql" > /dev/null 
+
+echo "--> Restoring view for watercourse labels..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}watercourse_label.sql" > /dev/null 
+
+echo "--> Restoring view for edge statistics..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_statistics.sql" > /dev/null 
 
 echo "--> Restore complete."
