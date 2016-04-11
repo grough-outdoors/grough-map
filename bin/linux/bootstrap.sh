@@ -59,6 +59,14 @@ function createDatabaseServer {
 
 echo "Beginning to provision the map environment box..."
 
+if [[ ! -e /vagrant/source/env.sh ]]; then
+	echo "-----------------------------------"
+	echo "--> Generating random password..."
+	echo "-----------------------------------"
+	NewPassword=`date | sha256sum | base64 | head -c 32`
+	sed 's/--PASSWORD--/'${NewPassword}'/g' /vagrant/source/env.sh.default > /vagrant/source/env.sh
+fi
+
 echo "-----------------------------------"
 echo "--> Converting line endings..."
 echo "-----------------------------------"

@@ -1,9 +1,9 @@
 @zone_crow_line_pattern:			url("/vagrant/source/cartography/crow-line.png");
-@zone_crow_line_blend:				plus;
+@zone_crow_line_blend:				multiply;
 
-@zone_crow_fill_color:				#8B1A1A;
-@zone_crow_fill_blend:				multiply;
-@zone_crow_fill_opacity:			0.05;
+@zone_crow_fill_color:				#fff000;
+@zone_crow_fill_blend:				darken;
+@zone_crow_fill_opacity:			0.10;
 
 .zone {
 	[class_name='Countryside and Rights of Way Access Land'] {
