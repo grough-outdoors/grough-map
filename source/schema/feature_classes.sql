@@ -22,7 +22,10 @@ SET default_with_oids = false;
 CREATE TABLE feature_classes (
     class_id integer NOT NULL,
     class_name character varying(100),
-    class_draw_order smallint
+    class_draw_order smallint,
+    class_subsurface boolean DEFAULT false NOT NULL,
+    class_surface boolean DEFAULT true NOT NULL,
+    class_overhead boolean DEFAULT false NOT NULL
 );
 
 
@@ -60,15 +63,19 @@ ALTER TABLE ONLY feature_classes ALTER COLUMN class_id SET DEFAULT nextval('feat
 -- Data for Name: feature_classes; Type: TABLE DATA; Schema: public; Owner: grough-map
 --
 
-COPY feature_classes (class_id, class_name, class_draw_order) FROM stdin;
-1	Fence	\N
-2	Wall	\N
-3	Hedge	\N
-4	Overhead cables	\N
-5	Gate	\N
-6	Stile	\N
-7	Cattle grid	\N
-8	Earthworks	\N
+COPY feature_classes (class_id, class_name, class_draw_order, class_subsurface, class_surface, class_overhead) FROM stdin;
+1	Fence	\N	f	t	f
+3	Hedge	\N	f	t	f
+2	Wall	\N	f	t	f
+5	Gate	\N	f	t	f
+6	Stile	\N	f	t	f
+7	Cattle grid	\N	f	t	f
+8	Earthworks	\N	f	t	f
+12	Pylon	\N	f	t	f
+4	Overhead cables	\N	f	f	t
+9	Cablecar or gondola	\N	f	f	t
+10	Ski lift	\N	f	f	t
+11	Zip line	\N	f	f	t
 \.
 
 
@@ -76,7 +83,7 @@ COPY feature_classes (class_id, class_name, class_draw_order) FROM stdin;
 -- Name: feature_classes_class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('feature_classes_class_id_seq', 8, true);
+SELECT pg_catalog.setval('feature_classes_class_id_seq', 12, true);
 
 
 --

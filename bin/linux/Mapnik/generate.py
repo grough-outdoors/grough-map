@@ -150,12 +150,32 @@ pg_cursor.execute("""\
 )
 pg_conn.commit()
 
-print('Creating SQL view for surface features')
+print('Creating SQL view for zones')
 pg_cursor.execute("""\
-	CREATE OR REPLACE VIEW "map_render_surface\" AS 
+	CREATE OR REPLACE VIEW "map_render_zone\" AS 
+	SELECT * 
+	FROM zone_extended
+	WHERE zone_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
+	"""
+)
+pg_conn.commit()
+
+print('Creating SQL view for surface features below zones')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_surface_below_zones\" AS 
 	SELECT * 
 	FROM surface_extended
-	WHERE surface_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
+	WHERE class_below_zones = true AND surface_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
+	"""
+)
+pg_conn.commit()
+
+print('Creating SQL view for surface features above zones')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_surface_above_zones\" AS 
+	SELECT * 
+	FROM surface_extended
+	WHERE class_below_zones = false AND surface_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
 	"""
 )
 pg_conn.commit()

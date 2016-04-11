@@ -93,6 +93,11 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	DELETE FROM "zone" WHERE ST_Area("zone_geom") < 1.0;
 EoSQL
 
+echo "--> Removing small holes..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	UPDATE "zone" SET "zone_geom" = ST_Multi(filter_rings("zone_geom", 250));
+EoSQL
+
 echo "--> Indexing and clustering..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	CREATE INDEX "Idx: zone::zone_geom"

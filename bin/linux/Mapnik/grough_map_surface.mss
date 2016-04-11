@@ -1,5 +1,5 @@
 @woodland_default_border_thickness:		0.0;
-@woodland_default_fill_colour:			'#AEE8BE';
+@woodland_default_fill_colour:			'#CCFBD2';
 @woodland_default_casing_colour:		'black';
 
 @foreshore_default_border_thickness:	2.0;

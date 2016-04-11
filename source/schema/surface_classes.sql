@@ -22,7 +22,8 @@ SET default_with_oids = false;
 CREATE TABLE surface_classes (
     class_id integer NOT NULL,
     class_name character varying(100),
-    class_draw_order smallint
+    class_draw_order smallint,
+    class_below_zones boolean DEFAULT false NOT NULL
 );
 
 
@@ -67,24 +68,24 @@ SELECT pg_catalog.setval('surface_class_class_id_seq', 17, true);
 -- Data for Name: surface_classes; Type: TABLE DATA; Schema: public; Owner: grough-map
 --
 
-COPY surface_classes (class_id, class_name, class_draw_order) FROM stdin;
-4	Moorland	1
-2	Woodland	2
-5	Tidal water	3
-6	River	4
-1	Foreshore	5
-7	Beach	6
-8	Quarry	7
-11	Heath	8
-3	Landform	9
-9	Pier	10
-13	Golf course	11
-12	Sports ground	12
-14	Taxiway	13
-15	Runway	14
-17	Toll plaza	15
-10	Dam	17
-16	Cemetery	16
+COPY surface_classes (class_id, class_name, class_draw_order, class_below_zones) FROM stdin;
+5	Tidal water	3	f
+6	River	4	f
+8	Quarry	7	f
+3	Landform	9	f
+9	Pier	10	f
+13	Golf course	11	f
+12	Sports ground	12	f
+14	Taxiway	13	f
+15	Runway	14	f
+17	Toll plaza	15	f
+10	Dam	17	f
+16	Cemetery	16	f
+1	Foreshore	5	t
+2	Woodland	2	t
+4	Moorland	1	t
+7	Beach	6	t
+11	Heath	8	t
 \.
 
 

@@ -94,6 +94,20 @@ COPY feature_import (import_id, import_field, import_value, import_class_id, imp
 24	barrier	moat	8	f	t	t
 29	barrier	wire	1	f	t	t
 30	barrier	wire_fence	1	f	t	t
+31	aerialway	cable_car	9	f	t	f
+32	aerialway	gondola	9	f	t	f
+33	aerialway	chair_lift	10	f	t	f
+34	aerialway	mixed_lift	10	f	t	f
+35	aerialway	drag_lift	10	f	t	f
+36	aerialway	t-bar	10	f	t	f
+37	aerialway	j-bar	10	f	t	f
+38	aerialway	platter	10	f	t	f
+39	aerialway	zip_line	11	f	t	f
+40	aerialway	pylon	12	t	f	f
+41	aerialway	canopy	11	f	t	f
+42	power	line	4	f	t	f
+43	power	minor_line	4	f	t	f
+44	power	tower	12	t	f	f
 \.
 
 
@@ -101,7 +115,7 @@ COPY feature_import (import_id, import_field, import_value, import_class_id, imp
 -- Name: feature_import_import_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('feature_import_import_id_seq', 30, true);
+SELECT pg_catalog.setval('feature_import_import_id_seq', 44, true);
 
 
 --

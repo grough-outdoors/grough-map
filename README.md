@@ -24,13 +24,13 @@ Fetch the required data from the web...
 - gm-download-ne
 - gm-download-os (Requires source_email.txt)
 - gm-download-osm
-- gm-download-ea <tile>
-- gm-download-nrw <tile>
+- gm-download-ea \<tile\>
+- gm-download-nrw \<tile\>
 - gm-download-prow	(TODO: Only covers updates from GeoServer)
  
 Import source data to the database...
 - gm-import-grid
-- gm-import-ne (TODO)
+- gm-import-ne
 - gm-import-os
 - gm-import-prow
   
@@ -40,10 +40,12 @@ Build each composite map layer...
 - gm-build-surface
 - gm-build-watercourses
 - gm-build-features
+- gm-build-places
 - gm-build-terrain (for each tile, or automatic during gm-tile)
+- gm-build-cartography
 
 For each tile to be generated...  
-- gm-tile <tile>
+- gm-tile \<tile\>
 
 ## Licence
 
