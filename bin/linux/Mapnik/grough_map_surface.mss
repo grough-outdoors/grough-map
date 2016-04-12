@@ -1,27 +1,27 @@
 @woodland_default_border_thickness:		0.0;
-@woodland_default_fill_colour:			'#CCFBD2';
-@woodland_default_casing_colour:		'black';
+@woodland_default_fill_colour:			#CCFBD2;
+@woodland_default_casing_colour:		black;
 
 @foreshore_default_border_thickness:	2.0;
-@foreshore_default_fill_colour:			'#F1F3F4';
-@foreshore_default_casing_colour:		'#C8CFD6';
+@foreshore_default_fill_colour:			#F1F3F4;
+@foreshore_default_casing_colour:		#C8CFD6;
 
 @beach_default_border_thickness:		2.0;
-@beach_default_fill_colour:				'#FFFCD7';
-@beach_default_casing_colour:			'#116899';
+@beach_default_fill_colour:				#FFFCD7;
+@beach_default_casing_colour:			#116899;
 
 @river_default_border_thickness:		2.0;
-@river_default_fill_colour:				'#c0e0ef';
-@river_default_casing_colour:			'#116899';
+@river_default_fill_colour:				#c0e0ef;
+@river_default_casing_colour:			#116899;
 
 @tidal_default_border_thickness:		2.0;
 @tidal_default_fill_colour:				@river_default_fill_colour;
 @tidal_default_casing_colour:			@river_default_casing_colour;
 
 @landform_default_border_thickness:		0.0;
-@landform_default_fill_colour:			'#707070';
+@landform_default_fill_colour:			#707070;
 @landform_default_fill_opacity:			0.5;
-@landform_default_casing_colour:		'black';
+@landform_default_casing_colour:		black;
 
 @stream_default_thickness:				1.5;
 @stream_default_colour:					@river_default_casing_colour;

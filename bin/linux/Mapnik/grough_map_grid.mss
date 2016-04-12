@@ -1,6 +1,6 @@
 @grid_line_thickness:				2.5;
-@grid_line_colour:					'#00CCFF';
-@grid_line_blend:					'multiply';
+@grid_line_colour:					#00CCFF;
+@grid_line_blend:					multiply;
 @grid_line_opacity:					0.35;
 
 @grid_label_source:					[grid_id_text];

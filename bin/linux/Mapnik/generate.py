@@ -405,6 +405,48 @@ pg_cursor.execute("""\
 )
 pg_conn.commit()
 
+print('Creating SQL view for feature labels')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_feature_labels\" AS 
+	SELECT
+		CASE WHEN ST_Area(feature_geom) > class_radius * class_radius * 4
+			 THEN class_plural_name
+			 ELSE class_name
+		END AS feature_name,
+		ST_Multi(ST_Difference(feature_geom, ST_Buffer(feature_avoid, 40.0)))::geometry(MultiPolygon, 27700) AS feature_geom
+	FROM
+	(
+		SELECT
+			class_name,
+			class_plural_name,
+			class_radius,
+			class_label_rank,
+			ST_Collect(edge_geom) AS feature_avoid,
+			(ST_Dump(ST_Union(ST_Buffer(feature_geom, class_radius)))).geom::geometry(Polygon, 27700) AS feature_geom
+		FROM
+		(
+			SELECT 
+				*
+			FROM 
+				feature_label
+			LEFT JOIN
+				edge e
+			ON
+				e.edge_geom && feature_geom
+			AND
+				ST_DWithin(feature_geom, e.edge_geom, class_radius)
+			WHERE
+				feature_geom && ST_MakeBox2D(ST_Point(""" + str(map_ll_x) + """, """ + str(map_ll_y) + """), ST_Point(""" + str(map_ur_x) + """, """ + str(map_ur_y) + """))
+		) f
+		GROUP BY
+			class_name, class_plural_name, class_radius, class_label_rank
+	) SB
+	ORDER BY
+		class_label_rank DESC;
+	"""
+)
+pg_conn.commit()
+
 print('Creating SQL view for edge labels')
 pg_cursor.execute("""\
 	CREATE OR REPLACE VIEW "map_render_edge_labels\" AS 

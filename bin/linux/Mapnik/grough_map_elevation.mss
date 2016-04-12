@@ -1,7 +1,7 @@
 @contour_line_thickness_major:	2.5;
 @contour_line_thickness_minor:	1.5;
-@contour_line_colour:			'#FF9900';
-@contour_line_blend:			'multiply';
+@contour_line_colour:			#FF9900;
+@contour_line_blend:			multiply;
 @contour_line_opacity:			0.5;
 
 .contour {

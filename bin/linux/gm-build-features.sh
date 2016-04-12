@@ -66,7 +66,7 @@ EoSQL
 		AND
 			i.import_point = true;
 EoSQL
-echo "       --> Importing lines as points..."
+echo "       --> Importing line middle points..."
 	psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		INSERT INTO feature_point (feature_class_id, feature_geom)
 		SELECT
@@ -79,7 +79,22 @@ echo "       --> Importing lines as points..."
 		ON
 			o.${columnName} = i.import_value
 		AND
-			i.import_point = true
+			i.import_line_middle = true
+EoSQL
+echo "       --> Importing polygon centroid points..."
+	psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+		INSERT INTO feature_point (feature_class_id, feature_geom)
+		SELECT
+			i.import_class_id AS feature_class_id,
+			ST_Centroid(way) AS feature_geom
+		FROM
+			_src_osm_line o
+		INNER JOIN
+			feature_import i
+		ON
+			o.${columnName} = i.import_value
+		AND
+			i.import_polygon_centroid = true
 EoSQL
 	# TODO: Snap to edges for some points (e.g. gates)
 done

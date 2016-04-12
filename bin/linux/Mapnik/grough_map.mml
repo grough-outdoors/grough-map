@@ -191,6 +191,10 @@
 		"Datasource": { "table": "\"map_render_watercourse_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},
 	{
+		"id": "feature_labels", "name": "feature_labels", "class": "feature-label",
+		"Datasource": { "table": "\"map_render_feature_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+	},
+	{
 		"id": "edge_labels", "name": "edge_labels", "class": "edge-label",
 		"Datasource": { "table": "\"map_render_edge_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
 	},

@@ -92,4 +92,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}watercourse_label.sq
 echo "--> Restoring view for edge statistics..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_statistics.sql" > /dev/null 
 
+echo "--> Restoring view for feature labels..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_label.sql" > /dev/null 
+
 echo "--> Restore complete."

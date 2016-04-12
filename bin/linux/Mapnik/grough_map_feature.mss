@@ -26,6 +26,38 @@
 @feature_pylon_blend:				src-over;
 @feature_pylon_opacity:				1.0;
 
+@feature_label_default_size:		30;
+@feature_label_default_wrap_width:	1;
+@feature_label_source:				[feature_name];
+@feature_label_colour:				black;
+@feature_label_opacity:				1.0;
+@feature_label_placement_type:		simple;
+@feature_label_placement:			interior;
+@feature_label_typeface:			'Open Sans Regular';
+@feature_label_avoid_edges:			false;
+@feature_label_character_spacing:	2;
+@feature_label_minimum_padding:		75;
+@feature_label_displacement:		50;
+@feature_label_halo_radius:			2;
+@feature_label_halo_colour:			white;
+
+.feature-label {
+	text-name: @feature_label_source;
+	text-face-name: @feature_label_typeface;
+	text-fill: @feature_label_colour;
+	text-opacity: @feature_label_opacity;
+	text-size: @feature_label_default_size;
+	text-placement-type: @feature_label_placement_type;
+	text-placement: @feature_label_placement;
+	text-wrap-width: @feature_label_default_wrap_width;
+	text-avoid-edges: @feature_label_avoid_edges;
+	text-character-spacing: @feature_label_character_spacing;
+	text-min-padding: @feature_label_minimum_padding;
+	text-label-position-tolerance: @feature_label_displacement;
+	text-halo-radius: @feature_label_halo_radius;
+	text-halo-fill: @feature_label_halo_colour;
+}
+
 .feature-line {
 	[class_name='Wall'] {
 		line-width: @feature_wall_thickness;

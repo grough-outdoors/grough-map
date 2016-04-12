@@ -45,6 +45,7 @@ else
 		convert "$mapnikOutputDir/$tileName.png" -compress LZW "$outputDir/$tileName.tiff"
 		echo "Assigning georeference..."
 		gdal_edit.py -a_srs EPSG:27700 -a_ullr `gdalinfo ${terrainDir}/${tileName}.img | awk '/(Upper Left)|(Lower Right)/' | awk '{gsub(/,|\)|\(/," ");print $3 " " $4}' | sed ':a;N;$!ba;s/\\n/ /g'` "$outputDir/$tileName.tiff"
+		rm -f "$mapnikOutputDir/$tileName.png"
 	fi
 fi
 

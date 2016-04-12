@@ -7,7 +7,7 @@
 
 @edge_lanes_line_width:								1.0;
 @edge_lanes_line_colour:							@edge_default_casing_colour;
-@edge_lanes_line_blend:								'src-over';
+@edge_lanes_line_blend:								src-over;
 @edge_lanes_line_dash_line:							5;
 @edge_lanes_line_dash_space:						15;
 
