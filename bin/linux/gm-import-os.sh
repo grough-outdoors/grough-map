@@ -5,6 +5,8 @@ echo "Preparing to import OS OpenData products..."
 fileBaseDir=/vagrant/source/os/
 binDir=../../bin/linux
 
+cd $fileBaseDir
+
 for s in $binDir/gm-import-os*
 do
 	dos2unix $s
@@ -20,7 +22,6 @@ fi
 echo "-----------------------------------"
 echo "--> Extracting archives..."
 echo "-----------------------------------"
-cd $fileBaseDir
 for d in $searchTerm
 do
 	productName=${d%/}

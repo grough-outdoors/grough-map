@@ -3,7 +3,7 @@
 tablePrefix=_src_os_$1
 filterTerm='*.shp'
 
-if [ -n $3 ]
+if [ -n "$3" ]
 then
 	filterTerm=$3
 fi
