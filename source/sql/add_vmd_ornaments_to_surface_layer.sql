@@ -39,6 +39,8 @@ LEFT JOIN
 	_src_os_vmdvec_ornament o
 ON
 	g.tile_geom && o.geom
+AND
+	( ST_Within(o.geom, g.tile_geom) OR ST_Centroid(o.geom) && g.tile_geom )
 GROUP BY
 	g.tile_geom;
 
