@@ -67,15 +67,6 @@ ALTER TABLE ONLY watercourse
 
 
 --
--- Name: Idx: watercourse::watercourse_geom; Type: INDEX; Schema: public; Owner: grough-map; Tablespace: 
---
-
-CREATE INDEX "Idx: watercourse::watercourse_geom" ON watercourse USING gist (watercourse_geom);
-
-ALTER TABLE watercourse CLUSTER ON "Idx: watercourse::watercourse_geom";
-
-
---
 -- PostgreSQL database dump complete
 --
 

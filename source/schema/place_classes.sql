@@ -11,6 +11,12 @@ SET client_min_messages = warning;
 
 SET search_path = public, pg_catalog;
 
+ALTER TABLE ONLY public.place_classes DROP CONSTRAINT "PKEY: place_classes::class_id";
+ALTER TABLE public.place_classes ALTER COLUMN class_id DROP DEFAULT;
+DROP SEQUENCE public.place_classes_class_id_seq;
+DROP TABLE public.place_classes;
+SET search_path = public, pg_catalog;
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -23,7 +29,8 @@ CREATE TABLE place_classes (
     class_id integer NOT NULL,
     class_name character varying(100),
     class_draw_order smallint,
-    class_area_multiplier double precision
+    class_text_size double precision,
+    class_wrap_width smallint
 );
 
 
@@ -61,18 +68,18 @@ ALTER TABLE ONLY place_classes ALTER COLUMN class_id SET DEFAULT nextval('place_
 -- Data for Name: place_classes; Type: TABLE DATA; Schema: public; Owner: grough-map
 --
 
-COPY place_classes (class_id, class_name, class_draw_order, class_area_multiplier) FROM stdin;
-3	City	1	0.0299999999999999989
-5	Suburb	4	0.0100000000000000002
-8	Forest	7	0.0100000000000000002
-9	Hill	8	0.0100000000000000002
-10	Mountain	6	0.0200000000000000004
-11	Moor	9	0.0100000000000000002
-2	Village	3	0.0749999999999999972
-1	Farm	11	0.0050000000000000001
-4	Hamlet	5	0.0100000000000000002
-6	Town	2	0.0149999999999999994
-7	Settlement	10	0.0050000000000000001
+COPY place_classes (class_id, class_name, class_draw_order, class_text_size, class_wrap_width) FROM stdin;
+3	City	1	70	400
+6	Town	2	55	100
+7	Settlement	10	28	1
+8	Forest	7	0	1
+11	Moor	9	0	1
+5	Suburb	4	40	50
+4	Hamlet	5	32	1
+2	Village	3	43	50
+1	Farm	11	0	1
+9	Hill	8	32	100
+10	Mountain	6	55	100
 \.
 
 

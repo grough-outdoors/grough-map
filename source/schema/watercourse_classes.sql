@@ -11,6 +11,12 @@ SET client_min_messages = warning;
 
 SET search_path = public, pg_catalog;
 
+ALTER TABLE ONLY public.watercourse_classes DROP CONSTRAINT "PKEY: watercourse_classes::class_id";
+ALTER TABLE public.watercourse_classes ALTER COLUMN class_id DROP DEFAULT;
+DROP SEQUENCE public.watercourse_classes_class_id_seq;
+DROP TABLE public.watercourse_classes;
+SET search_path = public, pg_catalog;
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;

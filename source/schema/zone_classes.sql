@@ -11,6 +11,12 @@ SET client_min_messages = warning;
 
 SET search_path = public, pg_catalog;
 
+ALTER TABLE ONLY public.zone_classes DROP CONSTRAINT "PKEY: zone_classes::class_id";
+ALTER TABLE public.zone_classes ALTER COLUMN class_id DROP DEFAULT;
+DROP SEQUENCE public.zone_classes_class_id_seq;
+DROP TABLE public.zone_classes;
+SET search_path = public, pg_catalog;
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;

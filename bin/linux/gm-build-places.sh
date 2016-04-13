@@ -20,6 +20,24 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	TRUNCATE place;
 EoSQL
 
+echo "--> Extracting places from OSM data..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	DROP TABLE IF EXISTS _src_osm_polygon_place;
+	CREATE TABLE
+		_src_osm_polygon_place
+	AS SELECT
+		"name",
+		ST_Multi(ST_MakeValid("way")) AS "way"
+	FROM
+		_src_osm_polygon
+	WHERE
+		( "place" IS NOT NULL OR "boundary" IS NOT NULL )
+	AND
+		ST_GeometryType("way") LIKE '%Polygon';
+
+	SELECT populate_geometry_columns('_src_osm_polygon_place'::regclass); 
+EoSQL
+
 echo "--> Importing OS OpenNames..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	INSERT INTO
@@ -65,7 +83,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	FROM
 		"_src_osm_point"
 	WHERE
-		"natural" = 'peak';
+		"natural" = 'peak' OR "natural" = 'fell';
 EoSQL
 
 echo "--> Indexing and clustering..."
@@ -79,6 +97,14 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	  USING gist
 	  (place_geom);
 	ALTER TABLE public.place CLUSTER ON "Idx: place::place_geom";
+EoSQL
+
+echo "--> Clipping using watercourses..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/clip_places_using_watercourses.sql" > /dev/null
+
+echo "--> Removing temporary tables..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	DROP TABLE IF EXISTS _src_osm_polygon_place;
 EoSQL
 
 echo "--> Cleaning up..."

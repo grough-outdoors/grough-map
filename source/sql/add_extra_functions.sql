@@ -46,3 +46,10 @@ $$ SELECT ST_BuildArea(ST_Collect(d.built_geom)) AS filtered_geom
            ) d
 $$
 LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION longest_word(character varying) RETURNS integer
+    AS 'SELECT max(word) FROM (SELECT char_length(regexp_split_to_table($1, '' '')) AS word) A;'
+    LANGUAGE SQL
+    IMMUTABLE
+    RETURNS NULL ON NULL INPUT;
+   
