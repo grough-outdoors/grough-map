@@ -11,7 +11,10 @@ SELECT
 		ELSE e.edge_name
 	END AS edge_name,
 	CASE WHEN c.class_name IN ('Motorway', 'A road', 'B road', 'Trunk road')
-		THEN regexp_replace(e.edge_name, '(^[^\(]+\(|\)$)', '', 'g')::character varying
+		THEN CASE WHEN trim(e.edge_name) SIMILAR TO '[AB]([0-9]+)\(M\)' THEN e.edge_name
+		          WHEN regexp_replace(e.edge_name, '(^[^\(]+\(|\)$)', '', 'g')::character varying = 'M' THEN null
+		          ELSE regexp_replace(e.edge_name, '(^[^\(]+\(|\)$)', '', 'g')::character varying
+		     END
 		ELSE 
 			CASE WHEN trim(e.edge_name) SIMILAR TO '([A-Z0-9]+[0-9]+|[0-9]+)' THEN null
 			     ELSE regexp_replace(e.edge_name, '\([^\(]+\)$', '', 'g')::character varying

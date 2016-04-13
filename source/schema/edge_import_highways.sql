@@ -11,6 +11,12 @@ SET client_min_messages = warning;
 
 SET search_path = public, pg_catalog;
 
+ALTER TABLE ONLY public.edge_import_highways DROP CONSTRAINT "PKEY: edge_import_osm_highways::import_id";
+ALTER TABLE public.edge_import_highways ALTER COLUMN import_id DROP DEFAULT;
+DROP SEQUENCE public.edge_import_highways_import_id_seq;
+DROP TABLE public.edge_import_highways;
+SET search_path = public, pg_catalog;
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;

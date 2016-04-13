@@ -129,7 +129,10 @@ COPY feature_import (import_id, import_field, import_value, import_class_id, imp
 77	amenity	shelter	35	t	t	f	t	f
 78	historic	memorial	36	t	f	f	t	f
 96	man_made	viaduct	47	f	t	f	t	f
+98	highway	stile	6	t	f	f	f	t
 58	waterway	jetty	23	t	f	t	t	t
+99	barrier	kissing_gate	5	t	f	f	f	t
+100	barrier	swing_gate	5	t	f	f	f	t
 79	man_made	survey_point	37	t	f	f	f	f
 80	man_made	flagpole	38	t	f	f	f	f
 81	man_made	telephone_box	39	t	f	f	t	f
@@ -159,7 +162,7 @@ COPY feature_import (import_id, import_field, import_value, import_class_id, imp
 -- Name: feature_import_import_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('feature_import_import_id_seq', 97, true);
+SELECT pg_catalog.setval('feature_import_import_id_seq', 100, true);
 
 
 --

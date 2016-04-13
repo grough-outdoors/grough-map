@@ -70,6 +70,9 @@ print( str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map
 print( str(27700), file=open('constants/target_srid.cnf', 'w'), end='' )
 
 print('Creating SQL table for label areas')
+bufferSize = 0
+distanceRoads = 30.0
+distanceWatercourses = 100.0
 pg_cursor.execute("DROP VIEW IF EXISTS map_render_place;")
 pg_cursor.execute("DROP TABLE IF EXISTS _tmp_label_zone;")
 pg_conn.commit()
@@ -80,8 +83,29 @@ pg_cursor.execute("""\
 		SELECT
 			(ST_Dump(ST_Difference(
 				g.tile_geom,
-				( SELECT ST_Union(ST_Buffer(e.edge_geom, 100.0, 'endcap=square join=bevel')) AS edge_zone FROM
-				  edge e WHERE e.edge_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, 27700) )
+				( 
+					SELECT ST_Union(
+						ST_Buffer(
+							buffer_geom, 
+							buffer_distance, 
+							'endcap=square join=bevel'
+						)
+				    ) AS buffer_geom 
+					FROM (
+						SELECT
+							edge_geom AS buffer_geom,
+							""" + str(distanceRoads) + """ AS buffer_distance
+						FROM
+							edge e 
+						WHERE e.edge_geom && ST_SetSRID('BOX(""" + str(map_ll_x - bufferSize) + ' ' + str(map_ll_y - bufferSize) + ',' + str(map_ur_x + bufferSize) + ' ' + str(map_ur_y + bufferSize) + """)'::box2d, 27700) 
+						UNION SELECT
+							watercourse_geom AS buffer_geom,
+							""" + str(distanceWatercourses) + """ AS buffer_distance
+						FROM
+							watercourse w 
+						WHERE w.watercourse_geom && ST_SetSRID('BOX(""" + str(map_ll_x - bufferSize) + ' ' + str(map_ll_y - bufferSize) + ',' + str(map_ur_x + bufferSize) + ' ' + str(map_ur_y + bufferSize) + """)'::box2d, 27700)
+					) SA
+				)
 			))).geom AS label_zone
 		FROM
 			grid g
@@ -89,8 +113,8 @@ pg_cursor.execute("""\
 			g.tile_name = '""" + map_ref_idx + """'
 	) SA
 	WHERE
-		ST_XMax(label_zone) - ST_XMin(label_zone) > 100.0
-	AND ST_YMax(label_zone) - ST_YMin(label_zone) > 100.0;
+		ST_XMax(label_zone) - ST_XMin(label_zone) > 50.0
+	AND ST_YMax(label_zone) - ST_YMin(label_zone) > 50.0;
 	"""
 )
 pg_conn.commit()
@@ -187,10 +211,10 @@ pg_cursor.execute("""\
 		p.place_id,
 		p.place_name,
 		p.place_class_id,
-		CASE WHEN l.place_id IS NULL THEN p.place_centre_geom
-			 ELSE l.place_geom
-		END::geometry(Point, 27700) as place_geom,
-		degrees(ST_Azimuth(l.place_geom, p.place_centre_geom)) AS place_direction,
+		CASE WHEN l.place_id IS NULL THEN ST_Multi(p.place_geom)
+			 ELSE ST_Multi(l.place_geom)
+		END::geometry(MultiPolygon, 27700) as place_geom,
+		degrees(ST_Azimuth(l.place_nearest, p.place_centre_geom)) AS place_direction,
 		p.class_name
 	FROM 
 		place_extended p
@@ -198,28 +222,44 @@ pg_cursor.execute("""\
 	(
 		SELECT
 			first(place_id) AS place_id,
-			first(place_geom) AS place_geom
+			first(place_geom) AS place_geom,
+			first(place_nearest) AS place_nearest
 		FROM
 		(
 			SELECT
 				place_id,
-				place_geom
+				place_geom,
+				place_nearest
 			FROM
 			(
 				SELECT
 					place_id,
 					place_centre_geom,
-					ST_ClosestPoint(ST_Intersection(place_geom, z.label_zone), place_centre_geom) AS place_geom
+					class_text_size,
+					class_wrap_width,
+					place_name,
+					ST_Intersection(ST_Buffer(ST_ClosestPoint(ST_Intersection(place_geom, z.label_zone), place_centre_geom), class_text_size * longest_word(place_name) * 0.80, 'quad_segs=2'), z.label_zone) AS place_geom,
+					ST_ClosestPoint(ST_Intersection(place_geom, z.label_zone), place_centre_geom) AS place_nearest
 				FROM
 					place p
+				LEFT JOIN
+					place_classes c
+				ON
+					c.class_id = p.place_class_id
 				LEFT JOIN
 					_tmp_label_zone z
 				ON
 					z.label_zone && p.place_geom
 				WHERE
-					p.place_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+					p.place_centre_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
 			) SA
+			WHERE
+				ST_XMax(place_geom) - ST_XMin(place_geom) > class_text_size * longest_word(place_name) * 0.8
 			ORDER BY
+				-- Preferred placement? One which has lots of space...
+				CASE WHEN ST_XMax(place_geom) - ST_XMin(place_geom) > class_text_size * longest_word(place_name) * 1.5 THEN true
+				     ELSE false
+				END DESC,
 				ST_Distance(place_geom, place_centre_geom) ASC
 		) SB
 		GROUP BY

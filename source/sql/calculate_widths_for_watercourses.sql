@@ -1,4 +1,5 @@
-﻿DROP TABLE IF EXISTS _tmp_surface_coarse;
+﻿BEGIN;
+DROP TABLE IF EXISTS _tmp_surface_coarse;
 
 -- Create base
 CREATE TABLE
@@ -23,20 +24,26 @@ GROUP BY
 	watercourse_id, watercourse_geom;
 
 SELECT populate_geometry_columns('_tmp_surface_coarse'::regclass); 
+COMMIT;
 
 -- Generalise and clean
+BEGIN;
 UPDATE
 	_tmp_surface_coarse
 SET
 	surface_geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(ST_Simplify(surface_geom, 20.0)), 3));
+COMMIT;
 
 -- Get subsets of lines
+BEGIN;
 UPDATE
 	_tmp_surface_coarse
 SET
 	watercourse_geom = ST_Multi(ST_CollectionExtract(ST_Intersection(surface_geom, watercourse_geom), 2));
+COMMIT;
 	
 -- Update widths
+BEGIN;
 UPDATE
 	watercourse
 SET
@@ -70,5 +77,9 @@ FROM (
 ) SC
 WHERE
 	SC.watercourse_id = watercourse.watercourse_id;
+COMMIT;
 
+BEGIN;
 DROP TABLE _tmp_surface_coarse;
+COMMIT;
+

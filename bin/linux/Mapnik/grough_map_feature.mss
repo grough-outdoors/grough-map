@@ -40,6 +40,7 @@
 @feature_label_displacement:		50;
 @feature_label_halo_radius:			2;
 @feature_label_halo_colour:			white;
+@feature_label_alignment:			left;
 
 .feature-label {
 	text-name: @feature_label_source;
@@ -56,6 +57,7 @@
 	text-label-position-tolerance: @feature_label_displacement;
 	text-halo-radius: @feature_label_halo_radius;
 	text-halo-fill: @feature_label_halo_colour;
+	text-horizontal-alignment: @feature_label_alignment;
 }
 
 .feature-line {

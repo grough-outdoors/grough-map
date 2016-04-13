@@ -11,6 +11,12 @@ SET client_min_messages = warning;
 
 SET search_path = public, pg_catalog;
 
+ALTER TABLE ONLY public.surface_classes DROP CONSTRAINT "PKEY: surface_class::class_id";
+ALTER TABLE public.surface_classes ALTER COLUMN class_id DROP DEFAULT;
+DROP SEQUENCE public.surface_class_class_id_seq;
+DROP TABLE public.surface_classes;
+SET search_path = public, pg_catalog;
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -69,7 +75,6 @@ SELECT pg_catalog.setval('surface_class_class_id_seq', 17, true);
 --
 
 COPY surface_classes (class_id, class_name, class_draw_order, class_below_zones) FROM stdin;
-5	Tidal water	3	f
 6	River	4	f
 8	Quarry	7	f
 3	Landform	9	f
@@ -86,6 +91,7 @@ COPY surface_classes (class_id, class_name, class_draw_order, class_below_zones)
 4	Moorland	1	t
 7	Beach	6	t
 11	Heath	8	t
+5	Tidal water	3	t
 \.
 
 

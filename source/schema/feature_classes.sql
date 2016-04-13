@@ -11,6 +11,12 @@ SET client_min_messages = warning;
 
 SET search_path = public, pg_catalog;
 
+ALTER TABLE ONLY public.feature_classes DROP CONSTRAINT "PKEY: feature_classes::class_id";
+ALTER TABLE public.feature_classes ALTER COLUMN class_id DROP DEFAULT;
+DROP SEQUENCE public.feature_classes_class_id_seq;
+DROP TABLE public.feature_classes;
+SET search_path = public, pg_catalog;
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -68,53 +74,53 @@ ALTER TABLE ONLY feature_classes ALTER COLUMN class_id SET DEFAULT nextval('feat
 --
 
 COPY feature_classes (class_id, class_name, class_draw_order, class_subsurface, class_surface, class_overhead, class_plural_name, class_radius, class_label, class_label_rank) FROM stdin;
-16	Toilet	\N	f	t	f	Toilets	100	t	5
-17	Ford	\N	f	t	f	Fords	100	t	4
-7	Cattle grid	\N	f	t	f	Cattle grids	100	t	1
-18	Stepping stones	\N	f	t	f	Stepping stones	100	t	4
 19	Weir	\N	f	t	f	Weirs	200	t	4
-20	Dam	\N	f	t	f	Dam	100	t	8
-21	Lock	\N	f	t	f	Locks	100	t	5
-22	Slipway	\N	f	t	f	Slipway	100	t	5
-23	Jetty	\N	f	t	f	Jetties	100	t	5
+17	Ford	\N	f	t	f	Fords	125	t	4
 24	Dock	\N	f	t	f	Docks	200	t	5
-25	Sluice gate	\N	f	t	f	Sluice gates	100	t	2
-28	Pond	\N	f	t	f	Ponds	100	t	3
-29	Spring	\N	f	t	f	Springs	100	t	2
-30	Cave	\N	f	t	f	Caves	100	t	4
 33	Shaft	\N	f	t	f	Shafts	250	t	3
 34	Shake hole	\N	f	t	f	Shake holes	250	t	2
-44	Chimney	\N	f	t	f	Chimneys	100	t	4
-5	Gate	\N	f	t	f	Gates	100	f	1
-6	Stile	\N	f	t	f	Stiles	100	f	1
-3	Hedge	\N	f	t	f	\N	75	f	\N
-4	Overhead cables	\N	f	f	t	\N	75	f	\N
-12	Pylon	\N	f	t	f	Pylons	75	f	\N
-8	Earthworks	\N	f	t	f	\N	75	f	1
-9	Cablecar or gondola	\N	f	f	t	\N	75	t	10
-10	Ski lift	\N	f	f	t	\N	75	t	10
-11	Zip line	\N	f	f	t	\N	75	t	10
-26	Boat lift	\N	f	t	f	Boat lifts	75	t	7
-27	Aqueduct	\N	f	t	f	Aqueduct	75	t	5
-31	Well	\N	f	t	f	Wells	75	t	2
-32	Fountain	\N	f	t	f	Fountains	75	t	2
-35	Shelter	\N	f	t	f	Shelters	75	t	4
-36	Memorial	\N	f	t	f	Memorials	75	t	4
-37	Survey point	\N	f	t	f	Survey points	75	t	10
-38	Flagpole	\N	f	t	f	Flagpoles	75	t	5
-39	Telephone box	\N	f	t	f	Telephone boxes	75	t	5
-40	Boundary stone	\N	f	t	f	Boundary stones	75	t	1
-41	Dish	\N	f	t	f	Dishes	75	t	6
-42	Tank	\N	f	t	f	Tanks	75	t	4
-43	Silo	\N	f	t	f	Silos	75	t	4
-45	Spoil	\N	f	t	f	Spoil	75	t	1
-46	Lighthouse	\N	f	t	f	Lighthouses	75	t	7
-47	Viaduct	\N	f	t	f	Viaducts	75	t	6
-1	Fence	\N	f	t	f	\N	75	f	\N
-2	Wall	\N	f	t	f	\N	75	f	\N
-13	Cairn	\N	f	t	f	Cairns	100	t	3
-14	Tower	\N	f	t	f	Towers	100	t	8
-15	Water tower	\N	f	t	f	Water towers	100	t	8
+18	Stepping stones	\N	f	t	f	Stepping stones	125	t	4
+20	Dam	\N	f	t	f	Dam	125	t	8
+21	Lock	\N	f	t	f	Locks	125	t	5
+22	Slipway	\N	f	t	f	Slipway	125	t	5
+23	Jetty	\N	f	t	f	Jetties	125	t	5
+25	Sluice gate	\N	f	t	f	Sluice gates	125	t	2
+28	Pond	\N	f	t	f	Ponds	125	t	3
+29	Spring	\N	f	t	f	Springs	125	t	2
+30	Cave	\N	f	t	f	Caves	125	t	4
+44	Chimney	\N	f	t	f	Chimneys	125	t	4
+5	Gate	\N	f	t	f	Gates	125	f	1
+6	Stile	\N	f	t	f	Stiles	125	f	1
+3	Hedge	\N	f	t	f	\N	125	f	\N
+4	Overhead cables	\N	f	f	t	\N	125	f	\N
+12	Pylon	\N	f	t	f	Pylons	125	f	\N
+8	Earthworks	\N	f	t	f	\N	125	f	1
+9	Cablecar or gondola	\N	f	f	t	\N	125	t	10
+10	Ski lift	\N	f	f	t	\N	125	t	10
+11	Zip line	\N	f	f	t	\N	125	t	10
+26	Boat lift	\N	f	t	f	Boat lifts	125	t	7
+27	Aqueduct	\N	f	t	f	Aqueduct	125	t	5
+31	Well	\N	f	t	f	Wells	125	t	2
+32	Fountain	\N	f	t	f	Fountains	125	t	2
+35	Shelter	\N	f	t	f	Shelters	125	t	4
+37	Survey point	\N	f	t	f	Survey points	125	t	10
+38	Flagpole	\N	f	t	f	Flagpoles	125	t	5
+39	Telephone box	\N	f	t	f	Telephone boxes	125	t	5
+40	Boundary stone	\N	f	t	f	Boundary stones	125	t	1
+41	Dish	\N	f	t	f	Dishes	125	t	6
+42	Tank	\N	f	t	f	Tanks	125	t	4
+43	Silo	\N	f	t	f	Silos	125	t	4
+45	Spoil	\N	f	t	f	Spoil	125	t	1
+46	Lighthouse	\N	f	t	f	Lighthouses	125	t	7
+47	Viaduct	\N	f	t	f	Viaducts	125	t	6
+1	Fence	\N	f	t	f	\N	125	f	\N
+2	Wall	\N	f	t	f	\N	125	f	\N
+13	Cairn	\N	f	t	f	Cairns	125	t	3
+15	Water tower	\N	f	t	f	Water towers	125	t	8
+14	Tower	\N	f	t	f	Towers	125	f	8
+16	WC	\N	f	t	f	WCs	125	t	5
+7	CG	\N	f	t	f	CGs	125	t	1
+36	Meml	\N	f	t	f	Memls	125	t	4
 \.
 
 
