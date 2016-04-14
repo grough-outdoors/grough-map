@@ -14,6 +14,8 @@ LEFT JOIN
 	watercourse_classes c
 ON
 	c.class_id = w.watercourse_class_id
+WHERE
+	watercourse_allow_linear_label = true
 ORDER BY
 	c.class_draw_order ASC,
 	w.watercourse_width DESC;

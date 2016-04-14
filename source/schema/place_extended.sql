@@ -5,7 +5,8 @@ SELECT
 	p.place_class_id,
 	p.place_centre_geom,
 	p.place_geom,
-	c.class_name
+	c.class_name,
+	c.class_label
 FROM
 	place p
 LEFT JOIN

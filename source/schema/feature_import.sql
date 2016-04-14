@@ -112,7 +112,6 @@ COPY feature_import (import_id, import_field, import_value, import_class_id, imp
 40	aerialway	pylon	12	t	f	f	t	f
 92	man_made	lighthouse	46	t	f	f	t	f
 49	man_made	mast	14	t	f	f	t	f
-51	amenity	toilets	16	t	f	f	t	f
 52	highway	ford	17	t	f	f	t	t
 67	amenity	fountain	32	t	f	f	t	f
 53	highway	stepping_stones	18	t	f	f	t	t

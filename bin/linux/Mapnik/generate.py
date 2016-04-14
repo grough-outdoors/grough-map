@@ -268,7 +268,9 @@ pg_cursor.execute("""\
 	ON
 		p.place_id = l.place_id
 	WHERE 
-		p.place_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
+		p.place_centre_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+	AND	
+		p.class_label = true;
 	"""
 )
 pg_conn.commit()

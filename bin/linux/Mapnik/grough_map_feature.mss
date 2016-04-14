@@ -27,6 +27,7 @@
 @feature_pylon_opacity:				1.0;
 
 @feature_label_default_size:		30;
+@feature_label_default_margin:		30;
 @feature_label_default_wrap_width:	1;
 @feature_label_source:				[feature_name];
 @feature_label_colour:				black;
@@ -44,6 +45,7 @@
 
 .feature-label {
 	text-name: @feature_label_source;
+	text-min-distance: @feature_label_default_margin;
 	text-face-name: @feature_label_typeface;
 	text-fill: @feature_label_colour;
 	text-opacity: @feature_label_opacity;

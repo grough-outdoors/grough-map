@@ -138,8 +138,8 @@ EoSQL
 echo "--> Setting lakes and reservoir names from OSM where errors occured..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/update_lakes_reservoirs_from_osm.sql" > /dev/null
 
-echo "--> Removing watercourse lines near the extremities of larger waterbodies..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/limit_watercourses_to_centrelines.sql" > /dev/null
+echo "--> Removing labels from areas around the extremities of watercourses..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/clean_watercourse_linear_labels.sql" > /dev/null
 
 echo "--> Indexing and clustering..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL

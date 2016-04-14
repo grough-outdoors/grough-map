@@ -83,7 +83,9 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	FROM
 		"_src_osm_point"
 	WHERE
-		"natural" = 'peak' OR "natural" = 'fell';
+		("natural" = 'peak' OR "natural" = 'fell')
+	AND
+		"name" IS NOT NULL;
 EoSQL
 
 echo "--> Indexing and clustering..."
@@ -101,6 +103,34 @@ EoSQL
 
 echo "--> Clipping using watercourses..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/clip_places_using_watercourses.sql" > /dev/null
+
+echo "--> Adding waterbodies..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/add_waterbodies_to_places.sql" > /dev/null
+
+echo "--> Disabling linear labels for small waterbodies..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	UPDATE
+		watercourse w
+	SET
+		watercourse_allow_linear_label = false
+	FROM
+	(
+		SELECT
+			w.watercourse_id
+		FROM
+			place p, watercourse w
+		WHERE
+			p.place_class_id = 12
+		AND
+			w.watercourse_class_id IN (4, 5)
+		AND
+			p.place_geom && w.watercourse_geom
+		AND
+			ST_Intersects(p.place_geom, w.watercourse_geom)
+	) SA
+	WHERE
+		SA.watercourse_id = w.watercourse_id;
+EoSQL
 
 echo "--> Removing temporary tables..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL

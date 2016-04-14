@@ -44,7 +44,7 @@
 	polygon-fill: @beach_default_fill_colour;
 }
 
-.surface[class_name="River"] {
+.surface[class_name="Surface water"] {
 	line-width: @river_default_border_thickness;
 	line-color: @river_default_casing_colour;
 	polygon-fill: @river_default_fill_colour;

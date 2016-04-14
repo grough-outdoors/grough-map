@@ -67,9 +67,6 @@ FROM
 						surface
 					WHERE
 						surface_class_id IN (5,6)
-					AND
-						-- Remember to remove me :-)
-						surface_geom && ST_MakeBox2D(ST_Point(300000, 400000), ST_Point(400000, 500000))
 				) AS s
 				WHERE
 					ST_Area(s.surface_geom) > 0

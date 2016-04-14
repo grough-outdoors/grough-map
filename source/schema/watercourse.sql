@@ -24,7 +24,8 @@ CREATE TABLE watercourse (
     watercourse_class_id smallint,
     watercourse_width integer,
     watercourse_geom geometry(MultiLineString,27700),
-    watercourse_name character varying(100)
+    watercourse_name character varying(100),
+    watercourse_allow_linear_label boolean DEFAULT true
 );
 
 
