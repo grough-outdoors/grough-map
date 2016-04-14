@@ -132,6 +132,9 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		SA.watercourse_id = w.watercourse_id;
 EoSQL
 
+echo "--> Removing duplicates..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/merge_duplicate_places.sql" > /dev/null
+
 echo "--> Removing temporary tables..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	DROP TABLE IF EXISTS _src_osm_polygon_place;
