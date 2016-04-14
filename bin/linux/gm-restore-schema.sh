@@ -9,26 +9,26 @@ echo "--> Restoring..."
 echo "-----------------------------------"
 
 echo "--> Restoring edge classes..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS edge_classes;"
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS edge_classes CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_classes.sql" > /dev/null 
 
 echo "--> Restoring edge access types..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS edge_access;"
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS edge_access CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_access.sql" > /dev/null 
 
 echo "--> Restoring edge schema..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge.sql" > /dev/null 
 
 echo "--> Restoring edge import highways..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS edge_import_highways;"
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS edge_import_highways CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_import_highways.sql" > /dev/null 
 
 echo "--> Restoring edge import railways..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS edge_import_railways;"
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS edge_import_railways CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_import_railways.sql" > /dev/null 
 
 echo "--> Restoring surface classes..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS surface_classes;"
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS surface_classes CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}surface_classes.sql" > /dev/null 
 
 echo "--> Restoring surface schema..."
@@ -41,14 +41,14 @@ echo "--> Restoring watercourse schema..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}watercourse.sql" > /dev/null 
 
 echo "--> Restoring watercourse classes..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS watercourse_classes;"
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS watercourse_classes CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}watercourse_classes.sql" > /dev/null 
 
 echo "--> Restoring place schema..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}place.sql" > /dev/null 
 
 echo "--> Restoring place classes..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS place_classes;"
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS place_classes CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}place_classes.sql" > /dev/null 
 
 echo "--> Restoring point feature schema..."
@@ -58,18 +58,18 @@ echo "--> Restoring linear feature schema..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_linear.sql" > /dev/null 
 
 echo "--> Restoring feature classes..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS feature_classes;"
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS feature_classes CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_classes.sql" > /dev/null 
 
 echo "--> Restoring zone schema..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}zone.sql" > /dev/null 
 
 echo "--> Restoring zone classes..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS zone_classes;"
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS zone_classes CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}zone_classes.sql" > /dev/null 
 
 echo "--> Restoring feature import classes..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS feature_import;"
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS feature_import CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_import.sql" > /dev/null 
 
 echo "--> Restoring view for edge extended..."
