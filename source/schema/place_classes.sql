@@ -32,7 +32,8 @@ CREATE TABLE place_classes (
     class_text_size double precision,
     class_wrap_width smallint,
     class_aggregate_radius integer,
-    class_label boolean DEFAULT true
+    class_label boolean DEFAULT true,
+    class_prefer_no_expansion boolean DEFAULT false NOT NULL
 );
 
 
@@ -70,20 +71,20 @@ ALTER TABLE ONLY place_classes ALTER COLUMN class_id SET DEFAULT nextval('place_
 -- Data for Name: place_classes; Type: TABLE DATA; Schema: public; Owner: grough-map
 --
 
-COPY place_classes (class_id, class_name, class_draw_order, class_text_size, class_wrap_width, class_aggregate_radius, class_label) FROM stdin;
-11	Moor	9	0	1	\N	t
-1	Farm	11	0	1	500	t
-2	Village	3	43	50	1500	t
-3	City	1	70	400	5000	t
-4	Hamlet	5	32	1	1000	t
-5	Suburb	4	40	50	1500	t
-6	Town	2	55	100	2500	t
-7	Settlement	10	28	1	1000	t
-8	Forest	7	0	1	2000	t
-9	Hill	8	32	100	3000	t
-10	Mountain	6	55	100	4000	t
-12	Waterbody	\N	\N	\N	\N	t
-13	Watercourse	\N	\N	\N	\N	f
+COPY place_classes (class_id, class_name, class_draw_order, class_text_size, class_wrap_width, class_aggregate_radius, class_label, class_prefer_no_expansion) FROM stdin;
+1	Farm	11	0	1	500	t	f
+2	Village	3	43	50	1500	t	f
+3	City	1	70	400	5000	t	f
+4	Hamlet	5	32	1	1000	t	f
+5	Suburb	4	40	50	1500	t	f
+6	Town	2	55	100	2500	t	f
+7	Settlement	10	28	1	1000	t	f
+8	Forest	7	0	1	2000	t	f
+9	Hill	8	32	100	3000	t	f
+10	Mountain	6	55	100	4000	t	f
+11	Moor	9	0	1	3000	t	f
+13	Large waterbody	7	100	100	2000	f	f
+12	Small waterbody	7	40	1	1500	t	t
 \.
 
 

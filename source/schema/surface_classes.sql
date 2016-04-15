@@ -75,7 +75,6 @@ SELECT pg_catalog.setval('surface_class_class_id_seq', 17, true);
 --
 
 COPY surface_classes (class_id, class_name, class_draw_order, class_below_zones) FROM stdin;
-6	River	4	f
 8	Quarry	7	f
 3	Landform	9	f
 9	Pier	10	f
@@ -92,6 +91,7 @@ COPY surface_classes (class_id, class_name, class_draw_order, class_below_zones)
 7	Beach	6	t
 11	Heath	8	t
 5	Tidal water	3	t
+6	Surface water	4	f
 \.
 
 

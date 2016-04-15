@@ -22,7 +22,7 @@ SET default_with_oids = false;
 CREATE TABLE watercourse (
     watercourse_id bigint NOT NULL,
     watercourse_class_id smallint,
-    watercourse_width integer,
+    watercourse_width integer DEFAULT 1,
     watercourse_geom geometry(MultiLineString,27700),
     watercourse_name character varying(100),
     watercourse_allow_linear_label boolean DEFAULT true
@@ -65,6 +65,15 @@ ALTER TABLE ONLY watercourse ALTER COLUMN watercourse_id SET DEFAULT nextval('wa
 
 ALTER TABLE ONLY watercourse
     ADD CONSTRAINT "PKEY: watercourse::watercourse_id" PRIMARY KEY (watercourse_id);
+
+
+--
+-- Name: Idx: watercourse::watercourse_geom; Type: INDEX; Schema: public; Owner: grough-map; Tablespace: 
+--
+
+CREATE INDEX "Idx: watercourse::watercourse_geom" ON watercourse USING gist (watercourse_geom);
+
+ALTER TABLE watercourse CLUSTER ON "Idx: watercourse::watercourse_geom";
 
 
 --

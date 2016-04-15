@@ -18,7 +18,7 @@
 	
 	{
 		"id": "surface", "name": "surface", "class": "surface",
-		"Datasource": { "table": "\"map_render_surface_below_zones\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_surface_below_zones\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
@@ -33,173 +33,173 @@
 	
 	{
 		"id": "zone", "name": "zone", "class": "zone",
-		"Datasource": { "table": "\"map_render_zone\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_zone\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "surface", "name": "surface", "class": "surface",
-		"Datasource": { "table": "\"map_render_surface_above_zones\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_surface_above_zones\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "elevation", "name": "elevation", "class": "contour",
-		"Datasource": { "table": "\"map_render_elevation\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_elevation\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "feature_line_subsurface", "name": "feature_line_subsurface", "class": "feature-line",
-		"Datasource": { "table": "\"map_render_feature_line_subsurface\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_feature_line_subsurface\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	{
 		"id": "feature_point_surface", "name": "feature_point_surface", "class": "feature-point",
-		"Datasource": { "table": "\"map_render_feature_point_subsurface\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_feature_point_subsurface\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "feature_line_surface", "name": "feature_line_surface", "class": "feature-line",
-		"Datasource": { "table": "\"map_render_feature_line_surface\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_feature_line_surface\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	{
 		"id": "feature_point_surface", "name": "feature_point_surface", "class": "feature-point",
-		"Datasource": { "table": "\"map_render_feature_point_surface\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_feature_point_surface\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "watercourse_line", "name": "watercourse_line", "class": "watercourse-line",
-		"Datasource": { "table": "\"map_render_watercourse\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_watercourse\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "building_-4", "name": "building_-4", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l-4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_building_l-4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_outer_-4", "name": "edge_outer_-4", "class": "edge-outer",
-		"Datasource": { "table": "\"map_render_edge_l-4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l-4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_inner_-4", "name": "edge_inner_-4", "class": "edge-inner",
-		"Datasource": { "table": "\"map_render_edge_l-4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l-4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "building_-3", "name": "building_-3", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l-3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_building_l-3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_outer_-3", "name": "edge_outer_-3", "class": "edge-outer",
-		"Datasource": { "table": "\"map_render_edge_l-3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l-3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_inner_-3", "name": "edge_inner_-3", "class": "edge-inner",
-		"Datasource": { "table": "\"map_render_edge_l-3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l-3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "building_-2", "name": "building_-2", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l-2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_building_l-2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_outer_-2", "name": "edge_outer_-2", "class": "edge-outer",
-		"Datasource": { "table": "\"map_render_edge_l-2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l-2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_inner_-2", "name": "edge_inner_-2", "class": "edge-inner",
-		"Datasource": { "table": "\"map_render_edge_l-2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l-2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "building_-1", "name": "building_-1", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l-1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_building_l-1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_outer_-1", "name": "edge_outer_-1", "class": "edge-outer",
-		"Datasource": { "table": "\"map_render_edge_l-1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l-1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_inner_-1", "name": "edge_inner_-1", "class": "edge-inner",
-		"Datasource": { "table": "\"map_render_edge_l-1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l-1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "building_0", "name": "building_0", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l0\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_building_l0\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_outer_0", "name": "edge_outer_0", "class": "edge-outer",
-		"Datasource": { "table": "\"map_render_edge_l0\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l0\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_inner_0", "name": "edge_inner_0", "class": "edge-inner",
-		"Datasource": { "table": "\"map_render_edge_l0\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l0\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "building_1", "name": "building_1", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_building_l1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_outer_1", "name": "edge_outer_1", "class": "edge-outer",
-		"Datasource": { "table": "\"map_render_edge_l1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_inner_1", "name": "edge_inner_1", "class": "edge-inner",
-		"Datasource": { "table": "\"map_render_edge_l1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l1\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "building_2", "name": "building_2", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_building_l2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_outer_2", "name": "edge_outer_2", "class": "edge-outer",
-		"Datasource": { "table": "\"map_render_edge_l2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_inner_2", "name": "edge_inner_2", "class": "edge-inner",
-		"Datasource": { "table": "\"map_render_edge_l2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l2\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "building_3", "name": "building_3", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_building_l3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_outer_3", "name": "edge_outer_3", "class": "edge-outer",
-		"Datasource": { "table": "\"map_render_edge_l3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_inner_3", "name": "edge_inner_3", "class": "edge-inner",
-		"Datasource": { "table": "\"map_render_edge_l3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l3\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "building_4", "name": "building_4", "class": "building",
-		"Datasource": { "table": "\"map_render_building_l4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_building_l4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_outer_4", "name": "edge_outer_4", "class": "edge-outer",
-		"Datasource": { "table": "\"map_render_edge_l4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},{
 		"id": "edge_inner_4", "name": "edge_inner_4", "class": "edge-inner",
-		"Datasource": { "table": "\"map_render_edge_l4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_l4\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "feature_line_overhead", "name": "feature_line_overhead", "class": "feature-line",
-		"Datasource": { "table": "\"map_render_feature_line_overhead\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_feature_line_overhead\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	{
 		"id": "feature_point_overhead", "name": "feature_point_overhead", "class": "feature-point",
-		"Datasource": { "table": "\"map_render_feature_point_overhead\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_feature_point_overhead\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "grid_lines", "name": "grid_lines", "class": "grid",
-		"Datasource": { "table": "\"map_render_grid_lines\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_grid_lines\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
 		"id": "place_labels", "name": "place_labels", "class": "place-label",
-		"Datasource": { "table": "\"map_render_place\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_place\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	{
 		"id": "watercourse_labels", "name": "watercourse_labels", "class": "watercourse-label",
-		"Datasource": { "table": "\"map_render_watercourse_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_watercourse_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	{
 		"id": "feature_labels", "name": "feature_labels", "class": "feature-label",
-		"Datasource": { "table": "\"map_render_feature_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_feature_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	{
 		"id": "edge_labels", "name": "edge_labels", "class": "edge-label",
-		"Datasource": { "table": "\"map_render_edge_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_edge_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	{
 		"id": "grid_labels", "name": "grid_labels", "class": "grid-label",
-		"Datasource": { "table": "\"map_render_grid_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map" }
+		"Datasource": { "table": "\"map_render_grid_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	}]
 }

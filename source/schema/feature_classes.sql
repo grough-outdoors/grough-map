@@ -80,7 +80,6 @@ COPY feature_classes (class_id, class_name, class_draw_order, class_subsurface, 
 33	Shaft	\N	f	t	f	Shafts	250	t	3
 34	Shake hole	\N	f	t	f	Shake holes	250	t	2
 18	Stepping stones	\N	f	t	f	Stepping stones	125	t	4
-20	Dam	\N	f	t	f	Dam	125	t	8
 21	Lock	\N	f	t	f	Locks	125	t	5
 22	Slipway	\N	f	t	f	Slipway	125	t	5
 23	Jetty	\N	f	t	f	Jetties	125	t	5
@@ -121,6 +120,7 @@ COPY feature_classes (class_id, class_name, class_draw_order, class_subsurface, 
 16	WC	\N	f	t	f	WCs	125	t	5
 7	CG	\N	f	t	f	CGs	125	t	1
 36	Meml	\N	f	t	f	Memls	125	t	4
+20	Dam	\N	f	t	f	Dam	125	f	8
 \.
 
 

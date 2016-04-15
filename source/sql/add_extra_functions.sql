@@ -52,4 +52,16 @@ CREATE OR REPLACE FUNCTION longest_word(character varying) RETURNS integer
     LANGUAGE SQL
     IMMUTABLE
     RETURNS NULL ON NULL INPUT;
+
+CREATE OR REPLACE FUNCTION names_match(character varying, character varying) RETURNS boolean
+    AS 'SELECT CASE WHEN unaccent(lower(regexp_replace(trim(regexp_replace($1, ''[-_]'', '' '')), ''[^A-Za-z ]'', ''''))) =  unaccent(lower(regexp_replace(trim(regexp_replace($2, ''[-_]'', '' '')), ''[^A-Za-z ]'', ''''))) THEN TRUE ELSE FALSE END;'
+    LANGUAGE SQL
+    IMMUTABLE
+    RETURNS NULL ON NULL INPUT;
+
+CREATE OR REPLACE FUNCTION looks_like_a_name(character varying) RETURNS boolean
+    AS 'SELECT CASE WHEN regexp_replace(unaccent($1), $$[^''A-Za-z0-9 -]$$, '''') SIMILAR TO $$[A-Z](|[^A-Z]+)(|([ -]([A-Za-z]|[A-Za-z''][a-z.''])+)+)$$ THEN TRUE ELSE FALSE END;'
+    LANGUAGE SQL
+    IMMUTABLE
+    RETURNS NULL ON NULL INPUT;
    

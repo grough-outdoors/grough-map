@@ -104,8 +104,11 @@ EoSQL
 echo "--> Clipping using watercourses..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/clip_places_using_watercourses.sql" > /dev/null
 
-echo "--> Adding waterbodies..."
+echo "--> Adding waterbodies from existing data..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/add_waterbodies_to_places.sql" > /dev/null
+
+echo "--> Adding waterbodies from OSM..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/add_osm_waterbodies_to_places.sql" > /dev/null
 
 echo "--> Disabling linear labels for small waterbodies..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
@@ -130,6 +133,28 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	) SA
 	WHERE
 		SA.watercourse_id = w.watercourse_id;
+EoSQL
+
+echo "--> Removing invalid geometries..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+DELETE FROM
+	place
+WHERE
+	ST_NumGeometries(ST_Multi(ST_CollectionExtract(ST_MakeValid("place_geom"), 3))) = 0;
+
+UPDATE
+	place
+SET
+	place_geom = ST_Multi(ST_CollectionExtract(ST_MakeValid("place_geom"), 3));
+EoSQL
+
+
+echo "--> Removing invalid names..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+DELETE FROM
+	place
+WHERE
+	looks_like_a_name(place_name) = false;
 EoSQL
 
 echo "--> Removing duplicates..."

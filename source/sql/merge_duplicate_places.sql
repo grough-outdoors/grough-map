@@ -17,7 +17,7 @@ ON
 INNER JOIN
 	place p2
 ON
-	p1.place_name = p2.place_name
+	names_match(p1.place_name, p2.place_name)
 AND
 	p1.place_id != p2.place_id
 AND
@@ -27,13 +27,15 @@ LEFT JOIN
 ON
 	p2.place_class_id = c2.class_id
 WHERE
-	c1.class_text_size >= c2.class_text_size;
+	c1.class_text_size > c2.class_text_size
+OR
+	(c1.class_text_size = c2.class_text_size AND p1.place_id < p2.place_id);
 
 -- Merge the duplicates
 UPDATE
 	place
 SET
-	place_geom = ST_Multi(ST_CollectionExtract(SB.place_geom, 3))
+	place_geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(SB.place_geom), 3))
 FROM
 (
 	SELECT

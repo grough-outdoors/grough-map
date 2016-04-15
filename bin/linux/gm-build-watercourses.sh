@@ -81,12 +81,20 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		w.name;
 EoSQL
 
+echo "--> Indexing and clustering..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	CREATE INDEX "Idx: watercourse::watercourse_geom"
+		ON public.watercourse
+		USING gist
+		(watercourse_geom);
+	ALTER TABLE public.watercourse 
+		CLUSTER ON "Idx: watercourse::watercourse_geom";
+EoSQL
+
 echo "--> Calculating a minimum width for larger river systems..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/calculate_widths_for_watercourses.sql" > /dev/null
 
 # TODO: Smooth the lines somehow??
-
-# TODO: Match against OpenStreetMap
 
 echo "--> Extracting OSM features for watercourses..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
@@ -138,18 +146,47 @@ EoSQL
 echo "--> Setting lakes and reservoir names from OSM where errors occured..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/update_lakes_reservoirs_from_osm.sql" > /dev/null
 
+echo "--> Naming watercourses using OS OpenMap Local where possible..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	UPDATE
+		watercourse w
+	SET
+		watercourse_name = SB.watercourse_new_name
+	FROM
+	(
+		SELECT
+			watercourse_id,
+			first(watercourse_old_name) AS watercourse_old_name,
+			first(watercourse_new_name) AS watercourse_new_name,
+			first(watercourse_point_distance) AS watercourse_point_distance
+		FROM
+		(
+			SELECT
+				w.watercourse_id,
+				watercourse_name AS watercourse_old_name,
+				p.distname AS watercourse_new_name,
+				ST_Distance(w.watercourse_geom, p.geom) AS watercourse_point_distance
+			FROM
+				_src_os_opmplc_named_place p, watercourse w
+			WHERE
+				ST_DWithin(w.watercourse_geom, p.geom, 30.0)
+			AND
+				p.classifica = 'Hydrography'
+			ORDER BY
+				w.watercourse_id ASC,
+				ST_Distance(w.watercourse_geom, p.geom) ASC
+		) SA
+		GROUP BY
+			watercourse_id
+		HAVING
+			first(watercourse_old_name) IS NULL
+	) SB
+	WHERE
+		SB.watercourse_id = w.watercourse_id;
+EoSQL
+
 echo "--> Removing labels from areas around the extremities of watercourses..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/clean_watercourse_linear_labels.sql" > /dev/null
-
-echo "--> Indexing and clustering..."
-psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-	CREATE INDEX "Idx: watercourse::watercourse_geom"
-		ON public.watercourse
-		USING gist
-		(watercourse_geom);
-	ALTER TABLE public.watercourse 
-		CLUSTER ON "Idx: watercourse::watercourse_geom";
-EoSQL
 
 echo "--> Removing temporary tables..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
