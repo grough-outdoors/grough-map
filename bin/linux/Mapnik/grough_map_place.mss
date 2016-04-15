@@ -8,8 +8,8 @@
 @place_label_avoid_edges:			false;
 @place_label_character_spacing:		2;
 @place_label_minimum_padding:		20;
-@place_label_halo_radius:			2;
-@place_label_halo_colour:			white;
+@place_label_halo_radius:			4;
+@place_label_halo_colour:			rgba(255, 255, 255, 0.6);
 @place_label_default_margin:		30;
 @place_label_position_tolerance:	400;
 
@@ -25,24 +25,24 @@
 @place_label_mountain_transform:	none;
 @place_label_waterbody_transform:	none;
 
-@place_label_city_typeface:			'Open Sans Semibold';
-@place_label_town_typeface:			'Open Sans Semibold';
-@place_label_village_typeface:		@place_label_typeface;
+@place_label_city_typeface:			'Open Sans Bold';
+@place_label_town_typeface:			'Open Sans Bold';
+@place_label_village_typeface:		'Open Sans Semibold';
 @place_label_suburb_typeface:		@place_label_typeface;
 @place_label_hamlet_typeface:		@place_label_typeface;
 @place_label_settlement_typeface:	@place_label_typeface;
 @place_label_hill_typeface:			@place_label_typeface;
-@place_label_mountain_typeface:		@place_label_typeface;
+@place_label_mountain_typeface:		'Open Sans Semibold';
 @place_label_waterbody_typeface:	@place_label_typeface;
 
-@place_label_default_size:			28;
-@place_label_city_size:				70;
-@place_label_town_size:				55;
-@place_label_village_size:			43;
-@place_label_suburb_size:			40;
-@place_label_hamlet_size:			32;
-@place_label_settlement_size:		28;
-@place_label_hill_size:				32;
+@place_label_default_size:			45;
+@place_label_city_size:				90;
+@place_label_town_size:				70;
+@place_label_village_size:			55;
+@place_label_suburb_size:			45;
+@place_label_hamlet_size:			40;
+@place_label_settlement_size:		40;
+@place_label_hill_size:				40;
 @place_label_mountain_size:			55;
 @place_label_waterbody_size:		40;
 

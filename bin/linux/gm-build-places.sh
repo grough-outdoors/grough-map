@@ -135,6 +135,18 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		SA.watercourse_id = w.watercourse_id;
 EoSQL
 
+
+echo "--> Removing invalid names..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+DELETE FROM
+	place
+WHERE
+	looks_like_a_name(place_name) = false;
+EoSQL
+
+echo "--> Removing duplicates..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/merge_duplicate_places.sql" > /dev/null
+
 echo "--> Removing invalid geometries..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 DELETE FROM
@@ -147,18 +159,6 @@ UPDATE
 SET
 	place_geom = ST_Multi(ST_CollectionExtract(ST_MakeValid("place_geom"), 3));
 EoSQL
-
-
-echo "--> Removing invalid names..."
-psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-DELETE FROM
-	place
-WHERE
-	looks_like_a_name(place_name) = false;
-EoSQL
-
-echo "--> Removing duplicates..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/merge_duplicate_places.sql" > /dev/null
 
 echo "--> Removing temporary tables..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL

@@ -26,7 +26,7 @@
 @feature_pylon_blend:				src-over;
 @feature_pylon_opacity:				1.0;
 
-@feature_label_default_size:		30;
+@feature_label_default_size:		40;
 @feature_label_default_margin:		30;
 @feature_label_default_wrap_width:	1;
 @feature_label_source:				[feature_name];
@@ -39,8 +39,8 @@
 @feature_label_character_spacing:	2;
 @feature_label_minimum_padding:		75;
 @feature_label_displacement:		50;
-@feature_label_halo_radius:			2;
-@feature_label_halo_colour:			white;
+@feature_label_halo_radius:			3;
+@feature_label_halo_colour:			rgba(255, 255, 255, 0.6);
 @feature_label_alignment:			left;
 
 .feature-label {

@@ -11,7 +11,7 @@ SELECT
 FROM
 	_src_osm_polygon op
 WHERE
-	op.water IN ('pond', 'lake', 'reservoir', 'oxbow', 'lock', 'cove', 'lagoon')
+	op.water IN ('pond', 'lake', 'reservoir', 'oxbow', 'lock', 'cove', 'lagoon', 'marina')
 AND
 	op.name IS NOT NULL
 AND 

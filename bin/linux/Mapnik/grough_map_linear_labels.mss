@@ -35,15 +35,15 @@
 @edge_label_other_road_halo_radius:			3;
 @edge_label_path_halo_radius:				1;
 
-@edge_label_motorway_size:					50;
-@edge_label_trunk_size:						50;
-@edge_label_a_road_size:					45;
-@edge_label_b_road_size:					45;
+@edge_label_motorway_size:					55;
+@edge_label_trunk_size:						55;
+@edge_label_a_road_size:					50;
+@edge_label_b_road_size:					50;
 
 @watercourse_label_default_source:			[watercourse_name];
 @watercourse_label_default_colour:			@stream_default_colour;
 @watercourse_label_default_placement:		line;
-@watercourse_label_default_size:			40;
+@watercourse_label_default_size:			50;
 @watercourse_label_default_offset_x:		0;
 @watercourse_label_default_offset_y_l:		@stream_default_thickness + @watercourse_label_default_size / 2;
 @watercourse_label_default_offset_y_r:		0 - @stream_default_thickness - @watercourse_label_default_size / 2;
@@ -163,8 +163,8 @@
 			text-dy: @watercourse_label_large_offset_y;
 			text-halo-radius: @watercourse_label_large_halo_radius;
 			text-opacity: @watercourse_label_large_opacity;
-			[watercourse_width < 50] { text-size: 40; }
-			[watercourse_width >= 50][watercourse_width < 75] { text-size: 40; }
+			[watercourse_width < 60] { text-size: 50; }
+			[watercourse_width >= 60][watercourse_width < 75] { text-size: 55; }
 			[watercourse_width >= 75][watercourse_width < 100] { text-size: 60; }
 			[watercourse_width >= 100][watercourse_width < 150] { text-size: 82; }
 			[watercourse_width >= 150][watercourse_width < 200] { text-size: 125; }
