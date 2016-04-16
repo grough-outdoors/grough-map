@@ -72,6 +72,10 @@ echo "--> Restoring feature import classes..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS feature_import CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_import.sql" > /dev/null 
 
+echo "--> Restoring place import classes..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS place_import CASCADE;"
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}place_import.sql" > /dev/null 
+
 echo "--> Restoring view for edge extended..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_extended.sql" > /dev/null 
 

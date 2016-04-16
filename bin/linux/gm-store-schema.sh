@@ -61,5 +61,8 @@ pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t zone_classes -c > zone_classes.s
 echo "--> Storing feature import classes..."
 pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t feature_import > feature_import.sql
 
+echo "--> Storing place import classes..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t place_import > place_import.sql
+
 echo ""
 echo "Export complete. Run gm-restore-schema to return."

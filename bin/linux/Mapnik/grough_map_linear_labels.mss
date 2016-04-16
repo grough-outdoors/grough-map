@@ -43,7 +43,7 @@
 @watercourse_label_default_source:			[watercourse_name];
 @watercourse_label_default_colour:			@stream_default_colour;
 @watercourse_label_default_placement:		line;
-@watercourse_label_default_size:			50;
+@watercourse_label_default_size:			40;
 @watercourse_label_default_offset_x:		0;
 @watercourse_label_default_offset_y_l:		@stream_default_thickness + @watercourse_label_default_size / 2;
 @watercourse_label_default_offset_y_r:		0 - @stream_default_thickness - @watercourse_label_default_size / 2;
@@ -53,7 +53,7 @@
 @watercourse_label_default_distance:		2000;
 @watercourse_label_default_wrap_width:		0; /* Disabled */
 @watercourse_label_default_typeface:		'Open Sans Regular';
-@watercourse_label_default_minimum_padding:	50;
+@watercourse_label_default_minimum_padding:	30;
 @watercourse_label_default_avoid_edges:		false;
 
 @watercourse_label_large_typeface:			'Exo Light';

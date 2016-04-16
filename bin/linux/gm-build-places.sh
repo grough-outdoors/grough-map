@@ -135,6 +135,37 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		SA.watercourse_id = w.watercourse_id;
 EoSQL
 
+echo " --> Identifying columns to check for place imports..."
+IFS=$'\n'; for columnName in `psql -Ugrough-map grough-map -h 127.0.0.1 -A -t -c "SELECT DISTINCT import_field FROM place_import"`
+do
+	echo "    --> Found column: ${columnName}..."
+	echo "       --> Importing polygons..."
+	psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	INSERT INTO
+		place
+		(
+			place_name,
+			place_centre_geom,
+			place_geom,
+			place_class_id
+		)
+		SELECT
+			o.name AS place_name,
+			ST_Centroid(way) AS place_centre_geom,
+			ST_Multi(ST_MakeValid(ST_Simplify(way, 10.0))) AS place_geom,
+			i.import_class_id AS place_class_id
+		FROM
+			_src_osm_polygon o
+		INNER JOIN
+			place_import i
+		ON
+			o.${columnName} = i.import_value
+		AND
+			o.name IS NOT NULL
+		AND
+			looks_like_a_name(o.name) = true;
+EoSQL
+done
 
 echo "--> Removing invalid names..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
@@ -167,7 +198,7 @@ EoSQL
 
 echo "--> Cleaning up..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-	VACUUM FULL ANALYZE surface;
+	VACUUM FULL ANALYZE place;
 EoSQL
 
 echo "--> Build complete."

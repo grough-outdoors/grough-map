@@ -72,19 +72,25 @@ ALTER TABLE ONLY place_classes ALTER COLUMN class_id SET DEFAULT nextval('place_
 --
 
 COPY place_classes (class_id, class_name, class_draw_order, class_text_size, class_wrap_width, class_aggregate_radius, class_label, class_prefer_no_expansion) FROM stdin;
-1	Farm	11	0	1	500	t	f
-2	Village	3	43	50	1500	t	f
-3	City	1	70	400	5000	t	f
-4	Hamlet	5	32	1	1000	t	f
-5	Suburb	4	40	50	1500	t	f
-6	Town	2	55	100	2500	t	f
-7	Settlement	10	28	1	1000	t	f
-8	Forest	7	0	1	2000	t	f
-9	Hill	8	32	100	3000	t	f
 10	Mountain	6	55	100	4000	t	f
-11	Moor	9	0	1	3000	t	f
 13	Large waterbody	7	100	100	2000	f	f
 12	Small waterbody	7	40	1	1500	t	t
+1	Farm	11	40	1	500	t	f
+3	City	1	90	400	5000	t	f
+4	Hamlet	5	40	1	1000	t	f
+2	Village	3	55	50	1500	t	f
+6	Town	2	70	100	2500	t	f
+7	Settlement	6	40	1	1000	t	f
+9	Hill	8	40	100	3000	t	f
+5	Suburb	4	45	50	1500	t	f
+11	Moor	9	60	1	3000	t	f
+8	Forest	7	60	1	2000	t	f
+14	Golf course	100	50	1	2000	t	t
+15	Public common	100	50	1	1000	t	t
+16	School	100	40	1	1000	t	t
+17	University	100	50	1	3000	t	t
+18	Airport	100	50	1	5000	t	f
+19	Tourist attraction	100	50	1	1000	t	t
 \.
 
 
@@ -92,7 +98,7 @@ COPY place_classes (class_id, class_name, class_draw_order, class_text_size, cla
 -- Name: place_classes_class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('place_classes_class_id_seq', 13, true);
+SELECT pg_catalog.setval('place_classes_class_id_seq', 19, true);
 
 
 --
