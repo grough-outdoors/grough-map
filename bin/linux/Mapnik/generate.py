@@ -215,7 +215,8 @@ pg_cursor.execute("""\
 			 ELSE ST_Multi(l.place_geom)
 		END::geometry(MultiPolygon, 27700) as place_geom,
 		degrees(ST_Azimuth(l.place_nearest, p.place_centre_geom)) AS place_direction,
-		p.class_name
+		p.class_name,
+		p.class_label_with_type
 	FROM 
 		place_extended p
 	LEFT JOIN

@@ -163,6 +163,8 @@ do
 		AND
 			o.name IS NOT NULL
 		AND
+			( o.building IS NULL OR o.building = 'no' )
+		AND
 			looks_like_a_name(o.name) = true;
 EoSQL
 done
@@ -183,12 +185,23 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 DELETE FROM
 	place
 WHERE
-	ST_NumGeometries(ST_Multi(ST_CollectionExtract(ST_MakeValid("place_geom"), 3))) = 0;
+	ST_NumGeometries(ST_Multi(ST_CollectionExtract("place_geom", 3))) = 0
+OR
+	ST_GeometryType("place_geom") NOT LIKE '%Polygon'
+OR
+	ST_IsEmpty("place_geom") = true;
 
 UPDATE
 	place
 SET
-	place_geom = ST_Multi(ST_CollectionExtract(ST_MakeValid("place_geom"), 3));
+	place_geom = ST_Multi(ST_MakeValid(ST_Buffer(ST_CollectionExtract("place_geom", 3), 0.01)))
+WHERE
+	ST_IsEmpty(ST_CollectionExtract("place_geom", 3)) = false;
+	
+DELETE FROM
+	place
+WHERE
+	ST_IsValid("place_geom") = false;
 EoSQL
 
 echo "--> Removing temporary tables..."

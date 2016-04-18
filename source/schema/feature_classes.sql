@@ -121,6 +121,7 @@ COPY feature_classes (class_id, class_name, class_draw_order, class_subsurface, 
 7	CG	\N	f	t	f	CGs	125	t	1
 36	Meml	\N	f	t	f	Memls	125	t	4
 20	Dam	\N	f	t	f	Dam	125	f	8
+49	Quarry	\N	f	t	f	Quarries	500	t	7
 \.
 
 
@@ -128,7 +129,7 @@ COPY feature_classes (class_id, class_name, class_draw_order, class_subsurface, 
 -- Name: feature_classes_class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('feature_classes_class_id_seq', 48, true);
+SELECT pg_catalog.setval('feature_classes_class_id_seq', 49, true);
 
 
 --

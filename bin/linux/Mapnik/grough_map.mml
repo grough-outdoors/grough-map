@@ -183,10 +183,6 @@
 	},
 	
 	{
-		"id": "place_labels", "name": "place_labels", "class": "place-label",
-		"Datasource": { "table": "\"map_render_place\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
-	},
-	{
 		"id": "watercourse_labels", "name": "watercourse_labels", "class": "watercourse-label",
 		"Datasource": { "table": "\"map_render_watercourse_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
@@ -197,6 +193,10 @@
 	{
 		"id": "edge_labels", "name": "edge_labels", "class": "edge-label",
 		"Datasource": { "table": "\"map_render_edge_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
+	},	
+	{
+		"id": "place_labels", "name": "place_labels", "class": "place-label",
+		"Datasource": { "table": "\"map_render_place\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	{
 		"id": "grid_labels", "name": "grid_labels", "class": "grid-label",

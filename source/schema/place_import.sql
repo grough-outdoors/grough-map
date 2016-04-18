@@ -71,6 +71,22 @@ COPY place_import (import_id, import_field, import_value, import_class_id) FROM 
 7	landuse	forest	8
 8	tourism	attraction	19
 9	natural	moor	11
+10	natural	heath	11
+11	natural	scrub	11
+12	natural	wetland	11
+13	natural	fell	11
+14	landuse	meadow	11
+15	leisure	park	20
+16	amenity	college	21
+17	landuse	cemetery	22
+18	amenity	hospital	23
+19	leisure	stadium	24
+20	landuse	recreation_ground	25
+21	leisure	sports_centre	26
+22	landuse	industrial	27
+23	landuse	conservation	28
+24	landuse	military	29
+25	tourism	museum	30
 \.
 
 
@@ -78,7 +94,7 @@ COPY place_import (import_id, import_field, import_value, import_class_id) FROM 
 -- Name: place_import_import_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('place_import_import_id_seq', 9, true);
+SELECT pg_catalog.setval('place_import_import_id_seq', 25, true);
 
 
 --

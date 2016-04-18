@@ -46,7 +46,7 @@ FROM
 		SELECT
 			p1_place_id AS p1_place_id,
 			p1.place_geom AS p1_place_geom,
-			ST_Collect(p2.place_geom) AS p2_place_geom
+			ST_Collect(ST_MakeValid(ST_Intersection(p1.place_geom, p2.place_geom))) AS p2_place_geom
 		FROM
 			_tmp_duplicate_names d
 		LEFT JOIN

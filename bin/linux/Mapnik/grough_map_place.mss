@@ -1,9 +1,9 @@
 @place_label_source:				[place_name];
+@place_label_source_type:			[class_name];
 @place_label_colour:				black;
 @place_label_opacity:				1.0;
 @place_label_blend:					src-over;
 @place_label_placement_type:		simple;
-@place_label_default_size:			70;
 @place_label_typeface:				'Open Sans Regular';
 @place_label_avoid_edges:			false;
 @place_label_character_spacing:		2;
@@ -35,7 +35,9 @@
 @place_label_mountain_typeface:		'Open Sans Semibold';
 @place_label_waterbody_typeface:	@place_label_typeface;
 
-@place_label_default_size:			45;
+@place_label_default_size:			40;
+@place_label_farm_size:				35;
+@place_label_school_size:			35;
 @place_label_city_size:				90;
 @place_label_town_size:				70;
 @place_label_village_size:			55;
@@ -47,6 +49,8 @@
 @place_label_waterbody_size:		40;
 
 @place_label_default_wrap_width:	1;
+@place_label_farm_wrap_width:		150;
+@place_label_school_wrap_width:		200;
 @place_label_city_wrap_width:		400;
 @place_label_town_wrap_width:		100;
 @place_label_village_wrap_width:	50;
@@ -73,6 +77,10 @@
 	text-halo-radius: @place_label_halo_radius;
 	text-halo-fill: @place_label_halo_colour;
 	text-label-position-tolerance: @place_label_position_tolerance;
+	
+	[class_label_with_type=1] {
+		text-name: @place_label_source_type;
+	}
 	
 	[class_name='City'] {
 		text-size: @place_label_city_size;
@@ -109,6 +117,14 @@
 		text-face-name: @place_label_settlement_typeface;
 		text-wrap-width: @place_label_settlement_wrap_width;
 		text-transform: @place_label_settlement_transform;
+	}
+	[class_name='School'] {
+		text-size: @place_label_school_size;
+		text-wrap-width: @place_label_school_wrap_width;
+	}
+	[class_name='Farm'] {
+		text-size: @place_label_farm_size;
+		text-wrap-width: @place_label_farm_wrap_width;
 	}
 	[class_name='Hill'] {
 		text-size: @place_label_hill_size;

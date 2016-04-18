@@ -12,6 +12,7 @@
 @grid_label_wrap_width:				0; /* Disabled */
 @grid_label_typeface:				'Open Sans Bold';
 @grid_label_avoid_edges:			false;
+@grid_label_allow_overlap:			true;
 @grid_label_character_spacing:		12;
 
 .grid {
@@ -30,6 +31,7 @@
 	text-placement: @grid_label_placement;
 	text-wrap-width: @grid_label_wrap_width;
 	text-avoid-edges: @grid_label_avoid_edges;
+	text-allow-overlap: @grid_label_allow_overlap;
 	text-character-spacing: @grid_label_character_spacing;
 	[grid_id_dir='e'] {
 		text-orientation: 0;
