@@ -44,8 +44,8 @@ function downloadAndExtractTile {
 	if [ -e "${eaTileDir}/LIDAR-DTM-2M-${1}.zip" ] || [ -e "${eaTileDir}/2m_res_${1}_dtm.zip" ]; then
 		if [ ! -d "${eaTileDir}/LIDAR-DTM-2M-${1}/" ]; then
 			echo "Extracting ZIP file with EA/NRW LiDAR data..."
-			unzip -o "${eaTileDir}/LIDAR-DTM-2M-${1}.zip" -d "${eaTileDir}/LIDAR-DTM-2M-${1}/"
-			unzip -o "${eaTileDir}/2m_res_${1}_dtm.zip" -d "${eaTileDir}/LIDAR-DTM-2M-${1}/"
+			unzip -o "${eaTileDir}/LIDAR-DTM-2M-${1}.zip" -d "${scratchDir}/LIDAR-DTM-2M-${1}/"
+			unzip -o "${eaTileDir}/2m_res_${1}_dtm.zip" -d "${scratchDir}/LIDAR-DTM-2M-${1}/"
 		else
 			echo "Tile already extracted ($1)."
 		fi
@@ -58,9 +58,10 @@ function downloadAndExtractTile {
 			echo "No LiDAR directory found... attempting to download..."
 			$binDir/gm-download-eagg.sh $1
 			$binDir/gm-download-nrw.sh $1
-			if [ -e "${eaTileDir}/LIDAR-DTM-2M-${1}.zip" ]; then
+			if [ -e "${eaTileDir}/LIDAR-DTM-2M-${1}.zip" ] || [ -e "${eaTileDir}/2m_res_${1}_dtm.zip" ]; then
 				echo "Extracting LiDAR..."
-				unzip -o "${eaTileDir}/LIDAR-DTM-2M-${1}.zip" -d "${eaTileDir}/LIDAR-DTM-2M-${1}/"
+				unzip -o "${eaTileDir}/LIDAR-DTM-2M-${1}.zip" -d "${scratchDir}/LIDAR-DTM-2M-${1}/"
+				unzip -o "${eaTileDir}/2m_res_${1}_dtm.zip" -d "${scratchDir}/LIDAR-DTM-2M-${1}/"
 			else
 				echo "No LiDAR downloaded -- creating empty directory..."
 				mkdir "${eaTileDir}/LIDAR-DTM-2M-${1}/"
@@ -88,7 +89,7 @@ targetResolution="5"
 blendDistance=50
 blendCells=$(($blendDistance/(10000 / 1600) - 1))
 binDir="/vagrant/bin/linux/"
-scratchDir="/vagrant/volatile/"
+scratchDir="/tmp/"
 osTileDir="/vagrant/source/os-terrain/"
 eaTileDir="/vagrant/source/eagg/"
 targetDir="/vagrant/source/terrain-composite/"
@@ -128,10 +129,10 @@ echo Corner tiles are ${neighbourTiles[4]} ${neighbourTiles[5]} ${neighbourTiles
 echo Processing extent is $processingExtent
 echo Final extent is $finalExtent
 
-if [ `ls ${eaTileDir}/LIDAR-DTM-2M-${tileName}/*.asc | wc -l` -gt 0 ]; then
+if [ `ls ${scratchDir}/LIDAR-DTM-2M-${tileName}/*.asc | wc -l` -gt 0 ]; then
 	echo "--> Building VRT for LiDAR"
-	gdalbuildvrt -te $processingExtent -resolution user -tr $targetResolution $targetResolution -a_srs EPSG:27700 scratch/${tileName}.vrt $eaTileDir/LIDAR-DTM-2M-${tileName}/*.asc $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[0]}/*.asc $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[1]}/*.asc $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[2]}/*.asc $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[3]}/*.asc  $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[4]}/*.asc $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[5]}/*.asc $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[6]}/*.asc $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[7]}/*.asc
-	gdalbuildvrt -te $processingExtent -resolution user -tr $targetResolution $targetResolution -a_srs EPSG:27700 -srcnodata "-9998" -vrtnodata "-9998" -hidenodata scratch/${tileName}_Mask.vrt $eaTileDir/LIDAR-DTM-2M-${tileName}/*.asc $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[0]}/*.asc $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[1]}/*.asc $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[2]}/*.asc $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[3]}/*.asc  $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[4]}/*.asc $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[5]}/*.asc $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[6]}/*.asc $eaTileDir/LIDAR-DTM-2M-${neighbourTiles[7]}/*.asc
+	gdalbuildvrt -te $processingExtent -resolution user -tr $targetResolution $targetResolution -a_srs EPSG:27700 scratch/${tileName}.vrt $scratchDir/LIDAR-DTM-2M-${tileName}/*.asc $scratchDir/LIDAR-DTM-2M-${neighbourTiles[0]}/*.asc $scratchDir/LIDAR-DTM-2M-${neighbourTiles[1]}/*.asc $scratchDir/LIDAR-DTM-2M-${neighbourTiles[2]}/*.asc $scratchDir/LIDAR-DTM-2M-${neighbourTiles[3]}/*.asc  $scratchDir/LIDAR-DTM-2M-${neighbourTiles[4]}/*.asc $scratchDir/LIDAR-DTM-2M-${neighbourTiles[5]}/*.asc $scratchDir/LIDAR-DTM-2M-${neighbourTiles[6]}/*.asc $scratchDir/LIDAR-DTM-2M-${neighbourTiles[7]}/*.asc
+	gdalbuildvrt -te $processingExtent -resolution user -tr $targetResolution $targetResolution -a_srs EPSG:27700 -srcnodata "-9998" -vrtnodata "-9998" -hidenodata scratch/${tileName}_Mask.vrt $scratchDir/LIDAR-DTM-2M-${tileName}/*.asc $scratchDir/LIDAR-DTM-2M-${neighbourTiles[0]}/*.asc $scratchDir/LIDAR-DTM-2M-${neighbourTiles[1]}/*.asc $scratchDir/LIDAR-DTM-2M-${neighbourTiles[2]}/*.asc $scratchDir/LIDAR-DTM-2M-${neighbourTiles[3]}/*.asc  $scratchDir/LIDAR-DTM-2M-${neighbourTiles[4]}/*.asc $scratchDir/LIDAR-DTM-2M-${neighbourTiles[5]}/*.asc $scratchDir/LIDAR-DTM-2M-${neighbourTiles[6]}/*.asc $scratchDir/LIDAR-DTM-2M-${neighbourTiles[7]}/*.asc
 	echo "--> Converting extent to polygon"
 	gdal_calc.py -A scratch/${tileName}_Mask.vrt --outfile=scratch/${tileName}_Mask.tif --calc="255*(maximum(A<0, A==-9998))" --type=Byte --NoDataValue=0
 	gdal_polygonize.py -f "ESRI Shapefile" scratch/${tileName}_Mask.tif scratch/mask.shp
@@ -246,6 +247,6 @@ rm ${tileName}_Coverage.* > /dev/null 2> /dev/null
 rm ${tileName}_Final.* > /dev/null 2> /dev/null
 
 # Remove extract directories, oldest first, when there exists more than an allowed amount
-find /vagrant/source/eagg/ -mindepth 1 -maxdepth 1 -not -empty -type d -printf "%T@ %p\n" | sort -n | cut -d ' ' -f2 | tail -n +${maxExtractsAllowed} | xargs rm -rf
+find $scratchDir -mindepth 1 -maxdepth 1 -not -empty -type d -printf "%T@ %p\n" | sort -n | cut -d ' ' -f2 | tail -n +${maxExtractsAllowed} | xargs rm -rf
 
 cd $currentDir
