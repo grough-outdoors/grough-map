@@ -37,6 +37,9 @@ psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}surface.sql" > /dev/
 echo "--> Restoring elevation schema..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}elevation.sql" > /dev/null 
 
+echo "--> Restoring elevation source schema..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}elevation_source.sql" > /dev/null 
+
 echo "--> Restoring watercourse schema..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}watercourse.sql" > /dev/null 
 
