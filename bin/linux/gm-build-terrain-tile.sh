@@ -42,7 +42,7 @@ function getNeighbouringTiles {
 function downloadAndExtractTile {
 	# Check for archived LiDAR data
 	if [ -e "${eaTileDir}/LIDAR-DTM-2M-${1}.zip" ] || [ -e "${eaTileDir}/2m_res_${1}_dtm.zip" ]; then
-		if [ ! -d "${eaTileDir}/LIDAR-DTM-2M-${1}/" ]; then
+		if [ ! -d "${scratchDir}/LIDAR-DTM-2M-${1}/" ]; then
 			echo "Extracting ZIP file with EA/NRW LiDAR data..."
 			unzip -o "${eaTileDir}/LIDAR-DTM-2M-${1}.zip" -d "${scratchDir}/LIDAR-DTM-2M-${1}/"
 			unzip -o "${eaTileDir}/2m_res_${1}_dtm.zip" -d "${scratchDir}/LIDAR-DTM-2M-${1}/"
@@ -96,9 +96,7 @@ targetDir="/vagrant/source/terrain-composite/"
 currentDir=`pwd`
 maxExtractsAllowed=25
 
-mkdir $targetDir/contours > /dev/null 2> /dev/null
 mkdir $targetDir/grid > /dev/null 2> /dev/null
-mkdir $targetDir/coverage > /dev/null 2> /dev/null
 
 cd $scratchDir
 rm -rf scratch > /dev/null 2> /dev/null
@@ -210,14 +208,29 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		_src_contours c;
 EoSQL
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+BEGIN;
+	CREATE TABLE IF NOT EXISTS _src_coverage (id integer, geom geometry);
+COMMIT;
+BEGIN;
 	INSERT INTO elevation_source (source_geom, source_lidar)
 	SELECT 
-		ST_Multi(ST_Simplify(c.geom, 2.5)),
+		CASE WHEN Count(c.geom) > 0
+			THEN ST_Multi(ST_CollectionExtract(ST_Collect(ST_Simplify(c.geom, 2.5)), 3))
+			ELSE ST_Multi(A.box)
+		END,
 		false
-	FROM 
-		_src_coverage c;
+	FROM
+		(SELECT $deleteBox AS box) A
+	LEFT JOIN
+		_src_coverage c
+	ON
+		true
+	GROUP BY
+		A.box;
+COMMIT;
 EoSQL
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+BEGIN;
 	INSERT INTO elevation_source (source_geom, source_lidar)
 	SELECT
 		ST_Multi(
@@ -229,12 +242,13 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		true
 	FROM
 		(SELECT $deleteBox AS box) A
-	LEFT JOIN
+	INNER JOIN
 		_src_coverage c
 	ON
 		true
 	GROUP BY
 		A.box;
+COMMIT;
 EoSQL
 
 echo "--> Removing temporary tables"

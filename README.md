@@ -8,16 +8,12 @@ High quality mapping for the outdoors. Map tiles are generated using composite d
 4. Provision the machine
 	1. Provision the machine with 'vagrant up'.
 	2. Log into the machine with 'vagrant ssh'.
-	3. Change directory to '/vagrant/bin/linux/'.
 	3. Run each build step.
 
 ## Build steps
 
 Load in the basic schema required...
 - gm-restore-schema
-
-Download and pull in OSM data
-- gm-update-osm 
 
 Fetch the required data from the web...
 - gm-download-grid
@@ -27,6 +23,7 @@ Fetch the required data from the web...
 - gm-download-ea \<tile\>
 - gm-download-nrw \<tile\>
 - gm-download-prow	(TODO: Only covers updates from GeoServer)
+- gm-download-osm 
  
 Import source data to the database...
 - gm-import-grid
