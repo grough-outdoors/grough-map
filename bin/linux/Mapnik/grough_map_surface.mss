@@ -26,6 +26,24 @@
 @stream_default_thickness:				1.5;
 @stream_default_colour:					@river_default_casing_colour;
 
+@default_border_thickness:				4.0;
+@default_fill_colour:					white;
+@default_casing_colour:					#C0C0C0;
+@default_dash_line:						4;
+@default_dash_space:					4;
+
+@airport_default_border_thickness:		@default_border_thickness;
+@airport_default_fill_colour:			@default_fill_colour;
+@airport_default_casing_colour:			@default_casing_colour;
+@airport_default_dash_line:				@default_dash_line;
+@airport_default_dash_space:			@default_dash_space;
+
+@other_default_border_thickness:		@default_border_thickness;
+@other_default_fill_colour:				@default_fill_colour;
+@other_default_casing_colour:			@default_casing_colour;
+@other_default_dash_line:				@default_dash_line;
+@other_default_dash_space:				@default_dash_space;
+
 .surface[class_name="Woodland"] {
 	line-width: @woodland_default_border_thickness;
 	line-color: @woodland_default_casing_colour;
@@ -38,7 +56,7 @@
 	polygon-fill: @foreshore_default_fill_colour;
 }
 
-.surface[class_name="Beach"] {
+.surface[class_name="Sand beach"] {
 	line-width: @beach_default_border_thickness;
 	line-color: @beach_default_casing_colour;
 	polygon-fill: @beach_default_fill_colour;
@@ -66,4 +84,24 @@
 .watercourse-line[class_draw_line=1] {
 	line-width: @stream_default_thickness;
 	line-color: @stream_default_colour;
+}
+
+.surface[class_name="Taxiway"],
+.surface[class_name="Runway"] {
+	::casing {
+		line-width: @airport_default_border_thickness;
+		line-color: @airport_default_casing_colour;
+		line-dasharray: @airport_default_dash_line, @airport_default_dash_space;
+	}
+	::fill {
+		polygon-fill: @airport_default_fill_colour;
+	}
+}
+
+.surface[class_name="Activity area"],
+.surface[class_name="Grass"],
+.surface[class_name="Car park"] {
+	line-width: @other_default_border_thickness;
+	line-color: @other_default_casing_colour;
+	line-dasharray: @other_default_dash_line, @other_default_dash_space;
 }

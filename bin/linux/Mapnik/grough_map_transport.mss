@@ -3,7 +3,7 @@
 @edge_default_fill_colour:							white;
 @edge_default_casing_colour:						#707070;
 
-@edge_bridge_border_thickness:						2.0;
+@edge_bridge_border_thickness:						3.5;
 
 @edge_lanes_line_width:								1.0;
 @edge_lanes_line_colour:							@edge_default_casing_colour;

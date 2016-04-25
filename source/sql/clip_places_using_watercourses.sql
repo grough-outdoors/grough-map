@@ -17,7 +17,7 @@ FROM
 			p.place_id,
 			p.place_centre_geom,
 			ST_Area(place_geom) AS place_geom_original_area,
-			(ST_Dump(ST_Difference(p.place_geom, ST_Buffer(ST_Collect(w.watercourse_geom), 20.0, 'endcap=flat')))).*
+			(ST_Dump(ST_Difference(p.place_geom, ST_Buffer(ST_Collect(w.watercourse_geom), 10.0, 'endcap=square')))).*
 		FROM
 			place p
 		LEFT JOIN

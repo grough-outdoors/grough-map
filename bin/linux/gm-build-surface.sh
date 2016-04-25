@@ -38,6 +38,37 @@ psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/add_vmd_ornaments_to_surfa
 echo "--> Importing moorland..."
 # TODO: Need to process LiDAR
 
+echo "--> Importing airport runways and taxiways..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	INSERT INTO
+		surface (surface_geom, surface_class_id)
+	SELECT
+		ST_Multi(ST_Buffer(way, buffer_distance, 'endcap=flat join=mitre')) AS surface_geom,
+		CASE WHEN aeroway='runway' THEN 15
+			 WHEN aeroway='taxiway' THEN 14
+			 ELSE NULL
+		END AS surface_class_id
+	FROM 
+	(
+	SELECT
+		aeroway,
+		width,
+		way,
+		CASE WHEN width IS NOT NULL 
+				 AND regexp_replace(width, '[^0-9.]+', '')::double precision < 100 
+				 AND regexp_replace(width, '[^0-9.]+', '')::double precision > 10 
+			 THEN (regexp_replace(width, '[^0-9.]+', '')::double precision) / 2
+			 ELSE CASE WHEN aeroway = 'taxiway' THEN 10.0
+					   ELSE 25.0
+				  END
+		END AS buffer_distance
+	FROM
+		_src_osm_line
+	WHERE
+		aeroway IN ('runway', 'taxiway')
+	) SA
+EoSQL
+
 echo "--> Importing tidal water..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	INSERT INTO surface (surface_geom, surface_class_id)
@@ -48,6 +79,24 @@ echo "--> Importing rivers..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	INSERT INTO surface (surface_geom, surface_class_id)
 	SELECT ST_Multi(geom), 6 FROM _src_os_opmplc_surface_water_area;
+EoSQL
+
+echo "--> Importing activity areas..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	INSERT INTO surface (surface_geom, surface_class_id)
+	SELECT ST_Multi(way), 18 FROM _src_osm_polygon WHERE leisure IN ('track', 'pitch');
+EoSQL
+
+echo "--> Importing car parks..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	INSERT INTO surface (surface_geom, surface_class_id)
+	SELECT ST_Multi(way), 20 FROM _src_osm_polygon WHERE amenity IN ('parking');
+EoSQL
+
+echo "--> Importing grass..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	INSERT INTO surface (surface_geom, surface_class_id)
+	SELECT ST_Multi(way), 19 FROM _src_osm_polygon WHERE surface IN ('grass') OR landuse IN ('grass');
 EoSQL
 
 echo "--> Removing any non-polygons..."
@@ -67,6 +116,43 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	  USING gist
 	  (surface_geom);
 	ALTER TABLE surface CLUSTER ON "Idx: surface::surface_geom";
+EoSQL
+
+echo "--> Converting to sand beaches where applicable..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	UPDATE
+		surface
+	SET
+		surface_class_id = 7
+	FROM
+	(
+		SELECT
+			surface_id
+		FROM
+		(
+			SELECT
+				s.surface_id,
+				s.surface_geom,
+				ST_Collect(o.way) AS osm_geom
+			FROM
+				_src_osm_polygon o, surface s
+			WHERE
+				s.surface_class_id = 1
+			AND
+				( o.surface='sand' OR o.natural='sand' OR lower(o.name) LIKE '% sand' OR lower(o.name) LIKE '% sands' )
+			AND
+				o.way && s.surface_geom
+			AND
+				ST_Intersects(o.way, s.surface_geom)
+			GROUP BY
+				s.surface_id,
+				s.surface_geom
+		) SA
+		WHERE
+			ST_Area(ST_Intersection(ST_MakeValid(surface_geom), ST_MakeValid(osm_geom))) / ST_Area(surface_geom) > 0.2
+	) SB
+	WHERE
+		surface.surface_id = SB.surface_id;
 EoSQL
 
 echo "--> Cleaning up..."

@@ -7,7 +7,10 @@ SELECT
 	p.place_geom,
 	c.class_name,
 	c.class_label,
-	c.class_label_with_type
+	c.class_label_with_type,
+	c.class_allow_text_scale,
+	ST_Area(p.place_geom) / 1000000 AS place_square_km,
+	c.class_draw_order
 FROM
 	place p
 LEFT JOIN

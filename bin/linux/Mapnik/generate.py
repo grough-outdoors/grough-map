@@ -184,6 +184,16 @@ pg_cursor.execute("""\
 )
 pg_conn.commit()
 
+print('Creating SQL view for surface features below relief')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_surface_below_relief\" AS 
+	SELECT * 
+	FROM surface_extended
+	WHERE class_below_relief = true AND surface_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
+	"""
+)
+pg_conn.commit()
+
 print('Creating SQL view for surface features below zones')
 pg_cursor.execute("""\
 	CREATE OR REPLACE VIEW "map_render_surface_below_zones\" AS 
@@ -199,7 +209,7 @@ pg_cursor.execute("""\
 	CREATE OR REPLACE VIEW "map_render_surface_above_zones\" AS 
 	SELECT * 
 	FROM surface_extended
-	WHERE class_below_zones = false AND surface_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
+	WHERE class_below_zones = false AND class_below_relief = false AND surface_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
 	"""
 )
 pg_conn.commit()
@@ -211,26 +221,35 @@ pg_cursor.execute("""\
 		p.place_id,
 		p.place_name,
 		p.place_class_id,
-		CASE WHEN l.place_id IS NULL THEN ST_Multi(p.place_geom)
+		-- Fallback if either a seriously concave polygon is provided, or nothing is provided
+		CASE WHEN l.place_id IS NULL OR ST_Within(ST_Centroid(l.place_geom), l.place_geom) = false
+		     THEN ST_Multi(ST_Intersection(p.place_geom, ST_Buffer(p.place_centre_geom, 2500)))
 			 ELSE ST_Multi(l.place_geom)
 		END::geometry(MultiPolygon, 27700) as place_geom,
 		degrees(ST_Azimuth(l.place_nearest, p.place_centre_geom)) AS place_direction,
 		p.class_name,
-		p.class_label_with_type
+		p.class_label_with_type,
+		p.place_square_km,
+		p.class_allow_text_scale
 	FROM 
 		place_extended p
 	LEFT JOIN
 	(
 		SELECT
 			first(place_id) AS place_id,
-			first(place_geom) AS place_geom,
+			CASE WHEN first(place_preferred) = false
+				 THEN ST_Buffer(first(place_geom), first(class_text_size) / 2)
+			     ELSE first(place_geom) 
+			END AS place_geom,
 			first(place_nearest) AS place_nearest
 		FROM
 		(
 			SELECT
 				place_id,
 				place_geom,
-				place_nearest
+				place_nearest,
+				place_preferred,
+				class_text_size
 			FROM
 			(
 				SELECT
@@ -242,7 +261,11 @@ pg_cursor.execute("""\
 					CASE WHEN c.class_prefer_no_expansion = true AND ST_XMax(place_geom) - ST_XMin(place_geom) > class_text_size * longest_word(place_name) * 0.6  THEN place_geom
 					     ELSE ST_Intersection(ST_Buffer(ST_ClosestPoint(ST_Intersection(place_geom, z.label_zone), place_centre_geom), class_text_size * longest_word(place_name) * 0.80, 'quad_segs=2'), z.label_zone) 
 					END AS place_geom,
-					ST_ClosestPoint(ST_Intersection(place_geom, z.label_zone), place_centre_geom) AS place_nearest
+					ST_ClosestPoint(ST_Intersection(place_geom, z.label_zone), place_centre_geom) AS place_nearest,
+					CASE WHEN ST_XMax(place_geom) - ST_XMin(place_geom) > class_text_size * longest_word(place_name) * 2.0 AND
+							  ST_YMax(place_geom) - ST_YMin(place_geom) > class_text_size * 1.5 THEN true
+						 ELSE false
+					END AS place_preferred
 				FROM
 					place p
 				LEFT JOIN
@@ -258,9 +281,12 @@ pg_cursor.execute("""\
 			) SA
 			WHERE
 				ST_XMax(place_geom) - ST_XMin(place_geom) > class_text_size * longest_word(place_name) * 0.7
+			AND
+				ST_YMax(place_geom) - ST_YMin(place_geom) > class_text_size
 			ORDER BY
 				-- Preferred placement? One which has lots of space...
-				CASE WHEN ST_XMax(place_geom) - ST_XMin(place_geom) > class_text_size * longest_word(place_name) * 2.0 THEN true
+				CASE WHEN ST_XMax(place_geom) - ST_XMin(place_geom) > class_text_size * longest_word(place_name) * 2.0 AND
+				          ST_YMax(place_geom) - ST_YMin(place_geom) > class_text_size * 1.5 THEN true
 				     ELSE false
 				END DESC,
 				ST_Distance(place_geom, place_centre_geom) ASC
@@ -273,7 +299,9 @@ pg_cursor.execute("""\
 	WHERE 
 		p.place_centre_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
 	AND	
-		p.class_label = true;
+		p.class_label = true
+	ORDER BY
+		p.class_draw_order ASC
 	"""
 )
 pg_conn.commit()

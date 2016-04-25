@@ -4,7 +4,8 @@ SELECT
 	s.surface_class_id,
 	s.surface_geom,
 	c.class_name,
-	c.class_below_zones
+	c.class_below_zones,
+	c.class_below_relief
 FROM
 	surface s
 LEFT JOIN

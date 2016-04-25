@@ -87,6 +87,8 @@ COPY place_import (import_id, import_field, import_value, import_class_id) FROM 
 23	landuse	conservation	28
 24	landuse	military	29
 25	tourism	museum	30
+26	natural	wood	8
+27	natural	forest	8
 \.
 
 
@@ -94,7 +96,7 @@ COPY place_import (import_id, import_field, import_value, import_class_id) FROM 
 -- Name: place_import_import_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('place_import_import_id_seq', 25, true);
+SELECT pg_catalog.setval('place_import_import_id_seq', 27, true);
 
 
 --

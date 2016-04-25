@@ -74,6 +74,7 @@ ALTER TABLE ONLY feature_classes ALTER COLUMN class_id SET DEFAULT nextval('feat
 --
 
 COPY feature_classes (class_id, class_name, class_draw_order, class_subsurface, class_surface, class_overhead, class_plural_name, class_radius, class_label, class_label_rank) FROM stdin;
+50	Picnic table	\N	f	t	f	Picnic area	250	t	1
 19	Weir	\N	f	t	f	Weirs	200	t	4
 17	Ford	\N	f	t	f	Fords	125	t	4
 24	Dock	\N	f	t	f	Docks	200	t	5
@@ -129,7 +130,7 @@ COPY feature_classes (class_id, class_name, class_draw_order, class_subsurface, 
 -- Name: feature_classes_class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('feature_classes_class_id_seq', 49, true);
+SELECT pg_catalog.setval('feature_classes_class_id_seq', 50, true);
 
 
 --

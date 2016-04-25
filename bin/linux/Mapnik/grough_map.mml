@@ -17,8 +17,8 @@
 	"Layer": [
 	
 	{
-		"id": "surface", "name": "surface", "class": "surface",
-		"Datasource": { "table": "\"map_render_surface_below_zones\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
+		"id": "surface_below_relief", "name": "surface_below_relief", "class": "surface",
+		"Datasource": { "table": "\"map_render_surface_below_relief\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
@@ -32,12 +32,17 @@
 	},
 	
 	{
+		"id": "surface_below_zones", "name": "surface_below_zones", "class": "surface",
+		"Datasource": { "table": "\"map_render_surface_below_zones\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
+	},
+	
+	{
 		"id": "zone", "name": "zone", "class": "zone",
 		"Datasource": { "table": "\"map_render_zone\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
 	{
-		"id": "surface", "name": "surface", "class": "surface",
+		"id": "surface_above_zones", "name": "surface_above_zones", "class": "surface",
 		"Datasource": { "table": "\"map_render_surface_above_zones\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	

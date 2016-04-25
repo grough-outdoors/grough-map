@@ -35,7 +35,8 @@ CREATE TABLE place_classes (
     class_label boolean DEFAULT true,
     class_prefer_no_expansion boolean DEFAULT false NOT NULL,
     class_label_with_type boolean DEFAULT false NOT NULL,
-    class_label_min_km2 double precision DEFAULT 0 NOT NULL
+    class_label_min_km2 double precision DEFAULT 0 NOT NULL,
+    class_allow_text_scale boolean DEFAULT false NOT NULL
 );
 
 
@@ -73,37 +74,37 @@ ALTER TABLE ONLY place_classes ALTER COLUMN class_id SET DEFAULT nextval('place_
 -- Data for Name: place_classes; Type: TABLE DATA; Schema: public; Owner: grough-map
 --
 
-COPY place_classes (class_id, class_name, class_draw_order, class_text_size, class_wrap_width, class_aggregate_radius, class_label, class_prefer_no_expansion, class_label_with_type, class_label_min_km2) FROM stdin;
-10	Mountain	6	55	100	4000	t	f	f	0
-13	Large waterbody	7	100	100	2000	f	f	f	0
-12	Small waterbody	7	40	1	1500	t	t	f	0
-1	Farm	11	40	1	500	t	f	f	0
-3	City	1	90	400	5000	t	f	f	0
-4	Hamlet	5	40	1	1000	t	f	f	0
-2	Village	3	55	50	1500	t	f	f	0
-6	Town	2	70	100	2500	t	f	f	0
-7	Settlement	6	40	1	1000	t	f	f	0
-9	Hill	8	40	100	3000	t	f	f	0
-5	Suburb	4	45	50	1500	t	f	f	0
-11	Moor	9	60	1	3000	t	f	f	0
-8	Forest	7	60	1	2000	t	f	f	0
-18	Airport	100	40	1	5000	t	f	f	0
-23	Hospital	100	40	1	1000	t	f	t	0
-24	Stadium	100	40	1	1000	t	f	f	0.100000000000000006
-27	Industrial park	100	40	1	2500	t	t	t	0.5
-28	Conservation area	100	40	1	100	t	t	f	0.5
-14	Golf course	100	40	1	2000	t	t	t	0.200000000000000011
-15	Public common	100	40	1	1000	t	t	f	0.100000000000000006
-16	School	100	40	1	1000	t	t	t	0.100000000000000006
-17	University	100	40	1	3000	t	t	t	0.100000000000000006
-19	Tourist attraction	100	40	1	1000	t	t	f	0.25
-20	Park	100	50	1	1000	t	f	f	0.100000000000000006
-21	College	100	40	1	1000	t	t	t	0.100000000000000006
-22	Cemetery	100	40	1	1000	t	f	t	0.0800000000000000017
-25	Recreation ground	100	40	1	100	t	f	t	0.100000000000000006
-26	Sports centre	100	40	1	1000	t	t	f	0.100000000000000006
-30	Museum	100	40	1	1000	t	t	f	0.25
-29	Military establishment	100	40	1	3000	t	f	f	0.25
+COPY place_classes (class_id, class_name, class_draw_order, class_text_size, class_wrap_width, class_aggregate_radius, class_label, class_prefer_no_expansion, class_label_with_type, class_label_min_km2, class_allow_text_scale) FROM stdin;
+10	Mountain	6	55	100	4000	t	f	f	0	f
+13	Large waterbody	7	100	100	2000	f	f	f	0	f
+12	Small waterbody	7	40	1	1500	t	t	f	0	f
+1	Farm	11	40	1	500	t	f	f	0	f
+3	City	1	90	400	5000	t	f	f	0	f
+4	Hamlet	5	40	1	1000	t	f	f	0	f
+2	Village	3	55	50	1500	t	f	f	0	f
+6	Town	2	70	100	2500	t	f	f	0	f
+7	Settlement	6	40	1	1000	t	f	f	0	f
+9	Hill	8	40	100	3000	t	f	f	0	f
+5	Suburb	4	45	50	1500	t	f	f	0	f
+23	Hospital	100	40	1	1000	t	f	t	0	f
+24	Stadium	100	40	1	1000	t	f	f	0.100000000000000006	f
+14	Golf course	100	40	1	2000	t	t	t	0.200000000000000011	f
+16	School	100	40	1	1000	t	t	t	0.100000000000000006	f
+17	University	100	40	1	3000	t	t	t	0.100000000000000006	f
+19	Tourist attraction	100	40	1	1000	t	t	f	0.25	f
+21	College	100	40	1	1000	t	t	t	0.100000000000000006	f
+22	Cemetery	100	40	1	1000	t	f	t	0.0800000000000000017	f
+25	Recreation ground	100	40	1	100	t	f	t	0.100000000000000006	f
+26	Sports centre	100	40	1	1000	t	t	f	0.100000000000000006	f
+30	Museum	100	40	1	1000	t	t	f	0.25	t
+29	Military establishment	100	40	1	3000	t	f	f	0.25	t
+28	Conservation area	100	40	1	100	t	t	f	0.5	t
+27	Industrial park	100	40	1	2500	t	t	t	0.5	t
+18	Airport	100	40	1	5000	t	f	f	0	t
+15	Public common	100	40	1	1000	t	t	f	0.100000000000000006	t
+11	Moor	9	60	1	3000	t	f	f	0	t
+8	Forest	7	60	1	2000	t	f	f	0	t
+20	Park	100	50	1	1000	t	f	f	0.100000000000000006	t
 \.
 
 
