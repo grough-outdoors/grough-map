@@ -118,41 +118,33 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	ALTER TABLE surface CLUSTER ON "Idx: surface::surface_geom";
 EoSQL
 
-echo "--> Converting to sand beaches where applicable..."
+echo "--> Adding sand beaches where applicable..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-	UPDATE
+	INSERT INTO
 		surface
-	SET
-		surface_class_id = 7
+		(surface_geom, surface_class_id)
+	SELECT
+		surface_geom,
+		7
 	FROM
 	(
 		SELECT
-			surface_id
+			s.surface_id,
+			ST_Multi(ST_CollectionExtract(ST_MakeValid(ST_Intersection(ST_MakeValid(s.surface_geom), ST_MakeValid(ST_Union(o.way)))), 3)) AS surface_geom
 		FROM
-		(
-			SELECT
-				s.surface_id,
-				s.surface_geom,
-				ST_Collect(o.way) AS osm_geom
-			FROM
-				_src_osm_polygon o, surface s
-			WHERE
-				s.surface_class_id = 1
-			AND
-				( o.surface='sand' OR o.natural='sand' OR lower(o.name) LIKE '% sand' OR lower(o.name) LIKE '% sands' )
-			AND
-				o.way && s.surface_geom
-			AND
-				ST_Intersects(o.way, s.surface_geom)
-			GROUP BY
-				s.surface_id,
-				s.surface_geom
-		) SA
+			_src_osm_polygon o, surface s
 		WHERE
-			ST_Area(ST_Intersection(ST_MakeValid(surface_geom), ST_MakeValid(osm_geom))) / ST_Area(surface_geom) > 0.2
-	) SB
-	WHERE
-		surface.surface_id = SB.surface_id;
+			s.surface_class_id = 1
+		AND
+			( o.surface='sand' OR o.natural='sand' OR lower(o.name) LIKE '% sand' OR lower(o.name) LIKE '% sands' )
+		AND
+			o.way && s.surface_geom
+		AND
+			ST_Intersects(o.way, s.surface_geom)
+		GROUP BY
+			s.surface_id,
+			s.surface_geom
+	) SA;
 EoSQL
 
 echo "--> Cleaning up..."

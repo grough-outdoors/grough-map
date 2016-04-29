@@ -86,6 +86,7 @@
 	line-color: @stream_default_colour;
 }
 
+/*
 .surface[class_name="Taxiway"],
 .surface[class_name="Runway"] {
 	::casing {
@@ -97,6 +98,7 @@
 		polygon-fill: @airport_default_fill_colour;
 	}
 }
+*/
 
 .surface[class_name="Activity area"],
 .surface[class_name="Grass"],

@@ -470,9 +470,9 @@ print('Creating SQL view for elevation features')
 pg_cursor.execute("""\
 	CREATE OR REPLACE VIEW "map_render_elevation\" AS 
 	SELECT 
-		*,
-		CASE WHEN elevation_level::integer % 50 = 0 THEN true ELSE false END AS elevation_major
-	FROM elevation
+		e.*,
+		CASE WHEN e.elevation_level::integer % 50 = 0 THEN true ELSE false END AS elevation_major
+	FROM elevation e
 	WHERE elevation_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
 	"""
 )
@@ -581,23 +581,9 @@ for level in xrange(-4, 5):
     )
     pg_conn.commit()
 
-
-# TODO: Test for the grid file existing	
 # Generate a relief image
-print('Creating hillshade file...')
-call( "gdaldem hillshade -compute_edges -alt 30 /vagrant/source/terrain-composite/grid/" + map_ref_idx + ".img relief/__aspect_grey.tif", shell=True )
-print('Creating aspect file...')
-call( "gdaldem color-relief /vagrant/source/terrain-composite/grid/" + map_ref_idx + ".img grough_relief.txt relief/__relief.tif", shell=True )
-print('Colouring aspect file...')
-call( "convert relief/__aspect_grey.tif -recolor \"0.5 0.5 0.5, 0.5 0.5 0.5, 0.0 0.0 0.0\" -resize 500x500  relief/__aspect.tif", shell=True )
-print('Merging relief files together (1)...')
-call( "convert -size 500x500 xc:white -colorspace RGB -alpha set -depth 8 -type TrueColor -compose over \( relief/__relief.tif -alpha set -channel A -evaluate set 20% \) -composite relief/_relief1.tif", shell=True )
-print('Merging relief files together (2)...')
-call( "convert relief/_relief1.tif -colorspace RGB -alpha set -depth 8 -type TrueColor -compose Overlay \( relief/__aspect.tif -alpha set -channel A -evaluate set 80% \) -composite relief/_relief2.tif", shell=True )
-print('Merging relief files together (3)...')
-call( "convert -size 500x500 xc:white \( relief/_relief2.tif -alpha set -channel A -evaluate set 50% \) -composite -depth 8 -layers flatten relief/Relief.tif", shell=True )
-print('Adding georeference information...')
-call( "gdal_translate -ot Byte -a_srs EPSG:27700 -a_ullr `gdalinfo relief/__aspect_grey.tif | awk '/(Upper Left)|(Lower Right)/' | awk '{gsub(/,|\)|\(/,\" \");print $3 \" \" $4}' | sed ':a;N;$!ba;s/\\n/ /g'` relief/Relief.tif relief/ReliefGeo.tif", shell=True )
+print('Creating hillshade...')
+call( "../relief.sh " + map_ref_idx, shell=True )
 print('Finished creating hillshade overlay')
 
 print('Creating map raster...')

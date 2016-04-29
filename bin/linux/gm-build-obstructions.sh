@@ -18,27 +18,7 @@ do
 	echo "-----------------------"
 	echo "  Processing $tileName"
 	echo "-----------------------"
-	"$binDir/gm-build-terrain-tile.sh" "$tileName"
+	"$binDir/gm-build-obstructions-tile.sh" "$tileName"
 done
-
-echo "--> Removing contours contained within watercourses..."
-psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-	DELETE FROM
-		elevation
-	WHERE
-		elevation_id IN
-	(
-		SELECT
-			elevation_id
-		FROM
-			elevation e, surface s
-		WHERE
-			e.elevation_geom && s.surface_geom
-		AND
-			s.surface_class_id IN (5, 6)
-		AND
-			ST_Within(e.elevation_geom, s.surface_geom)
-	);
-EoSQL
 
 cd $currentDir

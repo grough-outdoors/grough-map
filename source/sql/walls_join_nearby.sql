@@ -1,6 +1,6 @@
-﻿DROP TABLE IF EXISTS _src_walls_joins;
+﻿DROP TABLE IF EXISTS _src_obstructions_joins;
 CREATE TABLE
-	_src_walls_joins
+	_src_obstructions_joins
 AS
 SELECT
 	First(id1) AS ID1,
@@ -100,9 +100,9 @@ FROM
 				ELSE ST_EndPoint(B.geom)
 			END AS TargetEnd
 		FROM
-			_src_walls A
+			_src_obstructions A
 		INNER JOIN
-			_src_walls B
+			_src_obstructions B
 		ON
 			( ST_DWithin(ST_StartPoint(A.geom), B.geom, 75.0) OR ST_DWithin(ST_EndPoint(A.geom), B.geom, 75.0) )
 		--AND
@@ -125,20 +125,20 @@ HAVING
 	First(SB.id2) IS NOT NULL;
 
 DELETE FROM
-	_src_walls_joins
+	_src_obstructions_joins
 WHERE
 	ST_GeometryType(geom) != 'ST_LineString';
 
-DROP INDEX IF EXISTS "_src_walls_joins::geom";
-CREATE INDEX "_src_walls_joins::geom"
-  ON public._src_walls_joins
+DROP INDEX IF EXISTS "_src_obstructions_joins::geom";
+CREATE INDEX "_src_obstructions_joins::geom"
+  ON public._src_obstructions_joins
   USING gist
   (geom);
-ALTER TABLE public._src_walls_joins CLUSTER ON "_src_walls_joins::geom";
+ALTER TABLE public._src_obstructions_joins CLUSTER ON "_src_obstructions_joins::geom";
 
-DROP TABLE IF EXISTS _src_walls_joins_unclean;
+DROP TABLE IF EXISTS _src_obstructions_joins_unclean;
 CREATE TABLE
-	_src_walls_joins_unclean
+	_src_obstructions_joins_unclean
 AS
 SELECT 
 	*
@@ -151,9 +151,9 @@ FROM
 		ST_Length(Joiners.geom) AS JoinLength,
 		Sum(ST_Length(ST_Intersection(Unclean.geom, ST_Intersection(ST_Buffer(Joiners.geom, 5.0, 'endcap=flat join=round'), ST_Buffer(Unclean.geom, 5.0, 'endcap=flat join=round'))))) AS UncleanLength
 	FROM 
-		_src_walls_joins Joiners
+		_src_obstructions_joins Joiners
 	LEFT JOIN 
-		_src_walls_unclean Unclean
+		_src_obstructions_unclean Unclean
 	ON 
 		Unclean.threshold < 200
 	AND
@@ -171,11 +171,11 @@ AND
 	SA.JoinLength / SA.UncleanLength > 0.35; 
 
 DELETE FROM
-	_src_walls_joins_unclean
+	_src_obstructions_joins_unclean
 WHERE
 	ST_GeometryType(UncleanGeom) != 'ST_MultiLineString';
 
-INSERT INTO _src_walls (geom, base, unclean_id)
+INSERT INTO _src_obstructions (geom, base, unclean_id)
 SELECT
 	NewGeom,
 	false,
@@ -185,10 +185,10 @@ FROM
 	SELECT
 		(ST_Dump(UncleanGeom)).geom AS NewGeom
 	FROM
-		_src_walls_joins_unclean
+		_src_obstructions_joins_unclean
 ) AS SA;
 
-INSERT INTO _src_walls (geom, base, unclean_id)
+INSERT INTO _src_obstructions (geom, base, unclean_id)
 SELECT
 	NewGeom,
 	false,
@@ -198,7 +198,7 @@ FROM
 	SELECT
 		(ST_Dump(JoinGeom)).geom AS NewGeom
 	FROM
-		_src_walls_joins_unclean
+		_src_obstructions_joins_unclean
 ) AS SA;
 
-SELECT populate_geometry_columns('public._src_walls_joins_unclean'::regclass); 
+SELECT populate_geometry_columns('public._src_obstructions_joins_unclean'::regclass); 

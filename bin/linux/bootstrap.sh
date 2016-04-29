@@ -100,27 +100,6 @@ echo "-----------------------------------"
 
 echo "--> Adding additional database functions..."
 sudo -u postgres psql -f /vagrant/source/sql/add_extra_functions.sql $DB_NAME
-
-echo "-----------------------------------"
-echo "--> Adding Mapnik v2.3 repository..."
-echo "-----------------------------------"
-sudo apt-add-repository ppa:mapnik/nightly-2.3 -y 
-sudo apt-get update 
-
-echo "-----------------------------------"
-echo "--> Installing Mapnik library..."
-echo "-----------------------------------"
-sudo apt-get install -y libmapnik libmapnik-dev 
-sudo apt-get install -y mapnik-utils 
-
-echo "-----------------------------------"
-echo "--> Installing Mapnik for Python..."
-echo "-----------------------------------"
-sudo apt-get install -y python-mapnik 
-sudo apt-get install -y mapnik-input-plugin-gdal mapnik-input-plugin-ogr\
-  mapnik-input-plugin-postgis \
-  mapnik-input-plugin-sqlite \
-  mapnik-input-plugin-osm 
   
 echo "-----------------------------------"
 echo "--> Installing other Python requirements..."
@@ -175,6 +154,50 @@ echo "-----------------------------------"
 echo "--> Installing ImageMagick..."  
 echo "-----------------------------------"
 sudo apt-get -y install imagemagick
+
+echo "-----------------------------------"
+echo "--> Building OpenCV tools..."  
+echo "-----------------------------------"
+sudo apt-get -y install libopencv-dev
+cd /vagrant/bin/linux/CVTool/
+make clean && make cvtool
+cd -
+
+echo "-----------------------------------"
+echo "--> Installing GRASS GIS..."  
+echo "-----------------------------------"
+cd /home/vagrant
+rm -rf /home/vagrant/grass*
+
+shellFile=`curl https://grass.osgeo.org/grass70/binary/linux/snapshot/ | grep '\.sh' | grep -o '<a.*href=.*>' | sed 's/<a href="//g' | sed 's/\".*$//'`
+tarFile=`curl https://grass.osgeo.org/grass70/binary/linux/snapshot/ | grep '\.tar' | grep -o '<a.*href=.*>' | sed 's/<a href="//g' | sed 's/\".*$//'`
+
+wget "https://grass.osgeo.org/grass70/binary/linux/snapshot/$shellFile"
+wget "https://grass.osgeo.org/grass70/binary/linux/snapshot/$tarFile"
+chmod +x "$shellFile"
+sudo "./$shellFile" "$tarFile"
+cd -
+
+echo "-----------------------------------"
+echo "--> Adding Mapnik v2.3 repository..."
+echo "-----------------------------------"
+sudo apt-add-repository ppa:mapnik/nightly-2.3 -y 
+sudo apt-get update
+
+echo "-----------------------------------"
+echo "--> Installing Mapnik library..."
+echo "-----------------------------------"
+sudo apt-get install -y libmapnik libmapnik-dev 
+sudo apt-get install -y mapnik-utils 
+
+echo "-----------------------------------"
+echo "--> Installing Mapnik for Python..."
+echo "-----------------------------------"
+sudo apt-get install -y python-mapnik 
+sudo apt-get install -y mapnik-input-plugin-gdal mapnik-input-plugin-ogr\
+  mapnik-input-plugin-postgis \
+  mapnik-input-plugin-sqlite \
+  mapnik-input-plugin-osm 
 
 echo "-----------------------------------"
 echo "--> Converting all line endings..."  

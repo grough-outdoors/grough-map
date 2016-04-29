@@ -1,5 +1,5 @@
 ﻿DELETE FROM
-	_src_walls
+	_src_obstructions
 WHERE
 	id
 IN
@@ -16,9 +16,9 @@ FROM (
 			mod(degrees(ST_Azimuth(ST_StartPoint(ST_Intersection(B.geom, ST_Buffer(A.geom, 30.0))), ST_EndPoint(ST_Intersection(B.geom, ST_Buffer(A.geom, 30.0)))))::numeric + 180.0, 360.0)
 		) AS DiffAngle
 	FROM
-		_src_walls A
+		_src_obstructions A
 	LEFT JOIN
-		_src_walls B
+		_src_obstructions B
 	ON
 		ST_DWithin(A.geom, B.geom, 5.0)
 	AND
