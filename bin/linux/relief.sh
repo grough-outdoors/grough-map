@@ -43,6 +43,19 @@ edgeRight=$(( $tileCentreE + 6000 ))
 edgeUp=$(( $tileCentreN + 6000 ))
 edgeDown=$(( $tileCentreN - 6000 ))
 
+echo "--> Assessing region..."
+tileData=`psql -Ugrough-map grough-map -h 127.0.0.1 -A -t -c "SELECT min(elevation_level)::integer AS min_lev, max(elevation_level)::integer AS max_lev, avg(elevation_level)::integer AS avg_lev FROM elevation WHERE elevation_geom && ST_MakeBox2D(ST_Point($edgeLeft, $edgeDown),ST_Point($edgeRight, $edgeUp))"`
+IFS='|'; read -r -a tileAssessment <<< "$tileData"
+echo "   Min: ${tileAssessment[0]}"
+echo "   Max: ${tileAssessment[1]}"
+echo "   Avg: ${tileAssessment[2]}"
+if [ ${tileAssessment[1]} -le 300 ]; 
+then
+	enableIDW=1
+else 
+	enableIDW=0
+fi
+
 cellRes=10
 cellsX=$(( ($edgeRight - $edgeLeft)/$cellRes ))
 cellsY=$(( ($edgeRight - $edgeLeft)/$cellRes ))
@@ -60,7 +73,12 @@ echo "--> Converting to raster..."
 v.to.rast input=elev_contours output=contour_raster use=attr attribute_column=LEV
 
 echo "--> Creating surface..."
-r.surf.contour in=contour_raster output=elev_raster
+if [ "$enableIDW" -ge 1 ]; then
+	r.mapcalc expression="contour_raster_int=round(contour_raster)"	
+	r.surf.idw input=contour_raster_int output=elev_raster npoints=50
+else
+	r.surf.contour in=contour_raster output=elev_raster
+fi
 
 echo "--> Exporting from GRASS..."
 r.out.gdal input=elev_raster output="${scratchDir}/${workingDir}/elev_${tileName}.img" format=HFA type=Float32 -f --overwrite --verbose
@@ -75,7 +93,7 @@ convert -size ${cellsX}x${cellsY} xc:white \( "${scratchDir}/${workingDir}/aspec
 gdal_translate -ot Byte -a_srs EPSG:27700 -a_ullr $edgeLeft $edgeUp $edgeRight $edgeDown "${scratchDir}/${workingDir}/final_relief_${tileName}.tif" "${scratchDir}/${workingDir}/geo_final_relief_${tileName}.tif"
 
 echo "--> Copying files..."
-cp "${scratchDir}/${workingDir}/"*.tif /vagrant/volatile/ # For testing only
+#cp "${scratchDir}/${workingDir}/"*.tif /vagrant/volatile/ # For testing only
 cp "${scratchDir}/${workingDir}/geo_final_relief_${tileName}.tif" "${binDir}/Mapnik/relief/ReliefGeo.tif"
 
 echo "--> Cleaning files..."
