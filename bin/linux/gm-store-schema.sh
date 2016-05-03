@@ -34,6 +34,9 @@ pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t elevation --schema-only > elevat
 echo "--> Storing elevation source schema..."
 pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t elevation_source --schema-only > elevation_source.sql
 
+echo "--> Storing raw obstructions schema..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t raw_obstructions --schema-only > raw_obstructions.sql
+
 echo "--> Storing watercourse schema..."
 pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t watercourse --schema-only > watercourse.sql
 

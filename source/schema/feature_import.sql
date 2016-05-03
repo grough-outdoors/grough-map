@@ -156,6 +156,10 @@ COPY feature_import (import_id, import_field, import_value, import_class_id, imp
 91	man_made	spoil_heap	45	t	f	f	t	f
 101	landuse	quarry	49	t	f	f	t	f
 102	leisure	picnic_table	50	t	f	f	f	f
+103	man_made	pier	51	t	f	f	t	t
+104	man_made	jetty	23	t	f	f	t	t
+105	man_made	slipway	22	t	f	f	t	t
+106	man_made	lock	21	t	f	f	t	t
 \.
 
 
@@ -163,7 +167,7 @@ COPY feature_import (import_id, import_field, import_value, import_class_id, imp
 -- Name: feature_import_import_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('feature_import_import_id_seq', 102, true);
+SELECT pg_catalog.setval('feature_import_import_id_seq', 106, true);
 
 
 --

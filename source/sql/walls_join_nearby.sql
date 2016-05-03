@@ -105,16 +105,12 @@ FROM
 			_src_obstructions B
 		ON
 			( ST_DWithin(ST_StartPoint(A.geom), B.geom, 75.0) OR ST_DWithin(ST_EndPoint(A.geom), B.geom, 75.0) )
-		--AND
-			--ST_Touches(A.geom, B.geom) = False
 		AND
 			A.id != B.id
 		WHERE
 			ST_Length(A.geom) > 2.5
 		AND
 			ST_Length(B.geom) > 2.5
-		--AND
-		--	A.id IN (41721, 1523, 41816, 41753, 41802)
 	) AS SA
 	ORDER BY
 		SA.Distance ASC
@@ -136,45 +132,6 @@ CREATE INDEX "_src_obstructions_joins::geom"
   (geom);
 ALTER TABLE public._src_obstructions_joins CLUSTER ON "_src_obstructions_joins::geom";
 
-DROP TABLE IF EXISTS _src_obstructions_joins_unclean;
-CREATE TABLE
-	_src_obstructions_joins_unclean
-AS
-SELECT 
-	*
-FROM
-(
-	SELECT 
-		--Joiners.geom AS JoinGeom,
-		ST_Collect(Unclean.geom) AS UncleanGeom,
-		Joiners.geom AS JoinGeom,
-		ST_Length(Joiners.geom) AS JoinLength,
-		Sum(ST_Length(ST_Intersection(Unclean.geom, ST_Intersection(ST_Buffer(Joiners.geom, 5.0, 'endcap=flat join=round'), ST_Buffer(Unclean.geom, 5.0, 'endcap=flat join=round'))))) AS UncleanLength
-	FROM 
-		_src_obstructions_joins Joiners
-	LEFT JOIN 
-		_src_obstructions_unclean Unclean
-	ON 
-		Unclean.threshold < 200
-	AND
-		ST_DWithin(Joiners.geom, Unclean.geom, 5)
-	AND 
-		ST_HausdorffDistance(ST_Intersection(Unclean.geom, ST_Intersection(ST_Buffer(Joiners.geom, 5.0, 'endcap=flat join=round'), ST_Buffer(Unclean.geom, 5.0, 'endcap=flat join=round'))), ST_Intersection(Joiners.geom, ST_Intersection(ST_Buffer(Joiners.geom, 5.0, 'endcap=flat join=round'), ST_Buffer(Unclean.geom, 5.0, 'endcap=flat join=round')))) < 5.0
-	GROUP BY 
-		Joiners.geom
-	HAVING 
-		Count(Unclean.id) > 0
-) AS SA
-WHERE
-	SA.UncleanLength > 0.0
-AND
-	SA.JoinLength / SA.UncleanLength > 0.35; 
-
-DELETE FROM
-	_src_obstructions_joins_unclean
-WHERE
-	ST_GeometryType(UncleanGeom) != 'ST_MultiLineString';
-
 INSERT INTO _src_obstructions (geom, base, unclean_id)
 SELECT
 	NewGeom,
@@ -183,22 +140,7 @@ SELECT
 FROM
 (
 	SELECT
-		(ST_Dump(UncleanGeom)).geom AS NewGeom
+		geom AS NewGeom
 	FROM
-		_src_obstructions_joins_unclean
+		_src_obstructions_joins
 ) AS SA;
-
-INSERT INTO _src_obstructions (geom, base, unclean_id)
-SELECT
-	NewGeom,
-	false,
-	NULL
-FROM
-(
-	SELECT
-		(ST_Dump(JoinGeom)).geom AS NewGeom
-	FROM
-		_src_obstructions_joins_unclean
-) AS SA;
-
-SELECT populate_geometry_columns('public._src_obstructions_joins_unclean'::regclass); 

@@ -4,7 +4,8 @@ echo "Preparing to download Natural Resources Wales LiDAR..."
 
 targetDir="/vagrant/source/eagg/"
 targetTile=`echo $1 | tr '[:lower:]' '[:upper:]'`
-targetFile="2m_res_${targetTile}_dtm.zip"
+targetType=`echo $2 | tr '[:upper:]' '[:lower:]'`
+targetFile="2m_res_${targetTile}_${targetType}.zip"
 urlBase="http://lle.blob.core.windows.net/lidar/"
 
 echo "Requesting header data for ${urlBase}${targetFile}..."

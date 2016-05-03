@@ -76,90 +76,140 @@ bool replace(std::string& str, const std::string& from, const std::string& to) {
 
 int main(int argc, char *argv[])
 {
-	uchar mainThreshold = 40;
+	uchar softwareMode = 0;
+	
+	if (strcmp(argv[2], "line") == 0) {
+		softwareMode = 1;
+	}
 
+	if (strcmp(argv[2], "polygon") == 0) {
+		softwareMode = 2;
+	}
+	
+	if (softwareMode == 0) {
+		std::cout << "Must specify either line or polygon as mode of operation.\n";
+		return -1;
+	}
+	
 	std::cout << "We're running...\n";
 
 	std::string inFilename(argv[1]);
 	std::string outFilename(argv[1]);
-	replace(outFilename, ".", "_Skel.");
 	
-	std::cout << "Input file: " << inFilename << "\n";
-	std::cout << "Output file: " << outFilename << "\n";
-	
-	cv::Mat bwImage = cv::imread(argv[1], CV_LOAD_IMAGE_GRAYSCALE);
+	if (softwareMode == 1) {
+		std::cout << "Generating LINES...\n";
+		replace(outFilename, ".", "_Skel.");
+		
+		std::cout << "Input file: " << inFilename << "\n";
+		std::cout << "Output file: " << outFilename << "\n";
+		
+		cv::Mat bwImage = cv::imread(argv[1], CV_LOAD_IMAGE_GRAYSCALE);
 
-	if (bwImage.empty())
-	{
-		std::cout << "Could not open source image.\n";
-		return -1;
+		if (bwImage.empty())
+		{
+			std::cout << "Could not open source image.\n";
+			return -1;
+		}
+		
+		// ----
+		// Create skeleton
+		// ----
+		std::cout << "Generating skeleton...\n";
+		//cv::threshold(srcImage, srcImage, 1, 255, CV_THRESH_BINARY);
+		thinning(bwImage, 4);	// Max iterations for thinning op
+
+		//cv::imwrite("/vagrant/volatile/test_skel1.tif", bwImage);
+
+		// ----
+		// Create deletion mask
+		// ----
+		std::cout << "Generating deletion mask...\n";
+		cv::Mat bwDeleteMask(bwImage.size(), CV_8UC1);
+		cv::Mat matMorphDeletionDilate = cv::getStructuringElement(
+			cv::MORPH_CROSS,
+			cv::Size(3, 3),
+			cv::Point(1, 1)
+		);
+		cv::morphologyEx(bwImage, bwDeleteMask, cv::MORPH_DILATE, matMorphDeletionDilate);
+
+		cv::Mat matMorphDeletionClose = cv::getStructuringElement(
+			cv::MORPH_CROSS,
+			cv::Size(3, 3),
+			cv::Point(1, 1)
+		);
+		cv::morphologyEx(bwDeleteMask, bwDeleteMask, cv::MORPH_CLOSE, matMorphDeletionClose);
+
+		cv::Mat matMorphDeletionErode = cv::getStructuringElement(
+			cv::MORPH_ELLIPSE,
+			cv::Size(5, 5),
+			cv::Point(2, 2)
+		);
+		cv::morphologyEx(bwDeleteMask, bwDeleteMask, cv::MORPH_ERODE, matMorphDeletionErode);
+
+		bitwise_not(bwDeleteMask, bwDeleteMask);
+		//cv::imwrite("/vagrant/volatile/test_delete_mask.tif", bwDeleteMask);
+
+		bitwise_and(bwImage, bwDeleteMask, bwImage);
+		//cv::imwrite("/vagrant/volatile/test_skel_masked.tif", bwImage);
+
+		cv::threshold(bwImage, bwImage, 1, 255, CV_THRESH_BINARY);
+
+		cv::resize(bwImage, bwImage, cv::Size(0, 0), 2.0, 2.0, CV_INTER_NN);
+		cv::threshold(bwImage, bwImage, 25, 255, CV_THRESH_BINARY);
+
+		cv::Mat matMorphGrow = cv::getStructuringElement(
+			cv::MORPH_ELLIPSE,
+			cv::Size(5, 5),
+			cv::Point(2, 2)
+		);
+		std::cout << "Dilating...\n";
+		cv::morphologyEx(bwImage, bwImage, cv::MORPH_DILATE, matMorphGrow);
+
+		//cv::imwrite("/vagrant/volatile/test_dilated.tif", bwImage);
+
+		std::cout << "Second skeleton...\n";
+		thinning(bwImage, 10);	// Max iterations for thinning op
+
+		std::cout << "Final output...\n";
+		cv::imwrite(outFilename.c_str(), bwImage * 255);
+	} else {
+		std::cout << "Generating POLYGON...\n";
+		
+		replace(outFilename, ".", "_Mask.");
+		
+		std::cout << "Input file: " << inFilename << "\n";
+		std::cout << "Output file: " << outFilename << "\n";
+		
+		cv::Mat bwImage = cv::imread(argv[1], CV_LOAD_IMAGE_GRAYSCALE);
+
+		if (bwImage.empty())
+		{
+			std::cout << "Could not open source image.\n";
+			return -1;
+		}
+	
+		// Close to make areas
+		cv::Mat matMorphPolyClose = cv::getStructuringElement(
+			cv::MORPH_ELLIPSE,
+			cv::Size(9, 9),
+			cv::Point(4, 4)
+		);
+		cv::morphologyEx(bwImage, bwImage, cv::MORPH_CLOSE, matMorphPolyClose);
+		//cv::imwrite("/vagrant/volatile/poly_close.tif", bwImage);
+		
+		// Open to remove lines
+		cv::Mat matMorphPolyOpen = cv::getStructuringElement(
+			cv::MORPH_ELLIPSE,
+			cv::Size(11, 11),
+			cv::Point(5, 5)
+		);
+		cv::morphologyEx(bwImage, bwImage, cv::MORPH_OPEN, matMorphPolyOpen);
+		//cv::imwrite("/vagrant/volatile/poly_open.tif", bwImage);
+		
+		std::cout << "Final output...\n";
+		bitwise_not(bwImage, bwImage);
+		cv::imwrite(outFilename.c_str(), bwImage * 255);
 	}
-
-	// Release
-	//srcImage.release();
-	//cv::imwrite("/vagrant/volatile/test_loaded.tif", bwImage);
-	
-	// ----
-	// Create skeleton
-	// ----
-	std::cout << "Generating skeleton...\n";
-	//cv::threshold(srcImage, srcImage, 1, 255, CV_THRESH_BINARY);
-	thinning(bwImage, 4);	// Max iterations for thinning op
-
-	//cv::imwrite("/vagrant/volatile/test_skel1.tif", bwImage);
-
-	// ----
-	// Create deletion mask
-	// ----
-	std::cout << "Generating deletion mask...\n";
-	cv::Mat bwDeleteMask(bwImage.size(), CV_8UC1);
-	cv::Mat matMorphDeletionDilate = cv::getStructuringElement(
-		cv::MORPH_CROSS,
-		cv::Size(3, 3),
-		cv::Point(1, 1)
-	);
-	cv::morphologyEx(bwImage, bwDeleteMask, cv::MORPH_DILATE, matMorphDeletionDilate);
-
-	cv::Mat matMorphDeletionClose = cv::getStructuringElement(
-		cv::MORPH_CROSS,
-		cv::Size(3, 3),
-		cv::Point(1, 1)
-	);
-	cv::morphologyEx(bwDeleteMask, bwDeleteMask, cv::MORPH_CLOSE, matMorphDeletionClose);
-
-	cv::Mat matMorphDeletionErode = cv::getStructuringElement(
-		cv::MORPH_ELLIPSE,
-		cv::Size(5, 5),
-		cv::Point(2, 2)
-	);
-	cv::morphologyEx(bwDeleteMask, bwDeleteMask, cv::MORPH_ERODE, matMorphDeletionErode);
-
-	bitwise_not(bwDeleteMask, bwDeleteMask);
-	//cv::imwrite("/vagrant/volatile/test_delete_mask.tif", bwDeleteMask);
-
-	bitwise_and(bwImage, bwDeleteMask, bwImage);
-	//cv::imwrite("/vagrant/volatile/test_skel_masked.tif", bwImage);
-
-	cv::threshold(bwImage, bwImage, 1, 255, CV_THRESH_BINARY);
-
-	cv::resize(bwImage, bwImage, cv::Size(0, 0), 2.0, 2.0, CV_INTER_NN);
-	cv::threshold(bwImage, bwImage, 25, 255, CV_THRESH_BINARY);
-
-	cv::Mat matMorphGrow = cv::getStructuringElement(
-		cv::MORPH_ELLIPSE,
-		cv::Size(5, 5),
-		cv::Point(2, 2)
-	);
-	std::cout << "Dilating...\n";
-	cv::morphologyEx(bwImage, bwImage, cv::MORPH_DILATE, matMorphGrow);
-
-	//cv::imwrite("/vagrant/volatile/test_dilated.tif", bwImage);
-
-	std::cout << "Second skeleton...\n";
-	thinning(bwImage, 10);	// Max iterations for thinning op
-
-	std::cout << "Final output...\n";
-	cv::imwrite(outFilename.c_str(), bwImage * 255);
 
 	return 0;
 }

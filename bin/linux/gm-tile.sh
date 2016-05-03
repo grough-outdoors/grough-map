@@ -4,7 +4,7 @@ tileSearch=`echo $1 | tr '[:lower:]' '[:upper:]' | sed -e 's/[^A-Z0-9\%]//g'`
 extraOption=`echo $2 | tr '[:lower:]' '[:upper:]'`
 
 binDir="/vagrant/bin/linux/"
-terrainDir="/vagrant/source/terrain-composite/grid/"
+terrainDir="/vagrant/source/os-terrain/"
 outputDir="/vagrant/product/"
 terrainCommand="$binDir/gm-build-terrain.sh"
 mapnikDir="$binDir/Mapnik/"
@@ -50,7 +50,9 @@ do
 			echo "Converting output..."
 			convert "$mapnikOutputDir/$tileName.png" -compress LZW "$outputDir/$tileName.tiff"
 			echo "Assigning georeference..."
-			gdal_edit.py -a_srs EPSG:27700 -a_ullr `gdalinfo ${terrainDir}/${tileName}.img | awk '/(Upper Left)|(Lower Right)/' | awk '{gsub(/,|\)|\(/," ");print $3 " " $4}' | sed ':a;N;$!ba;s/\\n/ /g'` "$outputDir/$tileName.tiff"
+			IFS=' ' read -r -a tileBounds <<< `gdalinfo ${terrainDir}/${tileName}.asc | awk '/(Upper Left)|(Lower Right)/' | awk '{gsub(/,|\)|\(/," ");print $3 " " $4}' | sed ':a;N;$!ba;s/\\n/ /g'`
+			echo "$tiffExtent"
+			gdal_edit.py -a_ullr ${tileBounds[0]} ${tileBounds[1]} ${tileBounds[2]} ${tileBounds[3]} -a_srs "EPSG:27700" "$outputDir/$tileName.tiff"
 			rm -f "$mapnikOutputDir/$tileName.png"
 		fi
 	fi

@@ -136,7 +136,9 @@ if [ `ls ${scratchDir}/LIDAR-DTM-2M-${tileName}/*.asc | wc -l` -gt 0 ]; then
 	gdal_polygonize.py -f "ESRI Shapefile" scratch/${tileName}_Mask.tif scratch/mask.shp
 
 	# Two cases here: Gaps in LiDAR available, 100% LiDAR
-	if [ `ogrinfo scratch/mask.shp | grep -c Polygon` -gt 0 ]; then
+	polygonCount=`ogrinfo scratch/mask.shp | grep -c Polygon`
+	echo "Found ${polygonCount} polygons in the mask."
+	if [ "$polygonCount" -gt "0" ]; then
 		echo "Gaps exist in LiDAR -- merging with OS Terrain 50"
 		ogr2ogr -f "ESRI Shapefile" scratch/mask_larger.shp scratch/mask.shp -dialect sqlite -sql "SELECT ST_Union(ST_Buffer(Geometry, ${blendDistance})) from mask"
 		# GDAL <2.0 doesn't make the kernel larger for upscaling so this is a hacky workaround
@@ -207,49 +209,71 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	FROM 
 		_src_contours c;
 EoSQL
-psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-BEGIN;
-	CREATE TABLE IF NOT EXISTS _src_coverage (id integer, geom geometry);
-COMMIT;
-BEGIN;
-	INSERT INTO elevation_source (source_geom, source_lidar)
-	SELECT 
-		CASE WHEN Count(c.geom) > 0
-			THEN ST_Multi(ST_CollectionExtract(ST_Collect(ST_Simplify(c.geom, 2.5)), 3))
-			ELSE ST_Multi(A.box)
-		END,
-		false
-	FROM
-		(SELECT $deleteBox AS box) A
-	LEFT JOIN
-		_src_coverage c
-	ON
-		true
-	GROUP BY
-		A.box;
-COMMIT;
+
+polygonCount=`psql -Ugrough-map grough-map -h 127.0.0.1 -A -t -c "SELECT Count(*) FROM _src_coverage"`
+sourceCount=`ls ${scratchDir}/LIDAR-DTM-2M-${tileName}/*.asc | wc -l`
+
+if [ -z "$polygonCount" ]; then polygonCount=0; fi
+if [ -z "$sourceCount" ]; then sourceCount=0; fi
+
+echo "Found $polygonCount polygons in SQL and $sourceCount source files for tile."
+
+if [ "$polygonCount" -gt "0" ] || [ "$sourceCount" -eq "0" ]; then
+	psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+		BEGIN;
+			CREATE TABLE IF NOT EXISTS _src_coverage (id integer, geom geometry);
+		COMMIT;
+		BEGIN;
+			INSERT INTO elevation_source (source_geom, source_lidar)
+			SELECT 
+				CASE WHEN Count(c.geom) > 0
+					THEN ST_Multi(ST_CollectionExtract(ST_Collect(ST_Simplify(c.geom, 2.5)), 3))
+					ELSE ST_Multi(A.box)
+				END,
+				false
+			FROM
+				(SELECT $deleteBox AS box) A
+			LEFT JOIN
+				_src_coverage c
+			ON
+				true
+			GROUP BY
+				A.box;
+		COMMIT;
 EoSQL
-psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-BEGIN;
-	INSERT INTO elevation_source (source_geom, source_lidar)
-	SELECT
-		ST_Multi(
-			ST_Difference(
-				A.box,
-				ST_Collect(ST_Simplify(c.geom, 2.5))
-			)
-		),
-		true
-	FROM
-		(SELECT $deleteBox AS box) A
-	INNER JOIN
-		_src_coverage c
-	ON
-		true
-	GROUP BY
-		A.box;
-COMMIT;
+	psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+		BEGIN;
+			INSERT INTO elevation_source (source_geom, source_lidar)
+			SELECT
+				ST_Multi(
+					ST_Difference(
+						A.box,
+						ST_Collect(ST_Simplify(c.geom, 2.5))
+					)
+				),
+				true
+			FROM
+				(SELECT $deleteBox AS box) A
+			INNER JOIN
+				_src_coverage c
+			ON
+				true
+			GROUP BY
+				A.box;
+		COMMIT;
 EoSQL
+else
+	psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+		BEGIN;
+			INSERT INTO elevation_source (source_geom, source_lidar)
+			SELECT
+				ST_Multi(A.box),
+				true
+			FROM
+				(SELECT $deleteBox AS box) A;
+		COMMIT;
+EoSQL
+fi
 
 echo "--> Removing temporary tables"
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS _src_contours;"
@@ -261,6 +285,6 @@ rm ${tileName}_Coverage.* > /dev/null 2> /dev/null
 rm ${tileName}_Final.* > /dev/null 2> /dev/null
 
 # Remove extract directories, oldest first, when there exists more than an allowed amount
-find $scratchDir -mindepth 1 -maxdepth 1 -not -empty -type d -printf "%T@ %p\n" | sort -n | cut -d ' ' -f2 | tail -n +${maxExtractsAllowed} | xargs rm -rf
+find $scratchDir -mindepth 1 -maxdepth 1 -not -empty -type d -printf "%T@ %p\n" | sort -n | cut -d ' ' -f2 | tail -n "+${maxExtractsAllowed}" | xargs rm -rf
 
 cd $currentDir

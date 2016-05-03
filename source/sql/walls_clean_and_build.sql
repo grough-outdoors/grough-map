@@ -1,5 +1,4 @@
-﻿/*
-DROP TABLE IF EXISTS _src_obstructions_unclean;
+﻿DROP TABLE IF EXISTS _src_obstructions_unclean;
 DROP TABLE IF EXISTS _src_obstructions;
 
 CREATE TABLE _src_obstructions_unclean (
@@ -43,7 +42,6 @@ CREATE INDEX "_src_obstructions::geom"
   USING gist
   (geom);
 ALTER TABLE public._src_obstructions CLUSTER ON "_src_obstructions::geom";
-*/
 
 TRUNCATE TABLE _src_obstructions_unclean;
 INSERT INTO _src_obstructions_unclean (geom, threshold)
@@ -129,6 +127,52 @@ GROUP BY
 HAVING
 	Count(T2.gid) > 0
 OR
+	Count(T3.gid) > 0;
+
+INSERT INTO _src_obstructions_unclean (geom, threshold)
+SELECT
+	ST_Multi(
+		ST_CollectionExtract(
+			ST_Collect(
+				ST_Difference(
+					T2.geom,
+					ST_Union(ST_Buffer(T3.geom, 5.0, 'endcap=flat'))
+				),
+				ST_Union(T3.geom)
+			),
+			2
+		)
+	),
+	0
+FROM
+	_src_obstructions_lev2 T2
+LEFT JOIN
+	_src_obstructions_lev3 T3
+ON
+	ST_DWithin(T2.geom, T3.geom, 10)
+AND
+	ST_Length(
+		ST_Intersection(
+			T3.geom,
+			ST_Buffer(T2.geom, 5.0, 'endcap=flat')
+		)
+	) > least(ST_Length(T2.geom), ST_Length(T3.geom) * 0.2)
+AND
+	ST_HausdorffDistance(
+		ST_Intersection(
+			T2.geom,
+			ST_Buffer(T3.geom, 5.0, 'endcap=flat')
+		),
+		ST_Intersection(
+			T3.geom,
+			ST_Buffer(T2.geom, 5.0, 'endcap=flat')
+		)
+	) < ST_Length(T3.geom)
+WHERE
+	ST_Length(T2.geom) > 10.0
+GROUP BY
+	T2.gid
+HAVING
 	Count(T3.gid) > 0;
 
 -- Remove crazy geoms that are in effect doubling back on themselves
