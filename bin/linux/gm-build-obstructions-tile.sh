@@ -119,13 +119,10 @@ gdal_translate -ot Byte -a_srs EPSG:27700 -a_ullr ${tileExtent} "$scratchDir/obs
 echo "--> Copying rasters..."
 #cp obstructions/${tileName}_Superficial_* /vagrant/volatile/
 
-# Remove extract directories, oldest first, when there exists more than an allowed amount
-find $scratchDir -mindepth 1 -maxdepth 1 -not -empty -type d -printf "%T@ %p\n" | sort -n | cut -d ' ' -f2 | tail -n +${maxExtractsAllowed} | xargs rm -rf
-
 echo "GISDBASE: ${scratchDir}/obstructions" > ${scratchDir}/grassrc
 echo "LOCATION_NAME: linear" >> ${scratchDir}/grassrc
 echo "MAPSET: PERMANENT" >> ${scratchDir}/grassrc
-echo "GASS_GUI: text" >> ${scratchDir}/grassrc
+echo "GRASS_GUI: text" >> ${scratchDir}/grassrc
 
 export GISBASE=`grass70 --config path`
 export GISRC="${scratchDir}/grassrc"
@@ -386,5 +383,10 @@ psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/walls_add_to_raw_table.sql
 echo "--> Copying shapefiles..."
 #cp obstructions/${tileName}_Polygons.* /vagrant/volatile/
 #cp obstructions/Obstructions_Line.* /vagrant/volatile/
+
+# Remove extract directories, oldest first, when there exists more than an allowed amount
+find $scratchDir -mindepth 1 -maxdepth 1 -not -empty -type d -printf "%T@ %p\n" | sort -n | cut -d ' ' -f2 | tail -n +${maxExtractsAllowed} | xargs rm -rf
+
+rm -rf obstructions > /dev/null 2> /dev/null
 
 cd $currentDir

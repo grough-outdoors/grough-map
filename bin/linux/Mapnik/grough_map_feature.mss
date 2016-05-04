@@ -63,7 +63,8 @@
 }
 
 .feature-line {
-	[class_name='Wall'] {
+	[class_name='Wall'],
+	[class_name='Obstruction']	{
 		line-width: @feature_wall_thickness;
 		line-color: @feature_wall_colour;
 		line-opacity: @feature_wall_opacity;

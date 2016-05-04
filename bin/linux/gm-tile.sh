@@ -26,6 +26,9 @@ do
 	echo "-----------------------"
 	
 	contourCount=`psql -Ugrough-map grough-map -h 127.0.0.1 -A -t -c "SELECT Count(e.elevation_id) FROM  grid g, elevation e WHERE  g.tile_name='${tileName}' AND e.elevation_geom && g.tile_geom AND ST_Within(e.elevation_geom, g.tile_geom) GROUP BY g.tile_name"`
+	if [ -z "$contourCount" ]; then 
+		contourCount=0
+	fi
 	if [ ! $contourCount -ge 1 ]; then
 		echo "No terrain data found for this tile. Attempting to generate."
 		$terrainCommand $tileName
