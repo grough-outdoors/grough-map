@@ -35,9 +35,9 @@
 @place_label_mountain_typeface:				'Open Sans Semibold';
 @place_label_waterbody_typeface:			@place_label_typeface;
 
-@place_label_default_size:					40;
-@place_label_farm_size:						35;
-@place_label_school_size:					35;
+@place_label_default_size:					35;
+@place_label_farm_size:						30;
+@place_label_school_size:					30;
 @place_label_city_size:						100;
 @place_label_town_size:						70;
 @place_label_village_size:					55;
@@ -46,10 +46,11 @@
 @place_label_settlement_size:				40;
 @place_label_hill_size:						40;
 @place_label_mountain_size:					55;
-@place_label_waterbody_size:				40;
+@place_label_waterbody_size:				30;
+@place_label_forest_size:					30;
 
-@place_label_default_wrap_width:			150;
-@place_label_farm_wrap_width:				150;
+@place_label_default_wrap_width:			120;
+@place_label_farm_wrap_width:				120;
 @place_label_school_wrap_width:				200;
 @place_label_city_wrap_width:				400;
 @place_label_town_wrap_width:				100;
@@ -70,6 +71,8 @@
 @place_label_autoscale_huge_threshold:		5;
 @place_label_autoscale_huge_size:			70;
 @place_label_autoscale_huge_wrap_width:		150;
+
+@place_label_waterbody_halo_radius:			0;
 
 .place-label {
 	text-name: @place_label_source;
@@ -153,8 +156,10 @@
 		text-wrap-width: @place_label_waterbody_wrap_width;
 		text-transform: @place_label_waterbody_transform;
 		text-fill: @place_label_waterbody_colour;
+		text-halo-radius: @place_label_waterbody_halo_radius;
 	}
 	[class_name='Forest'] {
+		text-size: @place_label_forest_size;
 		text-fill: @place_label_forest_colour;
 	}
 	

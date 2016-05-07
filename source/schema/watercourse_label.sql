@@ -16,6 +16,8 @@ ON
 	c.class_id = w.watercourse_class_id
 WHERE
 	watercourse_allow_linear_label = true
+AND
+	watercourse_name IS NOT NULL
 ORDER BY
 	c.class_draw_order ASC,
 	w.watercourse_width DESC;

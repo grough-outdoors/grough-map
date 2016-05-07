@@ -17,6 +17,14 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	DROP INDEX IF EXISTS "Idx: feature_point::feature_geom";
 EoSQL
 
+echo "--> Cleaning MHW/MLW data source..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	DELETE FROM
+		_src_os_opmplc_tidal_boundary
+	WHERE
+		ST_GeometryType(geom) != 'ST_LineString';
+EoSQL
+
 echo " --> Identifying columns to check for imports..."
 IFS=$'\n'; for columnName in `psql -Ugrough-map grough-map -h 127.0.0.1 -A -t -c "SELECT DISTINCT import_field FROM feature_import"`
 do

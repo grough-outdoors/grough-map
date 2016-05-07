@@ -52,7 +52,9 @@ FROM
 		w.watercourse_width < SA.watercourse_width_avg
 ) SB
 WHERE
-	w.watercourse_id = SB.watercourse_id;
+	w.watercourse_id = SB.watercourse_id
+AND
+	w.watercourse_width > 10;
 
 -- Disable watercourses which pass through both ends of the waterbody, as in these
 -- cases there likely isn't enough space for a linear label.
@@ -82,6 +84,8 @@ FROM
 		ST_NumGeometries(ST_Intersection(w.watercourse_geom, ST_Boundary(s.surface_geom))) >= 2
 ) SA
 WHERE
-	w.watercourse_id = SA.watercourse_id;
+	w.watercourse_id = SA.watercourse_id
+AND
+	w.watercourse_width > 10;
 
 DROP TABLE IF EXISTS _tmp_surface_watercourses;

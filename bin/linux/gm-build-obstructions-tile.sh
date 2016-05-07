@@ -1,5 +1,6 @@
 #!/bin/bash
 
+downloadAttempts=0
 function downloadAndExtractTile {
 	# Check for archived LiDAR data
 	if ( [ -e "${eaTileDir}/LIDAR-DTM-2M-${1}.zip" ] && [ -e "${eaTileDir}/LIDAR-DSM-2M-${1}.zip" ] ) || ( [ -e "${eaTileDir}/2m_res_${1}_dtm.zip" ] && [ -e "${eaTileDir}/2m_res_${1}_dsm.zip" ] ); then
@@ -22,7 +23,15 @@ function downloadAndExtractTile {
 			echo "--> No LiDAR data found. Attempting to download..."
 			"$binDir/gm-download-eagg.sh" "$1" "DTM"
 			"$binDir/gm-download-eagg.sh" "$1" "DSM"
-			downloadAndExtractTile "$1"
+			"$binDir/gm-download-nrw.sh" "$1" "DTM"
+			"$binDir/gm-download-nrw.sh" "$1" "DSM"
+			downloadAttempts=$(( $downloadAttempts + 1 ))
+			if [ ! $downloadAttempts -gt 1 ]; then
+				downloadAndExtractTile "$1"
+			else
+				echo "Cannot get LiDAR data. Giving up."
+				exit -1
+			fi
 		fi
 	fi
 }
@@ -388,5 +397,17 @@ echo "--> Copying shapefiles..."
 find $scratchDir -mindepth 1 -maxdepth 1 -not -empty -type d -printf "%T@ %p\n" | sort -n | cut -d ' ' -f2 | tail -n +${maxExtractsAllowed} | xargs rm -rf
 
 rm -rf obstructions > /dev/null 2> /dev/null
+
+highwayCount=`psql -Ugrough-map grough-map -h 127.0.0.1 -A -t -c "SELECT Count(*) FROM edge"`
+featureCount=`psql -Ugrough-map grough-map -h 127.0.0.1 -A -t -c "SELECT Count(*) FROM feature_linear"`
+if [ -z "$highwayCount" ]; then highwayCount=0; fi
+if [ -z "$featureCount" ]; then highwayCount=0; fi
+
+if [ "$highwayCount" -gt 0 ] && [ "$featureCount" -gt 0 ]; then
+	echo "--> Building as features..."
+	"$binDir/gm-build-features-obstructions.sh" "${tileName}"
+else
+	echo "--> Not building as features -- requires further data."
+fi
 
 cd $currentDir

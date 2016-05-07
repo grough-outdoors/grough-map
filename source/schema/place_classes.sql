@@ -82,29 +82,29 @@ COPY place_classes (class_id, class_name, class_draw_order, class_text_size, cla
 9	Hill	8	40	100	3000	t	f	f	0	f
 5	Suburb	4	45	50	1500	t	f	f	0	f
 3	City	1	100	400	5000	t	f	f	0	f
-1	Farm	11	40	150	500	t	f	f	0	f
 4	Hamlet	5	40	150	1000	t	f	f	0	f
 7	Settlement	6	40	150	1000	t	f	f	0	f
-8	Forest	7	60	150	2000	t	f	f	0	t
 11	Moor	9	60	150	3000	t	f	f	0	t
-12	Small waterbody	7	40	150	1500	t	t	f	0	t
-14	Golf course	100	40	150	2000	t	t	t	0.200000000000000011	f
-15	Public common	100	40	150	1000	t	t	f	0.100000000000000006	t
-16	School	100	40	150	1000	t	t	t	0.100000000000000006	f
-17	University	100	40	150	3000	t	t	t	0.100000000000000006	f
-18	Airport	100	40	150	5000	t	f	f	0	t
-19	Tourist attraction	100	40	150	1000	t	t	f	0.25	f
-20	Park	100	50	150	1000	t	f	f	0.100000000000000006	t
-21	College	100	40	150	1000	t	t	t	0.100000000000000006	f
-22	Cemetery	100	40	150	1000	t	f	t	0.0800000000000000017	f
-23	Hospital	100	40	150	1000	t	f	t	0	f
-24	Stadium	100	40	150	1000	t	f	f	0.100000000000000006	f
-25	Recreation ground	100	40	150	100	t	f	t	0.100000000000000006	f
-26	Sports centre	100	40	150	1000	t	t	f	0.100000000000000006	f
-27	Industrial park	100	40	150	2500	t	t	t	0.5	t
-28	Conservation area	100	40	150	100	t	t	f	0.5	t
-29	Military establishment	100	40	150	3000	t	f	f	0.25	t
-30	Museum	100	40	150	1000	t	t	f	0.25	t
+14	Golf course	100	35	120	2000	t	t	t	0.200000000000000011	f
+15	Public common	100	35	120	1000	t	t	f	0.100000000000000006	t
+17	University	100	35	120	3000	t	t	t	0.100000000000000006	f
+18	Airport	100	35	120	5000	t	f	f	0	t
+19	Tourist attraction	100	35	120	1000	t	t	f	0.25	f
+20	Park	100	35	120	1000	t	f	f	0.100000000000000006	t
+21	College	100	35	120	1000	t	t	t	0.100000000000000006	f
+22	Cemetery	100	35	120	1000	t	f	t	0.0800000000000000017	f
+23	Hospital	100	35	120	1000	t	f	t	0	f
+24	Stadium	100	35	120	1000	t	f	f	0.100000000000000006	f
+25	Recreation ground	100	35	120	100	t	f	t	0.100000000000000006	f
+26	Sports centre	100	35	120	1000	t	t	f	0.100000000000000006	f
+27	Industrial park	100	35	120	2500	t	t	t	0.5	t
+28	Conservation area	100	35	120	100	t	t	f	0.5	t
+29	Military establishment	100	35	120	3000	t	f	f	0.25	t
+30	Museum	100	35	120	1000	t	t	f	0.25	t
+16	School	100	30	200	1000	t	t	t	0.100000000000000006	f
+1	Farm	11	33	120	500	t	f	f	0	f
+12	Small waterbody	7	30	150	1500	t	t	f	0	t
+8	Forest	7	30	150	2000	t	f	f	0	t
 \.
 
 

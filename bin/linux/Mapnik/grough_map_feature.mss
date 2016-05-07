@@ -26,7 +26,7 @@
 @feature_pylon_blend:				src-over;
 @feature_pylon_opacity:				1.0;
 
-@feature_label_default_size:		40;
+@feature_label_default_size:		35;
 @feature_label_default_margin:		30;
 @feature_label_default_wrap_width:	1;
 @feature_label_source:				[feature_name];
@@ -42,6 +42,9 @@
 @feature_label_halo_radius:			3;
 @feature_label_halo_colour:			rgba(255, 255, 255, 0.6);
 @feature_label_alignment:			left;
+
+@feature_label_water_size:			30;
+@feature_label_water_colour:		@watercourse_label_default_colour;
 
 .feature-label {
 	text-name: @feature_label_source;
@@ -60,6 +63,12 @@
 	text-halo-radius: @feature_label_halo_radius;
 	text-halo-fill: @feature_label_halo_colour;
 	text-horizontal-alignment: @feature_label_alignment;
+	
+	[class_name='Spring'],
+	[class_name='Pond']	{
+		text-size: @feature_label_water_size;
+		text-fill: @feature_label_water_colour;
+	}
 }
 
 .feature-line {

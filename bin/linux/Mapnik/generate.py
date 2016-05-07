@@ -72,7 +72,8 @@ print( str(27700), file=open('constants/target_srid.cnf', 'w'), end='' )
 print('Creating SQL table for label areas')
 bufferSize = 0
 distanceRoads = 30.0
-distanceWatercourses = 100.0
+distanceWatercourses = 75.0
+distanceStreams = 10.0
 pg_cursor.execute("DROP VIEW IF EXISTS map_render_place;")
 pg_cursor.execute("DROP TABLE IF EXISTS _tmp_label_zone;")
 pg_conn.commit()
@@ -100,7 +101,9 @@ pg_cursor.execute("""\
 						WHERE e.edge_geom && ST_SetSRID('BOX(""" + str(map_ll_x - bufferSize) + ' ' + str(map_ll_y - bufferSize) + ',' + str(map_ur_x + bufferSize) + ' ' + str(map_ur_y + bufferSize) + """)'::box2d, 27700) 
 						UNION SELECT
 							watercourse_geom AS buffer_geom,
-							""" + str(distanceWatercourses) + """ AS buffer_distance
+							CASE WHEN watercourse_class_id = 2 THEN """ + str(distanceStreams) + """
+							     ELSE """ + str(distanceWatercourses) + """
+							END AS buffer_distance
 						FROM
 							watercourse w 
 						WHERE w.watercourse_geom && ST_SetSRID('BOX(""" + str(map_ll_x - bufferSize) + ' ' + str(map_ll_y - bufferSize) + ',' + str(map_ur_x + bufferSize) + ' ' + str(map_ur_y + bufferSize) + """)'::box2d, 27700)
@@ -410,7 +413,7 @@ pg_cursor.execute("""\
 		w.watercourse_width,
 		CASE WHEN ST_GeometryType(SB.watercourse_geom_trim) = 'ST_MultiLineString'
 		     THEN SB.watercourse_geom_trim
-			 ELSE w.watercourse_geom
+			 ELSE ST_Multi(w.watercourse_geom)
 		END as watercourse_geom,
 		w.watercourse_name,
 		w.class_name,
@@ -427,28 +430,33 @@ pg_cursor.execute("""\
 				 WHEN Sum(watercourse_label_direction) < 0 THEN 'l'
 				 ELSE 'b'
 			END AS watercourse_label_side,
-			ST_Multi(ST_Difference(watercourse_geom, ST_Union(watercourse_edge_near))) AS watercourse_geom_trim
+			CASE WHEN ST_Length(ST_Multi(ST_Difference(watercourse_geom, ST_Union(watercourse_edge_near)))) > 0.5 * ST_Length(watercourse_geom)
+				 THEN ST_Multi(ST_Difference(watercourse_geom, ST_Union(watercourse_edge_near)))
+				 ELSE ST_Multi(watercourse_geom)
+			END AS watercourse_geom_trim
 		FROM
 		(
 			SELECT
 				watercourse_id,
 				CASE WHEN 
-					degrees(ST_Azimuth(
-						ST_Line_Interpolate_Point(w.watercourse_split_geom, 0.5),
-						ST_Line_Interpolate_Point(w.watercourse_split_geom, least(1.0, 0.5 + 100.0 / ST_Length(watercourse_split_geom)))
-					)) >
-					degrees(ST_Azimuth(
-						ST_Line_Interpolate_Point(w.watercourse_split_geom, 0.5),
-						ST_ClosestPoint(e.edge_geom, ST_Line_Interpolate_Point(w.watercourse_split_geom, 0.5))
-					)) 
-				THEN 1
-				ELSE -1
+						degrees(ST_Azimuth(
+							ST_Line_Interpolate_Point(w.watercourse_split_geom, 0.5),
+							ST_Line_Interpolate_Point(w.watercourse_split_geom, least(1.0, 0.5 + 100.0 / ST_Length(watercourse_split_geom)))
+						)) >
+						degrees(ST_Azimuth(
+							ST_Line_Interpolate_Point(w.watercourse_split_geom, 0.5),
+							ST_ClosestPoint(e.edge_geom, ST_Line_Interpolate_Point(w.watercourse_split_geom, 0.5))
+						)) 
+					THEN 1
+					ELSE -1
 				END AS watercourse_label_direction,
-				watercourse_geom,
+				watercourse_split_geom AS watercourse_geom,
 				ST_Buffer(e.edge_geom, 25.0) AS watercourse_edge_near
 			FROM
-				( SELECT *, (ST_Dump(watercourse_geom)).geom AS watercourse_split_geom FROM watercourse ) w, edge e
+				( SELECT *, (ST_Dump(ST_Segmentize(watercourse_geom, 1000.0))).geom AS watercourse_split_geom FROM watercourse ) w, edge e
 			WHERE
+				watercourse_name IS NOT NULL
+			AND
 				watercourse_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
 			AND
 				w.watercourse_geom && e.edge_geom
@@ -486,6 +494,7 @@ pg_cursor.execute("""\
 			 THEN class_plural_name
 			 ELSE class_name
 		END AS feature_name,
+		class_name,
 		ST_Multi(ST_Difference(feature_geom, ST_Buffer(feature_avoid, 40.0)))::geometry(MultiPolygon, 27700) AS feature_geom
 	FROM
 	(
@@ -585,6 +594,11 @@ for level in xrange(-4, 5):
 print('Creating hillshade...')
 call( "../relief.sh " + map_ref_idx, shell=True )
 print('Finished creating hillshade overlay')
+
+# Generate contour labels
+print('Creating contour labels...')
+call( "../contours.sh " + map_ref_idx, shell=True )
+print('Finished creating contour labels')
 
 print('Creating map raster...')
 # Set map dimensions in pixels

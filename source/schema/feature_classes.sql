@@ -77,8 +77,11 @@ COPY feature_classes (class_id, class_name, class_draw_order, class_subsurface, 
 50	Picnic table	\N	f	t	f	Picnic area	250	t	1
 51	Pier	\N	f	t	f	Piers	200	t	5
 52	Obstruction	\N	f	t	f	Obstructions	125	f	\N
+37	SP	\N	f	t	f	SPs	125	t	10
 19	Weir	\N	f	t	f	Weirs	200	t	4
+39	Phone	\N	f	t	f	Phones	125	t	5
 17	Ford	\N	f	t	f	Fords	125	t	4
+40	Boun stone	\N	f	t	f	Boun stones	125	t	1
 24	Dock	\N	f	t	f	Docks	200	t	5
 33	Shaft	\N	f	t	f	Shafts	250	t	3
 34	Shake hole	\N	f	t	f	Shake holes	250	t	2
@@ -105,10 +108,7 @@ COPY feature_classes (class_id, class_name, class_draw_order, class_subsurface, 
 31	Well	\N	f	t	f	Wells	125	t	2
 32	Fountain	\N	f	t	f	Fountains	125	t	2
 35	Shelter	\N	f	t	f	Shelters	125	t	4
-37	Survey point	\N	f	t	f	Survey points	125	t	10
 38	Flagpole	\N	f	t	f	Flagpoles	125	t	5
-39	Telephone box	\N	f	t	f	Telephone boxes	125	t	5
-40	Boundary stone	\N	f	t	f	Boundary stones	125	t	1
 41	Dish	\N	f	t	f	Dishes	125	t	6
 42	Tank	\N	f	t	f	Tanks	125	t	4
 43	Silo	\N	f	t	f	Silos	125	t	4

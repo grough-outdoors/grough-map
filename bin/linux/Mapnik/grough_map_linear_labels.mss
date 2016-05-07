@@ -33,7 +33,7 @@
 @edge_label_a_road_halo_radius:				@edge_label_default_halo_radius;
 @edge_label_b_road_halo_radius:				@edge_label_default_halo_radius;
 @edge_label_other_road_halo_radius:			3;
-@edge_label_path_halo_radius:				1;
+@edge_label_path_halo_radius:				3;
 
 @edge_label_motorway_size:					55;
 @edge_label_trunk_size:						55;
@@ -48,7 +48,7 @@
 @watercourse_label_default_offset_y_l:		@stream_default_thickness + @watercourse_label_default_size / 2;
 @watercourse_label_default_offset_y_r:		0 - @stream_default_thickness - @watercourse_label_default_size / 2;
 @watercourse_label_default_max_delta:		25;
-@watercourse_label_default_halo_radius:		2;
+@watercourse_label_default_halo_radius:		0;
 @watercourse_label_default_halo_colour:		white;
 @watercourse_label_default_distance:		2000;
 @watercourse_label_default_wrap_width:		0; /* Disabled */
@@ -56,7 +56,9 @@
 @watercourse_label_default_minimum_padding:	30;
 @watercourse_label_default_avoid_edges:		false;
 
-@watercourse_label_large_typeface:			'Exo Light';
+@watercourse_label_river_halo_radius:		2;
+
+@watercourse_label_large_typeface:			'Open Sans Regular';
 @watercourse_label_large_halo_radius:		0;
 @watercourse_label_large_offset_y:			0;
 @watercourse_label_large_opacity:			0.7;
@@ -145,6 +147,7 @@
 	[class_name='Reservoir'],
 	[class_name='Tidal river/estuary'] {
 		[watercourse_width < @watercourse_label_default_size] {
+			text-halo-radius: @watercourse_label_river_halo_radius;
 			[watercourse_width < 5] { text-dy: 10 + @watercourse_label_default_size / 2; }
 			[watercourse_width >= 5][watercourse_width < 15] { text-dy: 15 + @watercourse_label_default_size / 2; }
 			[watercourse_width >= 15][watercourse_width < 25] { text-dy: 25 + @watercourse_label_default_size / 2; }

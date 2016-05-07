@@ -92,7 +92,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 EoSQL
 
 echo "--> Calculating a minimum width for larger river systems..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/calculate_widths_for_watercourses.sql" > /dev/null
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/calculate_widths_for_watercourses.sql"
 
 # TODO: Smooth the lines somehow??
 
@@ -185,15 +185,16 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		SB.watercourse_id = w.watercourse_id;
 EoSQL
 
-echo "--> Removing labels from areas around the extremities of watercourses..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/clean_watercourse_linear_labels.sql" > /dev/null
+#echo "--> Removing labels from areas around the extremities of watercourses..."
+#psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/clean_watercourse_linear_labels.sql" > /dev/null
 
-echo "--> Removing temporary tables..."
-psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-	DROP TABLE opmlc_oprvrs_matching;
-	DROP TABLE _src_osm_polygon_water;
-	DROP TABLE _src_osm_line_water;
-EoSQL
+#echo "--> Removing temporary tables..."
+#psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+#	DROP TABLE opmlc_oprvrs_matching;
+#	DROP TABLE _src_osm_polygon_water;
+#	DROP TABLE _src_osm_line_water;
+#	DROP TABLE _tmp_surface_coarse;
+#EoSQL
 
 echo "--> Cleaning up..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL

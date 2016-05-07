@@ -6,8 +6,8 @@ CREATE TABLE
 	_tmp_surface_coarse
 AS SELECT
 	watercourse_id,
-	ST_Multi(ST_CollectionExtract(ST_Collect(surface_geom), 3)) AS surface_geom,
-	ST_Simplify(w.watercourse_geom, 10) AS watercourse_geom
+	ST_Multi(ST_CollectionExtract(ST_Union(ST_Simplify(surface_geom, 20.0)), 3)) AS surface_geom,
+	ST_Simplify(first(w.watercourse_geom), 10) AS watercourse_geom
 FROM
 	watercourse w
 LEFT JOIN
@@ -21,17 +21,9 @@ WHERE
 AND
 	s.surface_class_id IN (5, 6)
 GROUP BY
-	watercourse_id, watercourse_geom;
+	watercourse_id;
 
 SELECT populate_geometry_columns('_tmp_surface_coarse'::regclass); 
-COMMIT;
-
--- Generalise and clean
-BEGIN;
-UPDATE
-	_tmp_surface_coarse
-SET
-	surface_geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(ST_Simplify(surface_geom, 20.0)), 3));
 COMMIT;
 
 -- Get subsets of lines
@@ -78,8 +70,3 @@ FROM (
 WHERE
 	SC.watercourse_id = watercourse.watercourse_id;
 COMMIT;
-
-BEGIN;
-DROP TABLE _tmp_surface_coarse;
-COMMIT;
-

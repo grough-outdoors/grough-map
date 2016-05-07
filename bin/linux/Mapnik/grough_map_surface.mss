@@ -1,3 +1,5 @@
+@surface_default_blend:					multiply;
+
 @woodland_default_border_thickness:		0.0;
 @woodland_default_fill_colour:			#CCFBD2;
 @woodland_default_casing_colour:		black;
@@ -5,10 +7,12 @@
 @foreshore_default_border_thickness:	2.0;
 @foreshore_default_fill_colour:			#F1F3F4;
 @foreshore_default_casing_colour:		#C8CFD6;
+@foreshore_default_fill_blend:			src-over;
 
 @beach_default_border_thickness:		2.0;
 @beach_default_fill_colour:				#FFFCD7;
 @beach_default_casing_colour:			#116899;
+@beach_default_fill_blend:				src-over;
 
 @river_default_border_thickness:		2.0;
 @river_default_fill_colour:				#c0e0ef;
@@ -48,18 +52,21 @@
 	line-width: @woodland_default_border_thickness;
 	line-color: @woodland_default_casing_colour;
 	polygon-fill: @woodland_default_fill_colour;
+	polygon-comp-op: @surface_default_blend;
 }
 
 .surface[class_name="Foreshore"] {
 	line-width: @foreshore_default_border_thickness;
 	line-color: @foreshore_default_casing_colour;
 	polygon-fill: @foreshore_default_fill_colour;
+	polygon-comp-op: @foreshore_default_fill_blend;
 }
 
 .surface[class_name="Sand beach"] {
 	line-width: @beach_default_border_thickness;
 	line-color: @beach_default_casing_colour;
 	polygon-fill: @beach_default_fill_colour;
+	polygon-comp-op: @beach_default_fill_blend;
 }
 
 .surface[class_name="Surface water"] {
