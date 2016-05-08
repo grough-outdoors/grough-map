@@ -5,6 +5,16 @@ echo "Preparing to build zone database..."
 binDir=/vagrant/bin/linux
 sqlDir=/vagrant/source/sql
 
+echo "Testing requirements..."
+set -e
+"${binDir}/gm-require-db.sh" ne national_parks
+"${binDir}/gm-require-db.sh" ne c_r_dissolved
+"${binDir}/gm-require-db.sh" ne c_r_access_layer
+"${binDir}/gm-require-db.sh" ne doorstep_greens_polygons
+"${binDir}/gm-require-db.sh" ne millennium_greens
+"${binDir}/gm-require-db.sh" ne country_parks_england
+set +e
+
 echo "-----------------------------------"
 echo "--> Importing zone data..."
 echo "-----------------------------------"

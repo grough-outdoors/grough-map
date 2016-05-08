@@ -1,91 +1,45 @@
-﻿DROP TABLE IF EXISTS _tmp_surface_watercourses;
-
--- Fetch the widths for each surface water body
-CREATE TABLE
-	_tmp_surface_watercourses
-AS SELECT
-	s.surface_id,
-	w.watercourse_id,
-	w.watercourse_name,
-	w.watercourse_width
-FROM
-	surface s
-INNER JOIN
-	watercourse w
-ON
-	w.watercourse_geom && s.surface_geom
-AND
-	ST_Intersects(w.watercourse_geom, s.surface_geom)
-AND
-	w.watercourse_class_id != 2
-WHERE
-	s.surface_class_id IN (5, 6);
-
--- Disable labelling on watercourses in lakes etc. if they're much thinner than
--- the others. Probably around islands and the extremities of the waterbody.
+﻿-- Disable labels on waterbodies (reservoirs and lakes) which are too small for a linear label to really work
 UPDATE
-	watercourse w
+	watercourse
 SET
 	watercourse_allow_linear_label = false
-FROM
+WHERE
+	watercourse_id
+IN
 (
 	SELECT
-		w.watercourse_id
+		watercourse_id
 	FROM
-		_tmp_surface_watercourses w
-	INNER JOIN
 	(
 		SELECT
-			surface_id,
-			Count(watercourse_id),
-			Avg(watercourse_width) AS watercourse_width_avg,
-			Max(watercourse_width) AS watercourse_width_max,
-			Min(watercourse_width) AS watercourse_width_min
+			watercourse_id,
+			ST_Length(watercourse_geom) AS watercourse_full_length,
+			ST_Length(ST_Intersection(watercourse_geom, surface_shrink)) AS watercourse_shrink_length,
+			surface_full_area,
+			ST_Area(surface_shrink) AS surface_shrink_area
 		FROM
-			_tmp_surface_watercourses
-		GROUP BY
-			surface_id
-	) SA
-	ON 
-		SA.surface_id = w.surface_id
-	AND
-		w.watercourse_width < SA.watercourse_width_avg
-) SB
-WHERE
-	w.watercourse_id = SB.watercourse_id
-AND
-	w.watercourse_width > 10;
-
--- Disable watercourses which pass through both ends of the waterbody, as in these
--- cases there likely isn't enough space for a linear label.
-UPDATE
-	watercourse w
-SET
-	watercourse_allow_linear_label = false
-FROM
-(
-	SELECT
-		w.watercourse_id
-	FROM
-		_tmp_surface_watercourses sw
-	LEFT JOIN
-		surface s
-	ON
-		s.surface_id = sw.surface_id
-	INNER JOIN
-		watercourse w
-	ON
-		w.watercourse_id = sw.watercourse_id
-	AND
-		w.watercourse_allow_linear_label = true
+		(
+			SELECT
+				w.watercourse_id,
+				w.watercourse_geom,
+				ST_Area(s.surface_geom) AS surface_full_area,
+				ST_MakeValid(ST_Buffer(s.surface_geom, -50.0)) AS surface_shrink
+			FROM
+				_tmp_surface_coarse s
+			INNER JOIN
+				watercourse w
+			ON
+				s.watercourse_id = w.watercourse_id
+			AND
+				w.watercourse_class_id IN (1, 4, 5)
+		) SA
+	) SB
 	WHERE
-		ST_Crosses(s.surface_geom, w.watercourse_geom)
-	AND
-		ST_NumGeometries(ST_Intersection(w.watercourse_geom, ST_Boundary(s.surface_geom))) >= 2
-) SA
-WHERE
-	w.watercourse_id = SA.watercourse_id
-AND
-	w.watercourse_width > 10;
+		watercourse_shrink_length <= watercourse_full_length * 0.5
+	OR
+		surface_shrink_area <= surface_full_area * 0.5
+);
 
-DROP TABLE IF EXISTS _tmp_surface_watercourses;
+-- TODO: Remove labels from anything which isn't near a surface (could be culverts, could just be rubbish line quality)
+
+-- TODO: Limit the labels only to the most central parts of a waterbody (e.g. Windermere)

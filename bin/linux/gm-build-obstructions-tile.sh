@@ -389,7 +389,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 -c "DELETE FROM raw_obstructions WHERE
 echo "--> Appending to raw obstructions table..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/walls_add_to_raw_table.sql" > /dev/null
 
-echo "--> Copying shapefiles..."
+#echo "--> Copying shapefiles..."
 #cp obstructions/${tileName}_Polygons.* /vagrant/volatile/
 #cp obstructions/Obstructions_Line.* /vagrant/volatile/
 
@@ -409,5 +409,17 @@ if [ "$highwayCount" -gt 0 ] && [ "$featureCount" -gt 0 ]; then
 else
 	echo "--> Not building as features -- requires further data."
 fi
+
+echo "--> Removing temporary tables..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	DROP TABLE IF EXISTS _tmp_obstructions;
+	DROP TABLE IF EXISTS _src_obstructions;
+	DROP TABLE IF EXISTS _src_obstructions_unclean;
+	DROP TABLE IF EXISTS _src_obstructions_lev1;
+	DROP TABLE IF EXISTS _src_obstructions_lev2;
+	DROP TABLE IF EXISTS _src_obstructions_lev3;
+	DROP TABLE IF EXISTS _src_obstructions_joins;
+	DROP TABLE IF EXISTS _src_obstructions_joins_unclean;
+EoSQL
 
 cd $currentDir

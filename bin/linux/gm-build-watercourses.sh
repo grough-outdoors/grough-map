@@ -5,10 +5,18 @@ echo "Preparing to build watercourse database..."
 binDir=/vagrant/bin/linux
 sqlDir=/vagrant/source/sql
 
+echo "Testing requirements..."
+set -e
+"${binDir}/gm-require-db.sh" osm line
+"${binDir}/gm-require-db.sh" os oprvrs
+"${binDir}/gm-require-db.sh" os opmplc
+set +e
+
 echo "-----------------------------------"
 echo "--> Importing watercourse data..."
 echo "-----------------------------------"
 
+<<COMM
 echo "--> Removing old data..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	TRUNCATE watercourse;
@@ -90,9 +98,64 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	ALTER TABLE public.watercourse 
 		CLUSTER ON "Idx: watercourse::watercourse_geom";
 EoSQL
+COMM
+
+#echo "--> Preparing to calculate minimum widths..."
+#psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/calculate_widths_for_watercourses.sql"
+
+echo "--> Vacuuming..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	VACUUM;
+EoSQL
 
 echo "--> Calculating a minimum width for larger river systems..."
-psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/calculate_widths_for_watercourses.sql"
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+-- Update widths
+BEGIN;
+CREATE TABLE
+	_tmp_new_watercourse_widths
+AS
+	SELECT
+		watercourse_id,
+		Avg(watercourse_distance) AS watercourse_avg_distance,
+		Min(watercourse_distance) AS watercourse_min_distance
+	FROM
+	(
+		SELECT
+			SA.watercourse_id,
+			greatest(1, ST_Distance( SA.watercourse_point, ST_Boundary(s.surface_geom) )) AS watercourse_distance
+		FROM
+		(
+			SELECT
+				watercourse_id,
+				ST_Line_Interpolate_Point((ST_Dump(watercourse_geom)).geom, z::numeric / 100) AS watercourse_point
+			FROM
+				_tmp_surface_coarse
+			LEFT JOIN 
+				generate_series(0, 100, 10) AS z
+			ON 
+				true
+		) SA
+		LEFT JOIN
+			_tmp_surface_coarse s
+		ON
+			SA.watercourse_id = s.watercourse_id
+	) SB
+	GROUP BY
+		watercourse_id;
+COMMIT;
+
+BEGIN;
+UPDATE
+	watercourse
+SET
+	watercourse_width = SC.watercourse_avg_distance
+FROM 
+	_tmp_new_watercourse_widths SC
+WHERE
+	SC.watercourse_id = watercourse.watercourse_id;
+COMMIT;
+EoSQL
 
 # TODO: Smooth the lines somehow??
 
@@ -185,8 +248,8 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		SB.watercourse_id = w.watercourse_id;
 EoSQL
 
-#echo "--> Removing labels from areas around the extremities of watercourses..."
-#psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/clean_watercourse_linear_labels.sql" > /dev/null
+echo "--> Removing labels from areas around the extremities of watercourses..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/clean_watercourse_linear_labels.sql" > /dev/null
 
 #echo "--> Removing temporary tables..."
 #psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
@@ -194,6 +257,8 @@ EoSQL
 #	DROP TABLE _src_osm_polygon_water;
 #	DROP TABLE _src_osm_line_water;
 #	DROP TABLE _tmp_surface_coarse;
+#	DROP TABLE _tmp_surface_water;
+#	DROP TABLE _tmp_new_watercourse_widths;
 #EoSQL
 
 echo "--> Cleaning up..."

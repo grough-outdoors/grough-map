@@ -9,6 +9,13 @@ do
 	dos2unix $s
 done
 
+echo "Testing requirements..."
+set -e
+"${binDir}/gm-require-db.sh" osm line
+"${binDir}/gm-require-db.sh" prow
+"${binDir}/gm-require-db.sh" os oproad
+set +e
+
 echo "-----------------------------------"
 echo "--> Extracting OSM highways data..."
 echo "-----------------------------------"

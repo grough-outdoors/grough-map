@@ -5,6 +5,13 @@ echo "Preparing to build surface database..."
 binDir=/vagrant/bin/linux
 sqlDir=/vagrant/source/sql
 
+echo "Testing requirements..."
+set -e
+"${binDir}/gm-require-db.sh" os vmdvec
+"${binDir}/gm-require-db.sh" os opmplc
+"${binDir}/gm-require-db.sh" osm polygon
+set +e
+
 echo "-----------------------------------"
 echo "--> Importing surface data..."
 echo "-----------------------------------"

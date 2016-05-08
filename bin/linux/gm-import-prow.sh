@@ -37,7 +37,7 @@ do
 	areaName=`echo ${d%/} | sed 's/-/_/g'`
 	echo "Found area $areaName..."
 
-	if [ ! -e $fileBaseDir/$d ]; then
+	if [ ! -e "$fileBaseDir/$d" ]; then
 		echo "[ERROR] Does not exist: "$d
 		exit 1
 	fi
@@ -55,7 +55,7 @@ do
 
 		echo " --> Attempting conversion routines..."
 		
-		IFS=$'\n'; for f in $(find ./ -iname '*.tab' -or -iname '*.kml' -or -iname '*.mif' | sed "s/^\.\///")
+		IFS=$'\n'; for f in $(find ./ -iname '*.tab' -or -iname '*.kml' -or -iname '*.mif' -or -iname '*.geojson' | sed "s/^\.\///")
 		do 
 			targetCount=$(ls *.kmz | wc -l)
 			if [ $targetCount -gt 0 ]; then

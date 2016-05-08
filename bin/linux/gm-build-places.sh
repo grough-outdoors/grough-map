@@ -5,6 +5,12 @@ echo "Preparing to build places database..."
 binDir=/vagrant/bin/linux
 sqlDir=/vagrant/source/sql
 
+echo "Testing requirements..."
+set -e
+"${binDir}/gm-require-db.sh" osm polygon
+"${binDir}/gm-require-db.sh" os opname
+set +e
+
 echo "-----------------------------------"
 echo "--> Importing places data..."
 echo "-----------------------------------"

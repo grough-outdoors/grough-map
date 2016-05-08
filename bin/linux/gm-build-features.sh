@@ -5,6 +5,14 @@ echo "Preparing to build feature database..."
 binDir=/vagrant/bin/linux
 sqlDir=/vagrant/source/sql
 
+echo "Testing requirements..."
+set -e
+"${binDir}/gm-require-db.sh" os opmplc tidal_boundary
+"${binDir}/gm-require-db.sh" osm line
+"${binDir}/gm-require-db.sh" osm polygon
+"${binDir}/gm-require-db.sh" osm point
+set +e
+
 echo "-----------------------------------"
 echo "--> Importing feature data..."
 echo "-----------------------------------"

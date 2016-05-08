@@ -97,7 +97,6 @@ EoSQL
 
 echo "--> Removing old data..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-	BEGIN;
 	DROP TABLE IF EXISTS _tmp_raw_obstructions;
 	DROP TABLE IF EXISTS _tmp_raw_obstructions_joins_self;
 	DROP TABLE IF EXISTS _tmp_raw_obstructions_joins_highway;
