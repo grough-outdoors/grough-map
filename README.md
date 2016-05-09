@@ -19,16 +19,19 @@ Fetch the required data from the web...
 - gm-download-grid
 - gm-download-ne
 - gm-download-os (Requires source_email.txt)
-- gm-download-osm
+- gm-download-prow	(TODO: Only covers updates from GeoServer)
+ 
+LiDAR tiles can be downloaded manually, or will be pulled when required...
 - gm-download-ea \<tile\>
 - gm-download-nrw \<tile\>
-- gm-download-prow	(TODO: Only covers updates from GeoServer)
-- gm-download-osm 
  
-Import source data to the database...
+The grid is required and should be imported straight away...
 - gm-import-grid
+ 
+Other data can be imported to the database manually or will be imported when required...
 - gm-import-ne
 - gm-import-os
+- gm-import-osm
 - gm-import-prow
   
 Build each composite map layer...
@@ -36,9 +39,11 @@ Build each composite map layer...
 - gm-build-buildings
 - gm-build-surface
 - gm-build-watercourses
+- gm-build-obstructions \<tile\> (for each LiDAR tile, highly intensive process)
 - gm-build-features
 - gm-build-places
-- gm-build-terrain (for each tile, or automatic during gm-tile)
+- gm-build-zone
+- gm-build-terrain \<tile\> (for each tile, or automatic during gm-tile)
 - gm-build-cartography
 
 For each tile to be generated...  
