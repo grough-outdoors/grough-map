@@ -7,7 +7,7 @@ mkdir osm > /dev/null
 cd osm > /dev/null
 
 echo "--> Downloading latest version..."
-#wget http://download.geofabrik.de/europe/great-britain-latest.osm.pbf
+wget http://download.geofabrik.de/europe/great-britain-latest.osm.pbf
 
 echo "--> Dropping old data..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS _src_osm_line; DROP TABLE IF EXISTS _src_osm_point; DROP TABLE IF EXISTS _src_osm_polygon;"
@@ -31,6 +31,6 @@ echo "--> Performing full vacuum..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "VACUUM FULL;"
 
 echo "--> Cleaning up files"
-#rm -rf /vagrant/source/osm/*
+rm -rf /vagrant/source/osm/*
 
 echo "--> Update complete."

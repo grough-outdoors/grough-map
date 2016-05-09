@@ -135,4 +135,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	VACUUM FULL ANALYZE feature_point;
 EoSQL
 
+echo "--> Cleaning..."
+"$binDir/gm-clean-sources.sh"
+
 echo "--> Build complete."

@@ -142,4 +142,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	CLUSTER VERBOSE edge;
 EoSQL
 
+echo "--> Cleaning..."
+"$binDir/gm-clean-sources.sh"
+
 echo "--> Build complete."

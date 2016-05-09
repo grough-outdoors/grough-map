@@ -1,0 +1,3 @@
+_src_osm_polygon
+_src_osm_line
+_src_osm_point
