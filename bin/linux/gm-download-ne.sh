@@ -3,7 +3,7 @@
 echo "Preparing to download Natural England data..."
 
 targetDir=/vagrant/source/natural-england/
-
+mkdir "$targetDir" > /dev/null 2> /dev/null
 cd $targetDir
 echo "Requesting catalogue data..."
 IFS=$'\n'; for f in `curl 'http://www.geostore.com/environment-agency/rest/catalogue' | python -c """

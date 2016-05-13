@@ -31,6 +31,6 @@ echo "--> Performing full vacuum..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "VACUUM FULL;"
 
 echo "--> Cleaning up files"
-rm -rf /vagrant/source/osm/*
+rm -rf /vagrant/source/osm/*.pbf
 
 echo "--> Update complete."

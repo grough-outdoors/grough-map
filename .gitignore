@@ -1,8 +1,10 @@
 .vagrant
+.vagrant-aws
 .git
 Open pgAdmin.bat
 bin/win32/msys-*.dll
 bin/win32/ssh.exe
+bin/win32/rsync.exe
 bin/win32/PgAdminPortable
 volatile/*
 source/eagg/*

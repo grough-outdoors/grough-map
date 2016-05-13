@@ -5,6 +5,7 @@ echo "Preparing to download OS OpenData products..."
 echo "-----------------------------------"
 echo "--> Downloading archives..."
 echo "-----------------------------------"
+mkdir "/vagrant/source/os/" > /dev/null 2> /dev/null
 cd /vagrant/source/os/
 
 if [ ! -e source_email.txt ]; then

@@ -6,6 +6,8 @@ targetDir=/vagrant/source/eagg/
 targetMask=$1
 targetType=$2
 
+mkdir "$targetDir" > /dev/null 2> /dev/null
+
 if [ -z "$targetType" ]; then 
 	targetType="DTM"; 
 fi

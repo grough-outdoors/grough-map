@@ -166,8 +166,8 @@ cd -
 echo "-----------------------------------"
 echo "--> Installing GRASS GIS..."  
 echo "-----------------------------------"
-cd /home/vagrant
-rm -rf /home/vagrant/grass*
+cd /tmp
+rm -rf grass*
 
 shellFile=`curl https://grass.osgeo.org/grass70/binary/linux/snapshot/ | grep '\.sh' | grep -o '<a.*href=.*>' | sed 's/<a href="//g' | sed 's/\".*$//'`
 tarFile=`curl https://grass.osgeo.org/grass70/binary/linux/snapshot/ | grep '\.tar' | grep -o '<a.*href=.*>' | sed 's/<a href="//g' | sed 's/\".*$//'`
@@ -191,6 +191,11 @@ sudo apt-get install -y libmapnik libmapnik-dev
 sudo apt-get install -y mapnik-utils 
 
 echo "-----------------------------------"
+echo "--> Installing screen..."
+echo "-----------------------------------"
+sudo apt-get install -y screen
+
+echo "-----------------------------------"
 echo "--> Installing Mapnik for Python..."
 echo "-----------------------------------"
 sudo apt-get install -y python-mapnik 
@@ -198,6 +203,19 @@ sudo apt-get install -y mapnik-input-plugin-gdal mapnik-input-plugin-ogr\
   mapnik-input-plugin-postgis \
   mapnik-input-plugin-sqlite \
   mapnik-input-plugin-osm 
+  
+echo "-----------------------------------"
+echo "--> Installing cloud utilities..."
+echo "-----------------------------------"
+sudo apt-get install -y cloud-utils
+
+if [[ "`ec2metadata --ami-id`" == "ami-"* ]]; then
+	regionName=`ec2metadata --availability-zone | sed 's/[a-z]$//i'`
+	cd /tmp			
+	curl https://amazon-ssm-${regionName}.s3.amazonaws.com/latest/debian_amd64/amazon-ssm-agent.deb -o amazon-ssm-agent.deb
+	sudo dpkg -i amazon-ssm-agent.deb
+	cd -
+fi
 
 echo "-----------------------------------"
 echo "--> Converting all line endings..."  

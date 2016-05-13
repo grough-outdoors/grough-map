@@ -247,6 +247,11 @@ EoSQL
 	psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		DELETE FROM
 			_src_obstructions_lev${level}
+		WHERE
+			ST_GeometryType(geom) NOT LIKE '%LineString%';
+		
+		DELETE FROM
+			_src_obstructions_lev${level}
 		WHERE 
 			gid 
 		IN
@@ -258,7 +263,7 @@ EoSQL
 			WHERE
 				o.geom && s.geom
 			AND
-				ST_Within(o.geom, s.geom)
+				ST_Within(o.geom, ST_CollectionExtract(s.geom, 3))
 		);
 EoSQL
 done
