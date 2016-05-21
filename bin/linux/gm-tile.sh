@@ -53,9 +53,11 @@ do
 			echo "Converting output..."
 			convert "$mapnikOutputDir/$tileName.png" -compress LZW "$outputDir/$tileName.tiff"
 			echo "Assigning georeference..."
-			IFS=' ' read -r -a tileBounds <<< `gdalinfo ${terrainDir}/${tileName}.asc | awk '/(Upper Left)|(Lower Right)/' | awk '{gsub(/,|\)|\(/," ");print $3 " " $4}' | sed ':a;N;$!ba;s/\\n/ /g'`
-			echo "$tiffExtent"
-			gdal_edit.py -a_ullr ${tileBounds[0]} ${tileBounds[1]} ${tileBounds[2]} ${tileBounds[3]} -a_srs "EPSG:27700" "$outputDir/$tileName.tiff"
+			# TODO: Convert this to not rely on the ASC file
+			#IFS=' ' read -r -a tileBounds <<< `gdalinfo ${terrainDir}/${tileName}.asc | awk '/(Upper Left)|(Lower Right)/' | awk '{gsub(/,|\)|\(/," ");print $3 " " $4}' | sed ':a;N;$!ba;s/\\n/ /g'`
+			tileData=`psql -Ugrough-map grough-map -h 127.0.0.1 -A -t -c "SELECT ST_XMin(tile_geom), ST_YMin(tile_geom), ST_XMax(tile_geom), ST_YMax(tile_geom) FROM grid WHERE tile_name='${tileName}'"`
+			IFS='|'; read -r -a tileBounds <<< "$tileData"
+			gdal_edit.py -a_ullr ${tileBounds[0]} ${tileBounds[3]} ${tileBounds[2]} ${tileBounds[1]} -a_srs "EPSG:27700" "$outputDir/$tileName.tiff"
 			rm -f "$mapnikOutputDir/$tileName.png"
 		fi
 	fi

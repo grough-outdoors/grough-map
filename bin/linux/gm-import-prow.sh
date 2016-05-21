@@ -19,13 +19,13 @@ else
 fi
 
 echo "Preparing aggregate database table..."
-psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -c "CREATE TABLE IF NOT EXISTS _src_prow \
+psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -c "CREATE TABLE IF NOT EXISTS raw_prow \
 ( \
    id bigserial,  \
    geom geometry, \
    type character varying(30),  \
    source character varying(100),  \
-   CONSTRAINT \"PKEY: _src_prow::id\" PRIMARY KEY (id) \
+   CONSTRAINT \"PKEY: raw_prow::id\" PRIMARY KEY (id) \
 );"
 
 echo "-----------------------------------"
@@ -43,7 +43,7 @@ do
 	fi
 	
 	echo " --> Clearing pre-existing data for this authority..."
-	psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -c "DELETE FROM _src_prow WHERE source LIKE '_src_prow_"$areaName"%'"
+	psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -c "DELETE FROM raw_prow WHERE source LIKE '_src_prow_"$areaName"%'"
 	
 	echo " --> Attempting import..."
 	cd "$fileBaseDir/$d"
@@ -180,7 +180,7 @@ do
 		fi
 		
 		echo "     --> Appending data to master PRoW table..."
-		psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -c "INSERT INTO _src_prow \
+		psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -c "INSERT INTO raw_prow \
 			(geom, type, source) \
 			SELECT \
 				ST_Force2D((ST_Dump(geom)).geom), \
@@ -202,9 +202,15 @@ do
 done
 
 echo "Populating geometry columns..."
-psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -c "SELECT Populate_Geometry_Columns('_src_prow'::regclass);"
+psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -c "SELECT Populate_Geometry_Columns('raw_prow'::regclass);"
 
 echo "Updating highway authority statuses..."
 psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/prow_identify_authorities.sql"
+
+echo " --> Removing temporary tables..."
+IFS=$'\n'; for tableName in `echo "\dt" | psql -Ugrough-map grough-map -h 127.0.0.1 -A -t | tr '|' '\n' | grep _src_prow`
+do
+	psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS ${tableName}"
+done
 
 echo "--> Import complete."

@@ -29,7 +29,7 @@ do
 	"$binDir/gm-build-obstructions-tile.sh" "$tileName"
 	
 	if [ "$sysEnv" == "aws" ]; then
-		rm -rf "/vagrant/source/eagg/*.zip"
+		rm -rf  /vagrant/source/eagg/*.zip 
 	fi
 done
 

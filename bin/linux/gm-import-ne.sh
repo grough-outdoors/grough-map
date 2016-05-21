@@ -35,9 +35,9 @@ do
 	if [ ! -e $tableName.sql ]
 	then
 		echo "DROP TABLE IF EXISTS $tableName;" > $tableName.sql
-		shp2pgsql -s 27700 -p -W LATIN1 -N skip $f $tableName >> $tableName.sql
+		shp2pgsql -e -s 27700 -p -W LATIN1 -N skip $f $tableName >> $tableName.sql
 	fi
-	shp2pgsql -s 27700 -a -W LATIN1 -N skip $f $tableName >> $tableName.sql
+	shp2pgsql -e -s 27700 -a -W LATIN1 -N skip $f $tableName >> $tableName.sql
 done
 
 echo " --> Cleaning extracted files..."

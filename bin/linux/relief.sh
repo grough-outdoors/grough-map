@@ -15,7 +15,10 @@ cd $scratchDir
 mkdir $workingDir
 
 echo "--> Storing spatial extent..."
-tileExtent=`gdalinfo $osTileDir/${tileName}.asc | awk '/(Lower Left)|(Upper Right)/' | awk '{gsub(/,|\)|\(/," ");print $3 " " $4}' | sed ':a;N;$!ba;s/\n/ /g'`
+#tileExtent=`gdalinfo $osTileDir/${tileName}.asc | awk '/(Lower Left)|(Upper Right)/' | awk '{gsub(/,|\)|\(/," ");print $3 " " $4}' | sed ':a;N;$!ba;s/\n/ /g'`
+tileData=`psql -Ugrough-map grough-map -h 127.0.0.1 -A -t -c "SELECT ST_XMin(tile_geom), ST_YMin(tile_geom), ST_XMax(tile_geom), ST_YMax(tile_geom) FROM grid WHERE tile_name='${tileName}'"`
+IFS='|'; read -r -a tileExtentEls <<< "$tileData"
+tileExtent="${tileExtentEls[0]} ${tileExtentEls[1]} ${tileExtentEls[2]} ${tileExtentEls[3]}"
 echo $tileExtent
 
 echo "GISDBASE: ${scratchDir}/$workingDir" > ${scratchDir}/grassrc

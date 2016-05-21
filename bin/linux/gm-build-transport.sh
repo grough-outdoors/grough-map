@@ -12,7 +12,6 @@ done
 echo "Testing requirements..."
 set -e
 "${binDir}/gm-require-db.sh" osm line
-"${binDir}/gm-require-db.sh" prow
 "${binDir}/gm-require-db.sh" os oproad
 set +e
 
@@ -126,6 +125,7 @@ echo "--> Erasing temporary tables..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	DROP TABLE IF EXISTS edge_prow_additions;
 	DROP TABLE IF EXISTS edge_prow_matching;
+	DROP TABLE IF EXISTS edge_oproad_matching;
 EoSQL
 echo "--> Vacuuming..."	
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
@@ -137,6 +137,11 @@ EoSQL
 echo "-----------------------------------"
 echo "--> Final steps..."
 echo "-----------------------------------"
+echo "--> Removing temporary source tables..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	DROP TABLE IF EXISTS _src_osm_line_transport;
+EoSQL
+
 echo "--> Clustering edges..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	CLUSTER VERBOSE edge;

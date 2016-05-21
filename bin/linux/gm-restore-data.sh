@@ -45,6 +45,33 @@ EoSQL
 	VACUUM FULL ANALYZE surface;
 EoSQL
 
+
+elif [ "$dataType" = "OBSTRUCTIONS" ]; then
+	echo "--> Removing existing raw obstruction data..."
+	psql -Ugrough-map grough-map -h 127.0.0.1 -c "TRUNCATE TABLE raw_obstructions;"
+	echo "--> Vacuuming tables..."
+	psql -Ugrough-map grough-map -h 127.0.0.1 -c "VACUUM FULL ANALYZE raw_obstructions;"
+	#echo "--> Restoring obstructions from raw_obstructions..."
+	#pg_restore -Ugrough-map -d grough-map -h 127.0.0.1 -Fc -a raw_obstructions.bak
+	if [ `ls obstructions-*.bak | wc -l` -gt 0 ]; then
+		psql -Ugrough-map grough-map -h 127.0.0.1 -c "CREATE TABLE _tmp_obstruction_prev ( obs_geom geometry(MultiLineString,27700) );"
+		psql -Ugrough-map grough-map -h 127.0.0.1 -c "INSERT INTO _tmp_obstruction_prev (obs_geom) SELECT obs_geom FROM raw_obstructions;"
+		psql -Ugrough-map grough-map -h 127.0.0.1 -c "TRUNCATE raw_obstructions;"
+		for fn in obstructions-*.bak; 
+		do
+			echo "--> Restoring obstructions from ${fn}..."
+			pg_restore -Ugrough-map -d grough-map -h 127.0.0.1 -Fc -a ${fn}
+			psql -Ugrough-map grough-map -h 127.0.0.1 -c "INSERT INTO _tmp_obstruction_prev (obs_geom) SELECT obs_geom FROM raw_obstructions;"
+			psql -Ugrough-map grough-map -h 127.0.0.1 -c "TRUNCATE raw_obstructions;"
+		done
+		echo "--> Inserting back into main table..."
+		psql -Ugrough-map grough-map -h 127.0.0.1 -c "INSERT INTO raw_obstructions (obs_geom) SELECT obs_geom FROM _tmp_obstruction_prev;"
+		echo "--> Removing temporary table..."
+		psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE _tmp_obstruction_prev;"
+	fi
+	echo "--> Vacuuming tables..."
+	psql -Ugrough-map grough-map -h 127.0.0.1 -c "VACUUM raw_obstructions;"
+
 else
 	echo "Unrecognised restore archive request."
 fi

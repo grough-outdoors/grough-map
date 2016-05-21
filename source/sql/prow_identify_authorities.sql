@@ -1,17 +1,17 @@
 ﻿DROP TABLE IF EXISTS 
-	_src_prow__areas;
+	raw_prow_authorities;
 
 DROP INDEX IF EXISTS
-	"Idx: _src_prow::geom";
+	"Idx: raw_prow::geom";
 
-CREATE INDEX "Idx: _src_prow::geom"
-	ON _src_prow USING gist (geom);
+CREATE INDEX "Idx: raw_prow::geom"
+	ON raw_prow USING gist (geom);
 	   
-ALTER TABLE _src_prow
-	CLUSTER ON "Idx: _src_prow::geom";
+ALTER TABLE raw_prow
+	CLUSTER ON "Idx: raw_prow::geom";
 
 CREATE TABLE
-	_src_prow__areas
+	raw_prow_authorities
 AS SELECT
 	replace("name", ' County', '') AS "name",
 	ST_MakeValid(ST_Simplify("geom", 100)) AS "geom_full",
@@ -23,7 +23,7 @@ FROM
 	_src_os_bdline_county_region;
 
 INSERT INTO
-	_src_prow__areas
+	raw_prow_authorities
 SELECT
 	replace(replace(a."name", ' District', ''), ' (B)', '') AS "name",
 	ST_MakeValid(ST_Simplify(a."geom", 100)) AS "geom_full",
@@ -34,7 +34,7 @@ SELECT
 FROM
 	_src_os_bdline_district_borough_unitary_region a
 LEFT JOIN
-	_src_prow__areas b
+	raw_prow_authorities b
 ON
 	a.geom && b.geom_full
 AND
@@ -43,7 +43,7 @@ WHERE
 	b.name IS NULL;
 
 UPDATE 
-	_src_prow__areas
+	raw_prow_authorities
 SET
 	prow_approx_coverage = Least(ST_Area(path_convex_hull)/ST_Area(a.geom_full), 1.0)::double precision,
 	prow_approx_length = path_total_length::double precision,
@@ -53,7 +53,7 @@ SET
 		ELSE 'No coverage'
 	END
 FROM
-	_src_prow__areas a
+	raw_prow_authorities a
 LEFT JOIN
 	(
 		SELECT
@@ -63,9 +63,9 @@ LEFT JOIN
 			     ELSE ST_GeomFromText('POLYGON EMPTY')
 			     END AS path_convex_hull
 		FROM
-			_src_prow__areas a
+			raw_prow_authorities a
 		LEFT JOIN
-			_src_prow p
+			raw_prow p
 		ON
 			p.geom && a.geom_full
 		AND
@@ -76,6 +76,6 @@ LEFT JOIN
 ON
 	a.name = b.path_area_name
 WHERE
-	_src_prow__areas.name = a.name;
+	raw_prow_authorities.name = a.name;
 
-SELECT populate_geometry_columns('_src_prow__areas'::regclass); 
+SELECT populate_geometry_columns('raw_prow_authorities'::regclass); 

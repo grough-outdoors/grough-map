@@ -8,7 +8,7 @@ FROM
 	SELECT
 		e.edge_id
 	FROM
-		_src_prow__areas a
+		raw_prow_authorities a
 	LEFT JOIN
 		edge e
 	ON
@@ -42,7 +42,7 @@ FROM
 		p.type,
 		m.edge_id
 	FROM
-		_src_prow p
+		raw_prow p
 	LEFT JOIN
 		edge_prow_matching m
 	ON
@@ -103,7 +103,7 @@ FROM
 		ST_CollectionExtract(ST_Collect(m.geom_edge), 2) AS match_edge,
 		ST_CollectionExtract(ST_Collect(m.geom_prow), 2) AS match_prow
 	FROM
-		_src_prow p
+		raw_prow p
 	LEFT JOIN
 		edge_prow_matching m
 	ON

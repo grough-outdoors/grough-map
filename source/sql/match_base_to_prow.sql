@@ -124,7 +124,7 @@ FROM
 				2
 			))).geom AS edge_sub_geom
 		FROM
-			_src_prow p
+			raw_prow p
 		LEFT JOIN
 			edge e
 		ON

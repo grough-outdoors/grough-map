@@ -60,6 +60,11 @@ echo "-----------------------------------"
 echo "--> Creating generalised subset table for buildings..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/add_missing_parts_of_buildings.sql" > /dev/null
 
+echo "--> Removing temporary tables..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	DROP TABLE _src_os_opmplc_building;
+EoSQL
+
 echo "--> Clustering..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	ALTER TABLE public.buildings CLUSTER ON "Idx: buildings::building_geom";

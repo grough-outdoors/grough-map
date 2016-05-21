@@ -16,7 +16,6 @@ echo "-----------------------------------"
 echo "--> Importing watercourse data..."
 echo "-----------------------------------"
 
-<<COMM
 echo "--> Removing old data..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	TRUNCATE watercourse;
@@ -98,10 +97,9 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	ALTER TABLE public.watercourse 
 		CLUSTER ON "Idx: watercourse::watercourse_geom";
 EoSQL
-COMM
 
-#echo "--> Preparing to calculate minimum widths..."
-#psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/calculate_widths_for_watercourses.sql"
+echo "--> Preparing to calculate minimum widths..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/calculate_widths_for_watercourses.sql"
 
 echo "--> Vacuuming..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
