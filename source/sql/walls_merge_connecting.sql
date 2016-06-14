@@ -47,7 +47,7 @@ FROM
 					FROM
 					(
 						SELECT
-							ST_Union(ST_Buffer(geom, 2.5, 'endcap=square')) AS zone_geom
+							ST_Union(ST_CollectionExtract(ST_Multi(ST_MakeValid(ST_Buffer(ST_MakeValid(ST_SnapToGrid(geom, 0.5)), 2.5, 'endcap=square'))), 3)) AS zone_geom
 						FROM
 							_src_obstructions
 						GROUP BY
