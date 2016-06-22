@@ -30,4 +30,17 @@ do
 done
 cd -
 
+echo "Preparing to download Natural Resources Wales products..."
+
+mkdir /vagrant/source/nrw/
+cd /vagrant/source/nrw/
+
+echo "Downloading CRoW access layer..."
+curl -L -o "CRoW_Access_Land.zip" "http://lle.gov.wales/catalogue/item/OpenAccessCountrysideRightsOfWayActCROWDedicatedLand.zip"
+echo "Downloading National Parks..."
+curl -L -o "National_Parks.zip" "http://lle.gov.wales/catalogue/item/NationalParks.zip"
+echo "Downloading Country Parks..."
+curl -L -o "Country_Parks.zip" "http://lle.gov.wales/catalogue/item/ProtectedSitesCountryParks.zip"
+cd -
+
 echo "--> Downloads are complete."

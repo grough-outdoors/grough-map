@@ -34,7 +34,7 @@
 @default_fill_colour:					white;
 @default_casing_colour:					#C0C0C0;
 @default_dash_line:						4;
-@default_dash_space:					4;
+@default_dash_space:					8;
 
 @airport_default_border_thickness:		@default_border_thickness;
 @airport_default_fill_colour:			@default_fill_colour;

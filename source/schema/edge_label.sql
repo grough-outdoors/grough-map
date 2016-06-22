@@ -20,7 +20,6 @@ SELECT
 			     ELSE regexp_replace(e.edge_name, '\([^\(]+\)$', '', 'g')::character varying
 			END
 	END AS edge_name_short,
-	--e.edge_geom,
 	e.edge_level + e.edge_bridge::integer AS edge_level,
 	e.edge_bridge,
 	e.edge_tunnel,
@@ -50,7 +49,7 @@ AND
 	(ST_Length(edge_geom) > 500.0 OR char_length(regexp_replace(edge_name, '(^[^\(]+\(|\)$)', '', 'g')) < 5)
 AND
 	-- We label railway bridges, and railway 'lines', but not railway tunnels (not drawn)
-	NOT ( class_name IN ('Railway', 'Other railway') AND ( edge_tunnel = true OR lower(edge_name) NOT LIKE '%line%' ) )
+	NOT ( class_name IN ('Railway', 'Other railway') AND ( edge_tunnel = true OR ( lower(edge_name) NOT LIKE '%line%' AND lower(edge_name) NOT LIKE '% railway%' ) ) )
 ORDER BY
 	e.edge_level DESC, 
 	c.class_draw_order DESC,

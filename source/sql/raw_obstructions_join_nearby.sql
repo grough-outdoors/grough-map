@@ -137,24 +137,27 @@ SELECT
 	*,
 	ST_Multi(
 		ST_CollectionExtract(
-			ST_Intersection(
+			CASE WHEN h_linear
+			THEN ST_Intersection(
 				ST_Difference(
 					ST_ExteriorRing(
 						(ST_Dump(
 							ST_CollectionExtract(
 								ST_Buffer(
 									h_geom,
-									10.0,
-									'endcap=flat'
+									5.0,
+									'endcap=flat join=round'
 								),
 								3
 							)
 						)).geom
 					),
-					ST_Buffer(h_geom, 9.0)
+					ST_Buffer(h_geom, 4.0, 'endcap=square join=bevel')
 				),
 				o_zone
-			),
+			)
+			ELSE (ST_Dump(h_geom)).geom
+			END,
 			2
 		)
 	) AS obs_geom
@@ -163,7 +166,8 @@ FROM
 	SELECT
 		o_zone_id,
 		first(h_geom) AS h_geom,
-		first(o_zone) AS o_zone
+		first(o_zone) AS o_zone,
+		first(h_linear) AS h_linear
 	FROM
 	(
 		SELECT
@@ -175,10 +179,13 @@ FROM
 				(ST_Dump(
 					ST_Multi(
 						ST_CollectionExtract(
-							ST_Split(
-								o_zone,
-								h_geom
-							),
+							CASE WHEN h_linear
+								 THEN ST_Split(
+									o_zone,
+									h_geom
+								 )
+								 ELSE o_zone
+							END,
 							3
 						)
 					)
@@ -189,29 +196,31 @@ FROM
 						o_zone
 					)
 				) AS h_geom,
-				o_lines
+				o_lines,
+				h_linear
 			FROM
 			(
 				SELECT
 					h.id,
 					first(h.geom) AS h_geom,
 					--ST_Union(ST_Buffer(o.geom, 10.0, 'endcap=flat')) AS o_zone,
-					ST_Union(ST_Intersection(ST_Buffer(o.geom, 20.0, 'endcap=flat'), ST_Buffer(h.geom, 10.0, 'endcap=flat'))) AS o_zone,
-					ST_Collect(o.geom) AS o_lines
+					ST_Union(ST_Intersection(ST_Buffer(o.geom, 10.0, 'endcap=square join=round'), ST_Buffer(h.geom, 5.0, 'endcap=flat join=round'))) AS o_zone,
+					ST_Collect(o.geom) AS o_lines,
+					first(h.linear) AS h_linear
 				FROM
 					_tmp_raw_obstructions_highway h
 				INNER JOIN
 					_tmp_raw_obstructions o
 				ON
-					ST_DWithin(h.geom, o.geom, 20.0)
+					ST_DWithin(h.geom, o.geom, 15.0)
 				AND
 					ST_HausdorffDistance(
 						ST_Intersection(
 							h.geom,
-							ST_Buffer(o.geom, 20.0, 'endcap=flat')
+							ST_Buffer(o.geom, 15.0, 'endcap=flat')
 						),
 						o.geom
-					) < 20
+					) < 15.0
 				GROUP BY
 					h.id
 				HAVING
@@ -226,7 +235,7 @@ FROM
 ) SD;
 COMMIT;
 
--- Apply deletion and addition based on road casings
+-- Apply deletion and addition based on road casings to main obstructions
 BEGIN;
 DROP TABLE IF EXISTS _tmp_raw_obstructions_avoid_casings;
 CREATE TABLE
@@ -237,7 +246,8 @@ AS
 		o_id,
 		CASE WHEN ST_GeometryType(o_geom) = 'ST_LineString' THEN ST_Multi(o_geom)
 		     ELSE ST_Multi(ST_CollectionExtract(o_geom, 2))
-		END AS o_geom
+		END AS o_geom,
+		o_zone
 	FROM
 	(
 		SELECT
@@ -245,7 +255,8 @@ AS
 			ST_Difference(
 				o_geom,
 				o_zone
-			) AS o_geom
+			) AS o_geom,
+			o_zone
 		FROM
 		(
 			SELECT
@@ -266,10 +277,47 @@ AS
 	) SB
 );
 
-DELETE FROM
-	_tmp_raw_obstructions
+-- Apply deletion and addition based on road casings other road casing derivatives
+UPDATE
+	_tmp_raw_obstructions_highway_zones
+SET
+	obs_geom = SC.new_obs_geom
+FROM
+(
+	SELECT
+		o_id,
+		CASE WHEN ST_GeometryType(o_geom) = 'ST_LineString' THEN ST_Multi(o_geom)
+		     ELSE ST_Multi(ST_CollectionExtract(o_geom, 2))
+		END AS new_obs_geom
+	FROM
+	(
+		SELECT
+			o_id,
+			ST_Difference(
+				o_geom,
+				ST_MakeValid(ST_Buffer(o_zone, -0.5))
+			) AS o_geom
+		FROM
+		(
+			SELECT
+				o.o_zone_id AS o_id,
+				first(o.obs_geom) AS o_geom,
+				ST_Union(z.o_zone) AS o_zone
+			FROM
+				_tmp_raw_obstructions_highway_zones o
+			INNER JOIN
+				_tmp_raw_obstructions_highway_zones z
+			ON
+				o.obs_geom && z.o_zone
+			AND
+				ST_Intersects(o.obs_geom, z.o_zone)
+			GROUP BY
+				o.o_zone_id
+		) SA
+	) SB
+) SC
 WHERE
-	geom IS NULL OR ST_Length(geom) < 1.0;
+	o_zone_id = SC.o_id;
 
 DELETE FROM
 	_tmp_raw_obstructions
@@ -285,14 +333,31 @@ SELECT
 	(ST_Dump(obs_geom)).geom
 FROM
 	_tmp_raw_obstructions_highway_zones;
+	
+DELETE FROM
+	_tmp_raw_obstructions
+WHERE
+	geom IS NULL OR ST_Length(geom) <= 1.0;
 
+-- Add in our refactored obstructions only when they go a safe distance
+-- away from the road, e.g. a wall away from the road, not near the road
 INSERT INTO 
 	_tmp_raw_obstructions
 	(geom)
 SELECT
-	(ST_Dump(o_geom)).geom
+	small_geom
 FROM
-	_tmp_raw_obstructions_avoid_casings;
+(
+	SELECT
+		(ST_Dump(o_geom)).geom AS small_geom,
+		o_zone AS casing_geom
+	FROM
+		_tmp_raw_obstructions_avoid_casings
+) SA
+WHERE
+	ST_Length(small_geom) > 40.0
+AND	
+	greatest(ST_Distance(ST_EndPoint(small_geom), casing_geom), ST_Distance(ST_StartPoint(small_geom), casing_geom)) > 40.0;
 
 DROP TABLE IF EXISTS _tmp_raw_obstructions_avoid_casings;
 COMMIT;
@@ -413,7 +478,7 @@ FROM
 		INNER JOIN
 			_tmp_raw_obstructions B
 		ON
-			( ST_DWithin(ST_StartPoint(A.geom), B.geom, 100.0) OR ST_DWithin(ST_EndPoint(A.geom), B.geom, 100.0) )
+			( ST_DWithin(ST_StartPoint(A.geom), B.geom, 50.0) OR ST_DWithin(ST_EndPoint(A.geom), B.geom, 50.0) )
 		AND
 			A.id != B.id
 		WHERE

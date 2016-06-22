@@ -1,17 +1,23 @@
-@feature_wall_thickness:			2.0;
-@feature_wall_colour:				#555;
+@feature_wall_thickness:			3.0;
+@feature_wall_colour:				#A0A0A0;
 @feature_wall_blend:				src-over;
-@feature_wall_opacity:				0.7;
+@feature_wall_opacity:				1.0;
+@feature_wall_dash_line:			6;
+@feature_wall_dash_space:			4;
 
 @feature_hedge_thickness:			@feature_wall_thickness;
 @feature_hedge_colour:				@feature_wall_colour;
 @feature_hedge_blend:				@feature_wall_blend;
 @feature_hedge_opacity:				@feature_wall_opacity;
+@feature_hedge_dash_line:			@feature_wall_dash_line;
+@feature_hedge_dash_space:			@feature_wall_dash_space;
 
 @feature_fence_thickness:			@feature_wall_thickness;
 @feature_fence_colour:				@feature_wall_colour;
 @feature_fence_blend:				@feature_wall_blend;
 @feature_fence_opacity:				@feature_wall_opacity;
+@feature_fence_dash_line:			@feature_wall_dash_line;
+@feature_fence_dash_space:			@feature_wall_dash_space;
 
 @feature_cable_thickness:			2.0;
 @feature_cable_colour:				red;
@@ -78,6 +84,7 @@
 		line-color: @feature_wall_colour;
 		line-opacity: @feature_wall_opacity;
 		line-comp-op: @feature_wall_blend;
+		line-dasharray: @feature_wall_dash_line, @feature_wall_dash_space;
 	}
 	
 	[class_name='Hedge'] {
@@ -85,6 +92,7 @@
 		line-color: @feature_hedge_colour;
 		line-opacity: @feature_hedge_opacity;
 		line-comp-op: @feature_hedge_blend;
+		line-dasharray: @feature_hedge_dash_line, @feature_hedge_dash_space;
 	}
 	
 	[class_name='Fence'] {
@@ -92,6 +100,7 @@
 		line-color: @feature_fence_colour;
 		line-opacity: @feature_fence_opacity;
 		line-comp-op: @feature_fence_blend;
+		line-dasharray: @feature_fence_dash_line, @feature_fence_dash_space;
 	}
 	
 	[class_name='Overhead cables'] {

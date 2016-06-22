@@ -40,11 +40,37 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	CREATE TABLE _tmp_raw_obstructions_highway AS
 	SELECT
 		edge_id AS src_id,
-		(ST_Dump(edge_geom)).geom AS geom
+		(ST_Dump(edge_geom)).geom AS geom,
+		true as linear
 	FROM
 		edge
 	WHERE
 		edge_geom && ST_MakeBox2D(ST_Point(${tileExtent[0]}, ${tileExtent[1]}), ST_Point(${tileExtent[2]}, ${tileExtent[3]}));
+	
+	INSERT INTO _tmp_raw_obstructions_highway (src_id, geom, linear)
+	SELECT
+		watercourse_id AS src_id,
+		(ST_Dump(watercourse_geom)).geom AS geom,
+		true AS linear 
+	FROM
+		watercourse
+	WHERE
+		watercourse_class_id = 2
+	AND
+		watercourse_geom && ST_MakeBox2D(ST_Point(${tileExtent[0]}, ${tileExtent[1]}), ST_Point(${tileExtent[2]}, ${tileExtent[3]}));
+
+	INSERT INTO _tmp_raw_obstructions_highway (src_id, geom, linear)
+	SELECT
+		surface_id AS src_id,
+		ST_ExteriorRing((ST_Dump(surface_geom)).geom) AS geom,
+		false AS linear 
+	FROM
+		surface
+	WHERE
+		surface_class_id IN (5, 6)
+	AND
+		surface_geom && ST_MakeBox2D(ST_Point(${tileExtent[0]}, ${tileExtent[1]}), ST_Point(${tileExtent[2]}, ${tileExtent[3]}));		
+		
 	COMMIT;
 EoSQL
 
@@ -62,8 +88,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		feature_geom && ST_MakeBox2D(ST_Point(${tileExtent[0]}, ${tileExtent[1]}), ST_Point(${tileExtent[2]}, ${tileExtent[3]}));
 EoSQL
 
-# TODO: Select only entities which don't overlap with existing wall geometries
-
+# Select only entities which don't overlap with existing wall geometries
 echo "--> Adding new features..."
 # Class 52 = Obstruction
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
