@@ -74,6 +74,12 @@ COPY zone_classes (class_id, class_name, class_draw_order) FROM stdin;
 5	Doorstep Green	\N
 6	Millennium Green	\N
 7	Country Park	\N
+8	Highway Authority	\N
+9	Unitary Authority	\N
+10	County Council	\N
+12	London Borough	\N
+11	Metropolitan Borough	\N
+13	County Council District	\N
 \.
 
 
@@ -81,7 +87,7 @@ COPY zone_classes (class_id, class_name, class_draw_order) FROM stdin;
 -- Name: zone_classes_class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('zone_classes_class_id_seq', 7, true);
+SELECT pg_catalog.setval('zone_classes_class_id_seq', 13, true);
 
 
 --

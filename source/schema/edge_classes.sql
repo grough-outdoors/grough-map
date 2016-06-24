@@ -82,8 +82,8 @@ COPY edge_classes (class_id, class_name, class_default_access_id, class_draw_ord
 2	Trunk road	1	12	t
 1	Motorway	1	13	t
 13	Railway	9	-1	t
-16	Other railway	9	-1	f
 10	Path	3	1	t
+16	Other railway	9	-1	t
 \.
 
 

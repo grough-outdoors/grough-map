@@ -40,6 +40,9 @@ pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t raw_obstructions --schema-only >
 echo "--> Storing watercourse schema..."
 pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t watercourse --schema-only > watercourse.sql
 
+echo "--> Storing source schema..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t source --schema-only > source.sql
+
 echo "--> Storing watercourse classes..."
 pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t watercourse_classes -c > watercourse_classes.sql
 
@@ -69,6 +72,9 @@ pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t feature_import > feature_import.
 
 echo "--> Storing place import classes..."
 pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t place_import > place_import.sql
+
+echo "--> Storing licences..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t licence > licence.sql
 
 echo ""
 echo "Export complete. Run gm-restore-schema to return."

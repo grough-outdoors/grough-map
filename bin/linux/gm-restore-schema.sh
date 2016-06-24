@@ -71,6 +71,13 @@ echo "--> Restoring zone classes..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS zone_classes CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}zone_classes.sql" > /dev/null 
 
+echo "--> Restoring source schema..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}source.sql" > /dev/null 
+
+echo "--> Restoring licences..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS licence CASCADE;"
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}licence.sql" > /dev/null 
+
 echo "--> Restoring feature import classes..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS feature_import CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_import.sql" > /dev/null 

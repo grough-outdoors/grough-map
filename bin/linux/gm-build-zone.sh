@@ -136,6 +136,67 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	) SA
 EoSQL
 
+echo "--> Adding boundaries..."
+echo "    --> Unitary..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	INSERT INTO 
+		zone
+		(zone_class_id, zone_name, zone_geom)
+	SELECT
+		CASE WHEN descriptio = 'District' THEN 13
+			 WHEN descriptio = 'London Borough' THEN 12
+			 WHEN descriptio = 'Metropolitan District' THEN 11
+			 WHEN descriptio = 'Unitary Authority' THEN 9
+		END AS zone_class_id,
+		regexp_replace(
+			regexp_replace(
+				trim("name"), 
+				'(^(City and County of the|City of|County of|The City of) |( (District|London Boro|City)|)($| \(B\))$)', 
+				'', 
+				'g'
+			),
+			'^(.*) - ',
+			'',
+			'g'
+		) AS zone_name,
+		"geom" AS zone_geom
+	FROM
+		_src_os_bdline_district_borough_unitary_region;
+EoSQL
+echo "    --> County..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	INSERT INTO 
+		zone
+		(zone_class_id, zone_name, zone_geom) 
+	SELECT
+		10 AS zone_class_id,
+		regexp_replace(
+			trim("name"), 
+			' County$', 
+			'', 
+			'g'
+		) AS zone_name,
+		"geom" AS zone_geom
+	FROM
+		_src_os_bdline_county_region
+	WHERE
+		"name" LIKE '% County';
+EoSQL
+echo "    --> Highway authorities..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	INSERT INTO 
+		"zone"
+		(zone_class_id, zone_name, zone_geom) 
+	SELECT
+		8 AS zone_class_id,
+		"zone_name" AS zone_name,
+		"zone_geom" AS zone_geom
+	FROM
+		"zone"
+	WHERE
+		zone_class_id IN (9, 10, 11, 12);
+EoSQL
+
 echo "--> Removing dodgy geometries..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	UPDATE "zone" SET "zone_geom" = ST_MakeValid(ST_Simplify("zone_geom", 1.2));

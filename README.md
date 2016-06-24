@@ -34,7 +34,8 @@ Other data can be imported to the database manually or will be imported when req
 - gm-import-osm
 - gm-import-prow
   
-Build each composite map layer...
+Build each composite map layer, for which order is important...
+- gm-build-zone
 - gm-build-transport
 - gm-build-buildings
 - gm-build-surface
@@ -42,11 +43,10 @@ Build each composite map layer...
 - gm-build-obstructions \<tile\> (for each LiDAR tile, highly intensive process)
 - gm-build-features
 - gm-build-places
-- gm-build-zone
 - gm-build-terrain \<tile\> (for each tile, or automatic during gm-tile)
 - gm-build-cartography
 
-For each tile to be generated...  
+For each tile to be generated...
 - gm-tile \<tile\>
 
 ## Licence
