@@ -226,7 +226,7 @@ pg_cursor.execute("""\
 		p.place_class_id,
 		-- Fallback if either a seriously concave polygon is provided, or nothing is provided
 		CASE WHEN l.place_id IS NULL OR ST_Within(ST_Centroid(l.place_geom), l.place_geom) = false
-		     THEN ST_Multi(ST_Intersection(p.place_geom, ST_Buffer(p.place_centre_geom, 2500)))
+		     THEN ST_Multi(ST_ConvexHull(ST_Intersection(p.place_geom, ST_Buffer(p.place_centre_geom, greatest(2500, class_text_size * 50.0)))))
 			 ELSE ST_Multi(l.place_geom)
 		END::geometry(MultiPolygon, 27700) as place_geom,
 		degrees(ST_Azimuth(l.place_nearest, p.place_centre_geom)) AS place_direction,
@@ -262,7 +262,7 @@ pg_cursor.execute("""\
 					class_wrap_width,
 					place_name,
 					CASE WHEN c.class_prefer_no_expansion = true AND ST_XMax(place_geom) - ST_XMin(place_geom) > class_text_size * longest_word(place_name) * 0.6  THEN place_geom
-					     ELSE ST_Intersection(ST_Buffer(ST_ClosestPoint(ST_Intersection(place_geom, z.label_zone), place_centre_geom), class_text_size * longest_word(place_name) * 0.80, 'quad_segs=2'), z.label_zone) 
+					     ELSE ST_ConvexHull(ST_Intersection(ST_Buffer(ST_ClosestPoint(ST_Intersection(place_geom, z.label_zone), place_centre_geom), class_text_size * longest_word(place_name) * 0.80, 'quad_segs=2'), z.label_zone)) 
 					END AS place_geom,
 					ST_ClosestPoint(ST_Intersection(place_geom, z.label_zone), place_centre_geom) AS place_nearest,
 					CASE WHEN ST_XMax(place_geom) - ST_XMin(place_geom) > class_text_size * longest_word(place_name) * 2.0 AND

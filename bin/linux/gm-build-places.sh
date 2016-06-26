@@ -55,7 +55,10 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 			place_class_id
 		)
 	SELECT 
-		name1,
+		CASE WHEN lower(name1_lang) = 'eng' THEN name1
+		     WHEN lower(name2_lang) = 'eng' THEN name2
+			 ELSE name1
+		END,
 		geom_point,
 		ST_Multi(geom_bbox),
 		CASE WHEN local_type = 'Village' THEN 2

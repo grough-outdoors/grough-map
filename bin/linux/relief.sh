@@ -46,16 +46,45 @@ edgeRight=$(( $tileCentreE + 6000 ))
 edgeUp=$(( $tileCentreN + 6000 ))
 edgeDown=$(( $tileCentreN - 6000 ))
 
-echo "--> Assessing region..."
+echo "--> Assessing region min/max..."
 tileData=`psql -Ugrough-map grough-map -h 127.0.0.1 -A -t -c "SELECT min(elevation_level)::integer AS min_lev, max(elevation_level)::integer AS max_lev, avg(elevation_level)::integer AS avg_lev FROM elevation WHERE elevation_geom && ST_MakeBox2D(ST_Point($edgeLeft, $edgeDown),ST_Point($edgeRight, $edgeUp))"`
+echo "--> Assessing region empty space..."
+tileEmptyArea=`psql -Ugrough-map grough-map -h 127.0.0.1 -A -t -c "
+SELECT
+	(max(ST_Area(grid_empty)) / (1000 * 1000))::integer
+FROM
+(
+	SELECT
+		(ST_Dump(ST_Difference(grid_box, grid_zone))).geom AS grid_empty
+	FROM
+		ST_SetSRID(ST_MakeBox2D(ST_Point(${tileBounds[0]}, ${tileBounds[1]}), ST_Point(${tileBounds[2]}, ${tileBounds[3]})), 27700) AS grid_box
+	LEFT JOIN
+	(
+		SELECT
+			ST_Union(ST_Buffer(elevation_geom, 50.0)) AS grid_zone
+		FROM
+			elevation
+		WHERE
+			elevation_geom && ST_SetSRID(ST_MakeBox2D(ST_Point(${tileBounds[0]}, ${tileBounds[1]}), ST_Point(${tileBounds[2]}, ${tileBounds[3]})), 27700)
+	) SA
+	ON
+		true
+) SB
+GROUP BY
+	true
+"`
 IFS='|'; read -r -a tileAssessment <<< "$tileData"
+IFS='|'; read -r -a tileEmptySize <<< "$tileEmptyArea"
 echo "   Min: ${tileAssessment[0]}"
 echo "   Max: ${tileAssessment[1]}"
 echo "   Avg: ${tileAssessment[2]}"
-if [ ${tileAssessment[1]} -le 300 ]; 
+echo "   Empty: ${tileEmptySize[0]}"
+if [ ${tileAssessment[1]} -le 300 ] || [ ${tileEmptySize[0]} -ge 2 ]; 
 then
+	echo "    --> Using IDW for surface..."
 	enableIDW=1
-else 
+else
+	echo "    --> IDW disabled for surface..." 
 	enableIDW=0
 fi
 
