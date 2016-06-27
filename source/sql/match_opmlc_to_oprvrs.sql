@@ -133,7 +133,7 @@ FROM
 		WHERE
 			ST_DWithin( o.geom, e.geom, 20.0 )
 		AND
-			o.name IS NOT NULL
+			o.name1 IS NOT NULL
 	) AS SB
 ) AS SA
 WHERE

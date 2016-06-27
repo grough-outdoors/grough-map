@@ -62,6 +62,8 @@
 @watercourse_label_large_halo_radius:		0;
 @watercourse_label_large_offset_y:			0;
 @watercourse_label_large_opacity:			0.7;
+@watercourse_label_large_max_delta:			35;
+@watercourse_label_large_minimum_padding:	0;
 
 .edge-label {
 	text-name: @edge_label_default_source;
@@ -166,12 +168,14 @@
 			text-dy: @watercourse_label_large_offset_y;
 			text-halo-radius: @watercourse_label_large_halo_radius;
 			text-opacity: @watercourse_label_large_opacity;
+			text-max-char-angle-delta: @watercourse_label_large_max_delta;
+			text-min-padding: @watercourse_label_large_minimum_padding;
 			[watercourse_width < 60] { text-size: 50; }
 			[watercourse_width >= 60][watercourse_width < 75] { text-size: 55; }
 			[watercourse_width >= 75][watercourse_width < 100] { text-size: 60; }
 			[watercourse_width >= 100][watercourse_width < 150] { text-size: 82; }
 			[watercourse_width >= 150][watercourse_width < 200] { text-size: 125; }
-			[watercourse_width >= 200] { text-size: 160; }
+			[watercourse_width >= 200] { text-size: 150; }
 		}
 	}
 }

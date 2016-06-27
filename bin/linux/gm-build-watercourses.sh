@@ -40,7 +40,10 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	INSERT INTO
 		watercourse (watercourse_name, watercourse_geom, watercourse_width, watercourse_class_id)
 	SELECT
-		w.name,
+		CASE WHEN w.name1_lang = 'eng' THEN w.name1
+		     WHEN w.name2_lang = 'eng' THEN w.name2
+			 ELSE w.name1
+		END AS name,
 		ST_Multi(l.geom),
 		1, -- Width
 		2  -- ID
@@ -75,7 +78,10 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 			),
 			2
 		)AS watercourse_geom,
-		w.name AS watercourse_name
+		CASE WHEN w.name1_lang = 'eng' THEN w.name1
+		     WHEN w.name2_lang = 'eng' THEN w.name2
+			 ELSE w.name1
+		END AS watercourse_name
 	FROM
 		_src_os_oprvrs_watercourse_link w
 	LEFT JOIN
@@ -85,7 +91,8 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	GROUP BY
 		w.gid,
 		w.form,
-		w.name;
+		w.name1,
+		w.name2;
 EoSQL
 
 echo "--> Indexing and clustering..."
@@ -204,7 +211,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	SELECT populate_geometry_columns('_src_osm_line_water'::regclass); 
 EoSQL
 
-echo "--> Setting lakes and reservoir names from OSM where errors occured..."
+echo "--> Setting lakes and reservoir names from OSM where weirdness occured..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/update_lakes_reservoirs_from_osm.sql" > /dev/null
 
 echo "--> Naming watercourses using OS OpenMap Local where possible..."
@@ -254,7 +261,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	DROP TABLE opmlc_oprvrs_matching;
 	DROP TABLE _src_osm_polygon_water;
 	DROP TABLE _src_osm_line_water;
-	DROP TABLE _tmp_surface_coarse;
+	-- DROP TABLE _tmp_surface_coarse;
 	DROP TABLE _tmp_surface_water;
 	DROP TABLE _tmp_new_watercourse_widths;
 EoSQL
@@ -264,7 +271,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	VACUUM FULL ANALYZE watercourse;
 EoSQL
 
-echo "--> Cleaning..."
-"$binDir/gm-clean-sources.sh"
+#echo "--> Cleaning..."
+#"$binDir/gm-clean-sources.sh"
 
 echo "--> Build complete."
