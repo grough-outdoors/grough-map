@@ -261,7 +261,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	DROP TABLE opmlc_oprvrs_matching;
 	DROP TABLE _src_osm_polygon_water;
 	DROP TABLE _src_osm_line_water;
-	-- DROP TABLE _tmp_surface_coarse;
+	DROP TABLE _tmp_surface_coarse;
 	DROP TABLE _tmp_surface_water;
 	DROP TABLE _tmp_new_watercourse_widths;
 EoSQL
@@ -271,7 +271,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	VACUUM FULL ANALYZE watercourse;
 EoSQL
 
-#echo "--> Cleaning..."
-#"$binDir/gm-clean-sources.sh"
+echo "--> Cleaning..."
+"$binDir/gm-clean-sources.sh"
 
 echo "--> Build complete."
