@@ -21,6 +21,9 @@ IFS='|'; read -r -a tileExtentEls <<< "$tileData"
 tileExtent="${tileExtentEls[0]} ${tileExtentEls[1]} ${tileExtentEls[2]} ${tileExtentEls[3]}"
 echo $tileExtent
 
+echo "--> Preparing GRASS installation..."
+gm-software-grass
+
 echo "GISDBASE: ${scratchDir}/$workingDir" > ${scratchDir}/grassrc
 echo "LOCATION_NAME: surface" >> ${scratchDir}/grassrc
 echo "MAPSET: PERMANENT" >> ${scratchDir}/grassrc

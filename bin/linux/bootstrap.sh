@@ -174,9 +174,14 @@ tarFile=`curl https://grass.osgeo.org/grass70/binary/linux/snapshot/ | grep '\.t
 
 wget "https://grass.osgeo.org/grass70/binary/linux/snapshot/$shellFile"
 wget "https://grass.osgeo.org/grass70/binary/linux/snapshot/$tarFile"
+
+sudo rm -rf /usr/local/grass7*
 chmod +x "$shellFile"
 sudo "./$shellFile" "$tarFile"
 cd -
+
+sudo chmod -R 755 /usr/local/bin/grass-*
+sudo chmod 755 /usr/local/bin/grass70
 
 echo "-----------------------------------"
 echo "--> Adding Mapnik v2.3 repository..."

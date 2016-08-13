@@ -7,6 +7,7 @@ binDir="/vagrant/bin/linux/"
 terrainDir="/vagrant/source/os-terrain/"
 outputDir="/vagrant/product/"
 terrainCommand="$binDir/gm-build-terrain.sh"
+obstructionsCommand="$binDir/gm-build-features-obstructions.sh"
 mapnikDir="$binDir/Mapnik/"
 mapnikOutputDir="$mapnikDir/output/"
 mapnikCommand="$mapnikDir/generate.py"
@@ -29,11 +30,11 @@ do
 	if [ -z "$contourCount" ]; then 
 		contourCount=0
 	fi
-	if [ ! $contourCount -ge 1 ]; then
+	if [[ ! $contourCount -ge 1 ]]; then
 		echo "No terrain data found for this tile. Attempting to generate."
 		$terrainCommand $tileName
 		contourCount=`psql -Ugrough-map grough-map -h 127.0.0.1 -A -t -c "SELECT Count(e.elevation_id) FROM  grid g, elevation e WHERE  g.tile_name='${tileName}' AND e.elevation_geom && g.tile_geom AND ST_Within(e.elevation_geom, g.tile_geom) GROUP BY g.tile_name"`
-		if [ ! $contourCount -ge 1 ]; then
+		if [[ -z "$contourCount" || ! "$contourCount" -eq 1 ]]; then
 			echo "Unable to generate terrain data. Cannot continue."
 			exit 1
 		fi
@@ -41,6 +42,9 @@ do
 		echo "Identified suitable terrain data for this tile."
 	fi
 
+	echo "Processing obstructions..."
+	$obstructionsCommand $tileName
+	
 	echo "Starting map generation process..."
 	cd $mapnikDir
 	$mapnikCommand $tileName

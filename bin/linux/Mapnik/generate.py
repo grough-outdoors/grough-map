@@ -602,7 +602,7 @@ print('Finished creating contour labels')
 
 print('Creating map raster...')
 # Set map dimensions in pixels
-m = mapnik.Map(8000, 8000)
+m = mapnik.Map(8192, 8192)
 
 # Load the map definition
 mapnik.load_map(m, stylesheet)
