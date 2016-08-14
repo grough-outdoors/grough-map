@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE VIEW feature_label AS
+﻿CREATE OR REPLACE VIEW feature_symbol AS
 SELECT
 	f.feature_id,
 	f.feature_class_id,
@@ -19,11 +19,9 @@ LEFT JOIN
 ON
 	c.class_id = f.feature_class_id
 WHERE
-	c.class_label = true
-AND
-	c.class_symbolised IS NOT true
+	c.class_symbolised = true
 ORDER BY
 	c.class_label_rank DESC;
 	
-ALTER TABLE feature_label OWNER TO "grough-map";
-SELECT Populate_Geometry_Columns('feature_label'::regclass);
+ALTER TABLE feature_symbol OWNER TO "grough-map";
+SELECT Populate_Geometry_Columns('feature_symbol'::regclass);

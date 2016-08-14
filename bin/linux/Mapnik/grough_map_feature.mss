@@ -40,7 +40,7 @@
 @feature_label_opacity:				1.0;
 @feature_label_placement_type:		simple;
 @feature_label_placement:			interior;
-@feature_label_typeface:			'Open Sans Regular';
+@feature_label_typeface:			'Open Sans Italic';
 @feature_label_avoid_edges:			false;
 @feature_label_character_spacing:	2;
 @feature_label_minimum_padding:		75;

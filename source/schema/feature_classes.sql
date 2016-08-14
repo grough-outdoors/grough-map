@@ -35,7 +35,8 @@ CREATE TABLE feature_classes (
     class_plural_name character varying(100),
     class_radius integer DEFAULT 25,
     class_label boolean DEFAULT false NOT NULL,
-    class_label_rank smallint
+    class_label_rank smallint,
+    class_symbolised boolean DEFAULT false
 );
 
 
@@ -73,58 +74,58 @@ ALTER TABLE ONLY feature_classes ALTER COLUMN class_id SET DEFAULT nextval('feat
 -- Data for Name: feature_classes; Type: TABLE DATA; Schema: public; Owner: grough-map
 --
 
-COPY feature_classes (class_id, class_name, class_draw_order, class_subsurface, class_surface, class_overhead, class_plural_name, class_radius, class_label, class_label_rank) FROM stdin;
-50	Picnic table	\N	f	t	f	Picnic area	250	t	1
-51	Pier	\N	f	t	f	Piers	200	t	5
-52	Obstruction	\N	f	t	f	Obstructions	125	f	\N
-37	SP	\N	f	t	f	SPs	125	t	10
-19	Weir	\N	f	t	f	Weirs	200	t	4
-39	Phone	\N	f	t	f	Phones	125	t	5
-17	Ford	\N	f	t	f	Fords	125	t	4
-40	Boun stone	\N	f	t	f	Boun stones	125	t	1
-24	Dock	\N	f	t	f	Docks	200	t	5
-33	Shaft	\N	f	t	f	Shafts	250	t	3
-34	Shake hole	\N	f	t	f	Shake holes	250	t	2
-18	Stepping stones	\N	f	t	f	Stepping stones	125	t	4
-21	Lock	\N	f	t	f	Locks	125	t	5
-22	Slipway	\N	f	t	f	Slipway	125	t	5
-23	Jetty	\N	f	t	f	Jetties	125	t	5
-25	Sluice gate	\N	f	t	f	Sluice gates	125	t	2
-28	Pond	\N	f	t	f	Ponds	125	t	3
-29	Spring	\N	f	t	f	Springs	125	t	2
-30	Cave	\N	f	t	f	Caves	125	t	4
-44	Chimney	\N	f	t	f	Chimneys	125	t	4
-5	Gate	\N	f	t	f	Gates	125	f	1
-6	Stile	\N	f	t	f	Stiles	125	f	1
-3	Hedge	\N	f	t	f	\N	125	f	\N
-4	Overhead cables	\N	f	f	t	\N	125	f	\N
-12	Pylon	\N	f	t	f	Pylons	125	f	\N
-8	Earthworks	\N	f	t	f	\N	125	f	1
-9	Cablecar or gondola	\N	f	f	t	\N	125	t	10
-10	Ski lift	\N	f	f	t	\N	125	t	10
-11	Zip line	\N	f	f	t	\N	125	t	10
-26	Boat lift	\N	f	t	f	Boat lifts	125	t	7
-27	Aqueduct	\N	f	t	f	Aqueduct	125	t	5
-31	Well	\N	f	t	f	Wells	125	t	2
-32	Fountain	\N	f	t	f	Fountains	125	t	2
-35	Shelter	\N	f	t	f	Shelters	125	t	4
-38	Flagpole	\N	f	t	f	Flagpoles	125	t	5
-41	Dish	\N	f	t	f	Dishes	125	t	6
-42	Tank	\N	f	t	f	Tanks	125	t	4
-43	Silo	\N	f	t	f	Silos	125	t	4
-45	Spoil	\N	f	t	f	Spoil	125	t	1
-46	Lighthouse	\N	f	t	f	Lighthouses	125	t	7
-47	Viaduct	\N	f	t	f	Viaducts	125	t	6
-1	Fence	\N	f	t	f	\N	125	f	\N
-2	Wall	\N	f	t	f	\N	125	f	\N
-13	Cairn	\N	f	t	f	Cairns	125	t	3
-15	Water tower	\N	f	t	f	Water towers	125	t	8
-14	Tower	\N	f	t	f	Towers	125	f	8
-16	WC	\N	f	t	f	WCs	125	t	5
-7	CG	\N	f	t	f	CGs	125	t	1
-36	Meml	\N	f	t	f	Memls	125	t	4
-20	Dam	\N	f	t	f	Dam	125	f	8
-49	Quarry	\N	f	t	f	Quarries	500	t	7
+COPY feature_classes (class_id, class_name, class_draw_order, class_subsurface, class_surface, class_overhead, class_plural_name, class_radius, class_label, class_label_rank, class_symbolised) FROM stdin;
+50	Picnic site	\N	f	t	f	Picnic site	70	t	1	t
+51	Pier	\N	f	t	f	Piers	100	t	5	f
+52	Obstruction	\N	f	t	f	Obstructions	125	f	\N	f
+24	Dock	\N	f	t	f	Docks	200	t	5	f
+25	Sluice gate	\N	f	t	f	Sluice gates	125	t	2	f
+3	Hedge	\N	f	t	f	\N	125	f	\N	f
+4	Overhead cables	\N	f	f	t	\N	125	f	\N	f
+8	Earthworks	\N	f	t	f	\N	125	f	1	f
+9	Cablecar or gondola	\N	f	f	t	\N	125	t	10	f
+10	Ski lift	\N	f	f	t	\N	125	t	10	f
+11	Zip line	\N	f	f	t	\N	125	t	10	f
+27	Aqueduct	\N	f	t	f	Aqueduct	125	t	5	f
+47	Viaduct	\N	f	t	f	Viaducts	125	t	6	f
+1	Fence	\N	f	t	f	\N	125	f	\N	f
+2	Wall	\N	f	t	f	\N	125	f	\N	f
+20	Dam	\N	f	t	f	Dam	125	f	8	f
+49	Quarry	\N	f	t	f	Quarries	500	t	7	f
+7	CG	\N	f	t	f	CGs	40	t	1	f
+6	Stile	\N	f	t	f	Stiles	40	f	1	f
+5	Gate	\N	f	t	f	Gates	40	f	1	f
+12	Pylon	\N	f	t	f	Pylons	40	f	\N	f
+13	Cairn	\N	f	t	f	Cairns	40	t	3	f
+14	Tower	\N	f	t	f	Towers	40	f	8	f
+15	Water tower	\N	f	t	f	Water towers	40	t	8	f
+16	WC	\N	f	t	f	WCs	40	t	5	f
+18	Stepping stones	\N	f	t	f	Stepping stones	40	t	4	f
+17	Ford	\N	f	t	f	Fords	100	t	4	f
+19	Weir	\N	f	t	f	Weirs	70	t	4	f
+21	Lock	\N	f	t	f	Locks	70	t	5	f
+22	Slipway	\N	f	t	f	Slipway	40	t	5	f
+23	Jetty	\N	f	t	f	Jetties	40	t	5	f
+26	Boat lift	\N	f	t	f	Boat lifts	40	t	7	f
+28	Pond	\N	f	t	f	Ponds	40	t	3	f
+29	Spring	\N	f	t	f	Springs	40	t	2	f
+30	Cave	\N	f	t	f	Caves	40	t	4	f
+31	Well	\N	f	t	f	Wells	40	t	2	f
+32	Fountain	\N	f	t	f	Fountains	40	t	2	f
+33	Shaft	\N	f	t	f	Shafts	100	t	3	f
+34	Shake hole	\N	f	t	f	Shake holes	100	t	2	f
+35	Shelter	\N	f	t	f	Shelters	40	t	4	t
+36	Meml	\N	f	t	f	Memls	70	t	4	f
+37	Survey point	\N	f	t	f	Survey points	40	t	10	t
+38	Flagpole	\N	f	t	f	Flagpoles	50	t	5	t
+39	Phone	\N	f	t	f	Phones	40	t	5	f
+40	Boun stone	\N	f	t	f	Boun stones	40	t	1	f
+41	Dish	\N	f	t	f	Dishes	40	t	6	f
+42	Tank	\N	f	t	f	Tanks	40	t	4	f
+43	Silo	\N	f	t	f	Silos	40	t	4	f
+44	Chimney	\N	f	t	f	Chimneys	40	t	4	f
+45	Spoil	\N	f	t	f	Spoil	125	t	1	f
+46	Lighthouse	\N	f	t	f	Lighthouses	40	t	7	t
 \.
 
 

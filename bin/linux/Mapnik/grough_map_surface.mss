@@ -4,11 +4,6 @@
 @woodland_default_fill_colour:			#CCFBD2;
 @woodland_default_casing_colour:		black;
 
-@foreshore_default_border_thickness:	2.0;
-@foreshore_default_fill_colour:			#F1F3F4;
-@foreshore_default_casing_colour:		#C8CFD6;
-@foreshore_default_fill_blend:			src-over;
-
 @beach_default_border_thickness:		2.0;
 @beach_default_fill_colour:				#FFFCD7;
 @beach_default_casing_colour:			#116899;
@@ -29,6 +24,11 @@
 
 @stream_default_thickness:				1.5;
 @stream_default_colour:					@river_default_casing_colour;
+
+@foreshore_default_border_thickness:	2.0;
+@foreshore_default_fill_colour:			#F1F3F4;
+@foreshore_default_casing_colour:		@beach_default_casing_colour; /* #C8CFD6 */
+@foreshore_default_fill_blend:			src-over;
 
 @default_border_thickness:				4.0;
 @default_fill_colour:					white;

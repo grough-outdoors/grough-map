@@ -12,7 +12,8 @@
 		"grough_map_linear_labels.mss",
 		"grough_map_place.mss",
 		"grough_map_feature.mss",
-		"grough_map_zone.mss"
+		"grough_map_zone.mss",
+		"grough_map_symbols.mss"
 	],
 	"Layer": [
 	
@@ -196,6 +197,10 @@
 		"Datasource": { "table": "\"map_render_grid_lines\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
+	{
+		"id": "feature_symbols", "name": "feature_symbols", "class": "feature-symbol",
+		"Datasource": { "table": "\"map_render_feature_symbols\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
+	},
 	{
 		"id": "watercourse_labels", "name": "watercourse_labels", "class": "watercourse-label",
 		"Datasource": { "table": "\"map_render_watercourse_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
