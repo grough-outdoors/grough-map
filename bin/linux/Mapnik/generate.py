@@ -227,7 +227,7 @@ pg_cursor.execute("""\
 		-- Fallback if either a seriously concave polygon is provided, or nothing is provided
 		CASE WHEN l.place_id IS NULL OR ST_Within(ST_Centroid(l.place_geom), l.place_geom) = false
 		     THEN ST_Multi(ST_ConvexHull(ST_Intersection(p.place_geom, ST_Buffer(p.place_centre_geom, greatest(2500, class_text_size * 50.0)))))
-			 ELSE ST_Multi(l.place_geom)
+			 ELSE ST_Multi(ST_ConvexHull(l.place_geom))
 		END::geometry(MultiPolygon, 27700) as place_geom,
 		degrees(ST_Azimuth(l.place_nearest, p.place_centre_geom)) AS place_direction,
 		p.class_name,
@@ -241,7 +241,7 @@ pg_cursor.execute("""\
 		SELECT
 			first(place_id) AS place_id,
 			CASE WHEN first(place_preferred) = false
-				 THEN ST_Buffer(first(place_geom), first(class_text_size) / 2)
+				 THEN ST_MakeValid(ST_Simplify(ST_Buffer(first(place_geom), first(class_text_size) * 2.0, 'quad_segs=2'), 50.0))
 			     ELSE first(place_geom) 
 			END AS place_geom,
 			first(place_nearest) AS place_nearest
@@ -256,43 +256,48 @@ pg_cursor.execute("""\
 			FROM
 			(
 				SELECT
-					place_id,
-					place_centre_geom,
-					class_text_size,
-					class_wrap_width,
-					place_name,
-					CASE WHEN c.class_prefer_no_expansion = true AND ST_XMax(place_geom) - ST_XMin(place_geom) > class_text_size * longest_word(place_name) * 0.6  THEN place_geom
-					     ELSE ST_ConvexHull(ST_Intersection(ST_Buffer(ST_ClosestPoint(ST_Intersection(place_geom, z.label_zone), place_centre_geom), class_text_size * longest_word(place_name) * 0.80, 'quad_segs=2'), z.label_zone)) 
-					END AS place_geom,
-					ST_ClosestPoint(ST_Intersection(place_geom, z.label_zone), place_centre_geom) AS place_nearest,
-					CASE WHEN ST_XMax(place_geom) - ST_XMin(place_geom) > class_text_size * longest_word(place_name) * 2.0 AND
-							  ST_YMax(place_geom) - ST_YMin(place_geom) > class_text_size * 1.5 THEN true
+					*,
+					CASE WHEN ST_XMax(place_geom) - ST_XMin(place_geom) > class_text_size * greatest(longest_word(place_name), 8) * 1.25 AND
+							  ST_YMax(place_geom) - ST_YMin(place_geom) > class_text_size * 1.25 THEN true
 						 ELSE false
 					END AS place_preferred
 				FROM
-					place p
-				LEFT JOIN
-					place_classes c
-				ON
-					c.class_id = p.place_class_id
-				LEFT JOIN
-					_tmp_label_zone z
-				ON
-					z.label_zone && p.place_geom
-				WHERE
-					p.place_centre_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+				(
+					SELECT
+						place_id,
+						place_centre_geom,
+						class_text_size,
+						class_wrap_width,
+						greatest(least(least(class_aggregate_radius, greatest(ST_XMax(place_geom) - ST_XMin(place_geom), ST_YMax(place_geom) - ST_YMin(place_geom))), 2500), 400) AS class_radius,
+						place_name,
+						CASE WHEN c.class_prefer_no_expansion = true AND ST_XMax(place_geom) - ST_XMin(place_geom) > class_text_size * longest_word(place_name) * 0.8  THEN place_geom
+							 ELSE ST_ConvexHull(ST_Intersection(ST_Buffer(ST_ClosestPoint(ST_Intersection(place_geom, z.label_zone), place_centre_geom), class_text_size * longest_word(place_name) * 0.8, 'quad_segs=2'), z.label_zone)) 
+						END AS place_geom,
+						ST_ClosestPoint(ST_Intersection(place_geom, z.label_zone), place_centre_geom) AS place_nearest
+					FROM
+						place p
+					LEFT JOIN
+						place_classes c
+					ON
+						c.class_id = p.place_class_id
+					LEFT JOIN
+						_tmp_label_zone z
+					ON
+						z.label_zone && p.place_geom
+					WHERE
+						p.place_centre_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+				) SAA
 			) SA
 			WHERE
 				ST_XMax(place_geom) - ST_XMin(place_geom) > class_text_size * longest_word(place_name) * 0.7
 			AND
-				ST_YMax(place_geom) - ST_YMin(place_geom) > class_text_size
+				ST_YMax(place_geom) - ST_YMin(place_geom) > class_text_size * 0.9
+			AND
+				ST_Distance(place_geom, place_centre_geom) < class_radius
 			ORDER BY
 				-- Preferred placement? One which has lots of space...
-				CASE WHEN ST_XMax(place_geom) - ST_XMin(place_geom) > class_text_size * longest_word(place_name) * 2.0 AND
-				          ST_YMax(place_geom) - ST_YMin(place_geom) > class_text_size * 1.5 THEN true
-				     ELSE false
-				END DESC,
-				ST_Distance(place_geom, place_centre_geom) ASC
+				floor(ST_Distance(place_geom, place_centre_geom) / greatest(class_radius / 8.0, 200.0)) ASC,
+				place_preferred DESC
 		) SB
 		GROUP BY
 			place_id

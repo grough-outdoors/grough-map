@@ -7,7 +7,7 @@
 @edge_label_default_offset_y:				@edge_track_width + @edge_label_default_size / 2;
 @edge_label_default_max_delta:				15;
 @edge_label_default_halo_radius:			2;
-@edge_label_default_halo_colour:			white;
+@edge_label_default_halo_colour:			rgba(255, 255, 255, 0.6);
 @edge_label_default_distance:				2000;
 @edge_label_default_wrap_width:				0; /* Disabled */
 @edge_label_default_typeface:				'Open Sans Regular';
@@ -48,8 +48,8 @@
 @watercourse_label_default_offset_y_l:		@stream_default_thickness + @watercourse_label_default_size / 2;
 @watercourse_label_default_offset_y_r:		0 - @stream_default_thickness - @watercourse_label_default_size / 2;
 @watercourse_label_default_max_delta:		25;
-@watercourse_label_default_halo_radius:		0;
-@watercourse_label_default_halo_colour:		white;
+@watercourse_label_default_halo_radius:		2;
+@watercourse_label_default_halo_colour:		rgba(255, 255, 255, 0.6);
 @watercourse_label_default_distance:		2000;
 @watercourse_label_default_wrap_width:		0; /* Disabled */
 @watercourse_label_default_typeface:		'Open Sans Regular';

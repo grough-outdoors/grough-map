@@ -72,7 +72,7 @@
 @place_label_autoscale_huge_size:			70;
 @place_label_autoscale_huge_wrap_width:		150;
 
-@place_label_waterbody_halo_radius:			0;
+@place_label_waterbody_halo_radius:			2;
 
 .place-label {
 	text-name: @place_label_source;

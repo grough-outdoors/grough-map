@@ -78,10 +78,7 @@ COPY place_classes (class_id, class_name, class_draw_order, class_text_size, cla
 10	Mountain	6	55	100	4000	t	f	f	0	f
 13	Large waterbody	7	100	100	2000	f	f	f	0	f
 2	Village	3	55	50	1500	t	f	f	0	f
-6	Town	2	70	100	2500	t	f	f	0	f
 9	Hill	8	40	100	3000	t	f	f	0	f
-5	Suburb	4	45	50	1500	t	f	f	0	f
-3	City	1	100	400	5000	t	f	f	0	f
 4	Hamlet	5	40	150	1000	t	f	f	0	f
 7	Settlement	6	40	150	1000	t	f	f	0	f
 11	Moor	9	60	150	3000	t	f	f	0	t
@@ -105,6 +102,14 @@ COPY place_classes (class_id, class_name, class_draw_order, class_text_size, cla
 1	Farm	11	33	120	500	t	f	f	0	f
 12	Small waterbody	7	30	150	1500	t	t	f	0	t
 8	Forest	7	30	150	2000	t	f	f	0	t
+5	Suburb	4	50	50	1500	t	f	f	0	f
+3	City	1	105	400	5000	t	f	f	0	f
+31	Port or marina	100	35	120	1000	t	f	f	0.100000000000000006	t
+33	Bay	100	35	120	1000	t	t	f	0.100000000000000006	t
+34	Island	100	35	120	1000	t	f	f	0.100000000000000006	t
+32	Tidal flats	100	35	120	1000	t	f	f	0.25	t
+35	Farm estate	100	35	120	1000	t	f	f	0.25	t
+6	Town	2	80	100	2500	t	f	f	0	f
 \.
 
 
@@ -112,7 +117,7 @@ COPY place_classes (class_id, class_name, class_draw_order, class_text_size, cla
 -- Name: place_classes_class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('place_classes_class_id_seq', 30, true);
+SELECT pg_catalog.setval('place_classes_class_id_seq', 35, true);
 
 
 --

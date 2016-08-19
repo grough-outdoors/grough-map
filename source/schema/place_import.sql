@@ -89,6 +89,12 @@ COPY place_import (import_id, import_field, import_value, import_class_id) FROM 
 25	tourism	museum	30
 26	natural	wood	8
 27	natural	forest	8
+28	boat	yes	31
+29	water	tidal	32
+30	natural	bay	33
+31	place	island	34
+32	waterway	dock	31
+33	landuse	farmland	35
 \.
 
 
@@ -96,7 +102,7 @@ COPY place_import (import_id, import_field, import_value, import_class_id) FROM 
 -- Name: place_import_import_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('place_import_import_id_seq', 27, true);
+SELECT pg_catalog.setval('place_import_import_id_seq', 33, true);
 
 
 --

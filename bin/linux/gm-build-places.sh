@@ -174,7 +174,9 @@ do
 		AND
 			( o.building IS NULL OR o.building = 'no' )
 		AND
-			looks_like_a_name(o.name) = true;
+			looks_like_a_name(o.name) = true
+		AND
+			ST_Area(ST_Envelope(way)) / 1000000 < 500;
 EoSQL
 done
 

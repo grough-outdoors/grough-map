@@ -193,10 +193,14 @@
 	},
 	
 	{
-		"id": "grid_lines", "name": "grid_lines", "class": "grid",
+		"id": "grid_lines", "name": "grid_lines", "class": "grid", "properties": { "clear-label-cache": true },
 		"Datasource": { "table": "\"map_render_grid_lines\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
 	
+	{
+		"id": "place_labels", "name": "place_labels", "class": "place-label",
+		"Datasource": { "table": "\"map_render_place\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
+	},
 	{
 		"id": "feature_symbols", "name": "feature_symbols", "class": "feature-symbol",
 		"Datasource": { "table": "\"map_render_feature_symbols\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
@@ -213,10 +217,6 @@
 		"id": "edge_labels", "name": "edge_labels", "class": "edge-label",
 		"Datasource": { "table": "\"map_render_edge_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},	
-	{
-		"id": "place_labels", "name": "place_labels", "class": "place-label",
-		"Datasource": { "table": "\"map_render_place\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
-	},
 	{
 		"id": "grid_labels", "name": "grid_labels", "class": "grid-label",
 		"Datasource": { "table": "\"map_render_grid_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }

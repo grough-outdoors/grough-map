@@ -59,11 +59,11 @@ ON
 	a.access_id = 
 	CASE WHEN o.__COLUMNNAME__ = 'construction' THEN 13 -- Under construction (no access)
 		 WHEN c.class_name IN ('Path', 'Steps') THEN -- Footpaths, bridleways
-	          CASE WHEN o.highway IN ('cycleway') THEN 8							-- Cycle path (bridleway)
-				   WHEN o.bicycle IN ('yes', 'designated') OR o.highway IN ('bridleway') THEN 8									-- Legal bridleway
-	               WHEN o.access IN ('yes', 'designated') OR o.foot IN ('yes', 'designated') THEN 4	-- Legal public footpath
-			       WHEN o.access IN ('permissive', 'customers') OR o.foot IN ('permissive', 'customers') THEN 5			-- Private permissive path
-		           WHEN o.access IN ('no', 'private') OR o.foot IN ('no', 'private') THEN 11					-- Private restricted use path
+	          CASE WHEN o.highway IN ('cycleway') THEN 8								-- Cycle path (bridleway)
+		       WHEN o.bicycle IN ('yes', 'designated') OR o.highway IN ('bridleway') THEN 8			-- Legal bridleway
+	               WHEN o.access IN ('yes', 'designated') OR o.highway IN ('footway') OR o.foot IN ('yes', 'designated') THEN 4	-- Legal public footpath
+		       WHEN o.access IN ('permissive', 'customers') OR o.foot IN ('permissive', 'customers') THEN 5	-- Private permissive path
+		       WHEN o.access IN ('no', 'private') OR o.foot IN ('no', 'private') THEN 11			-- Private restricted use path
 	               ELSE 3 -- Default footpath of some description
 	          END
 	      WHEN c.class_name IN ('Track', 'Service road') THEN -- Tracks and bridleways
