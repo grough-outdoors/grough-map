@@ -11,7 +11,8 @@ SELECT
 	c.class_plural_name,
 	c.class_radius,
 	c.class_label,
-	c.class_label_rank
+	c.class_label_rank,
+	c.class_location_fixed
 FROM
 	feature_point f
 LEFT JOIN

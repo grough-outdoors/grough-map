@@ -155,6 +155,8 @@ way        way_area     real         linear # This is calculated during import
 node,way   network      text         linear # Used to define walking/cycling networks nationally/regionally etc
 node,way   state        text         linear # Used to define proposed versus actual routes
 node,way   designation  text         linear # Used to define legal status, unofficially
+node,way   ruins        text         linear # Used to define proposed versus actual routes
+node,way   seamark      text         linear # Used to define proposed versus actual routes
 node,way   ncn          text         linear # National cycling network
 node,way   ncn_ref      text         linear # National cycling network
 node,way   lcn          text         linear # Local cycling network

@@ -7,9 +7,9 @@ binDir=../../bin/linux
 
 cd $fileBaseDir
 
-for s in $binDir/gm-import-os*
+for s in $binDir/gm-import-os-*
 do
-	dos2unix $s
+	dos2unix $s > /dev/null
 done
 
 if [ -z $1 ]
@@ -17,6 +17,15 @@ then
 	searchTerm="*/"
 else
 	searchTerm=$1
+fi
+
+if [[ -z $2 || $2 = "all" ]]
+then
+	subTerm+=("*")
+else
+	reformedFilename=`echo $2 | sed -e 's/^[a-z]/\u&/g' -e 's/_\([a-z]\)/\U\1/g'`
+	subTerm+=("*${2}*")
+	subTerm+=("*${reformedFilename}*")
 fi
 
 echo "-----------------------------------"
@@ -34,7 +43,7 @@ do
 		for z in *.zip
 		do
 			echo "     --> Extracting $z..."
-			unzip -o "$z"
+			unzip -o "$z" "${subTerm[@]}"
 		done
 		
 		echo " --> Running product import script..."

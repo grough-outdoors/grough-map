@@ -10,6 +10,7 @@
 @feature_symbol_monument_file:		url("/vagrant/source/cartography/monument.png");
 @feature_symbol_flagpole_file:		url("/vagrant/source/cartography/flagpole.png");
 @feature_symbol_picnic_site_file:	url("/vagrant/source/cartography/picnic-site.png");
+@feature_symbol_rail_station_file:	url("/vagrant/source/cartography/rail-station.png");
 
 .feature-symbol {
 	marker-width: @feature_symbol_default_size;
@@ -40,5 +41,10 @@
 	
 	[class_name='Picnic site'] {
 		marker-file: @feature_symbol_picnic_site_file;
+	}
+	
+	[class_name='Rail station'] {
+		marker-file: @feature_symbol_rail_station_file;
+		marker-multi-policy: whole;
 	}
 }

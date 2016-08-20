@@ -77,9 +77,20 @@ ALTER TABLE ONLY feature_classes ALTER COLUMN class_id SET DEFAULT nextval('feat
 COPY feature_classes (class_id, class_name, class_draw_order, class_subsurface, class_surface, class_overhead, class_plural_name, class_radius, class_label, class_label_rank, class_symbolised) FROM stdin;
 50	Picnic site	\N	f	t	f	Picnic site	70	t	1	t
 51	Pier	\N	f	t	f	Piers	100	t	5	f
+40	BS	\N	f	t	f	BSs	40	t	1	f
 52	Obstruction	\N	f	t	f	Obstructions	125	f	\N	f
 24	Dock	\N	f	t	f	Docks	200	t	5	f
+53	Castle	\N	f	t	f	Castles	300	t	5	f
+54	Ruin	\N	f	t	f	Ruins	300	t	5	f
+55	Fort	\N	f	t	f	Forts	500	t	5	f
+56	Wreck	\N	f	t	f	Wrecks	250	t	1	f
 25	Sluice gate	\N	f	t	f	Sluice gates	125	t	2	f
+57	Beacon	\N	f	t	f	Beacons	250	t	1	f
+58	Buoy	\N	f	t	f	Buoys	250	t	1	f
+59	Windmill	\N	f	t	f	Windmills	200	t	1	f
+60	Wind turbine	\N	f	t	f	Wind farm	400	t	1	f
+61	Rail station	\N	f	t	f	Rail station	100	t	1	f
+62	Terminal	\N	f	t	f	Terminals	250	t	1	f
 3	Hedge	\N	f	t	f	\N	125	f	\N	f
 4	Overhead cables	\N	f	f	t	\N	125	f	\N	f
 8	Earthworks	\N	f	t	f	\N	125	f	1	f
@@ -119,13 +130,14 @@ COPY feature_classes (class_id, class_name, class_draw_order, class_subsurface, 
 37	Survey point	\N	f	t	f	Survey points	40	t	10	t
 38	Flagpole	\N	f	t	f	Flagpoles	50	t	5	t
 39	Phone	\N	f	t	f	Phones	40	t	5	f
-40	Boun stone	\N	f	t	f	Boun stones	40	t	1	f
 41	Dish	\N	f	t	f	Dishes	40	t	6	f
 42	Tank	\N	f	t	f	Tanks	40	t	4	f
 43	Silo	\N	f	t	f	Silos	40	t	4	f
 44	Chimney	\N	f	t	f	Chimneys	40	t	4	f
 45	Spoil	\N	f	t	f	Spoil	125	t	1	f
 46	Lighthouse	\N	f	t	f	Lighthouses	40	t	7	t
+63	Mean High Water	\N	f	t	f	Mean High Water	0	f	1	f
+64	Mean Low Water	\N	f	t	f	Mean Low Water	0	f	1	f
 \.
 
 
@@ -133,7 +145,7 @@ COPY feature_classes (class_id, class_name, class_draw_order, class_subsurface, 
 -- Name: feature_classes_class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('feature_classes_class_id_seq', 52, true);
+SELECT pg_catalog.setval('feature_classes_class_id_seq', 64, true);
 
 
 --

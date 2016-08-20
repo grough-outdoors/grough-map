@@ -33,6 +33,20 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		ST_GeometryType(geom) != 'ST_LineString';
 EoSQL
 
+echo "--> Adding MHW/MLW data..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	INSERT INTO
+		feature_linear
+		(feature_class_id, feature_geom)
+	SELECT
+		CASE WHEN classifica = 'Low Water Mark' THEN 64
+		     WHEN classifica = 'High Water Mark' THEN 63
+		END,
+		ST_Multi(geom)
+	FROM
+		_src_os_opmplc_tidal_boundary;
+EoSQL
+
 echo " --> Identifying columns to check for imports..."
 IFS=$'\n'; for columnName in `psql -Ugrough-map grough-map -h 127.0.0.1 -A -t -c "SELECT DISTINCT import_field FROM feature_import"`
 do
@@ -48,7 +62,9 @@ do
 		INNER JOIN
 			feature_import i
 		ON
-			o.${columnName} = i.import_value
+			o."${columnName}" = i.import_value
+		AND
+			'${columnName}' = i.import_field
 		AND
 			i.import_line = true;
 EoSQL
@@ -63,7 +79,9 @@ EoSQL
 		INNER JOIN
 			feature_import i
 		ON
-			o.${columnName} = i.import_value
+			o."${columnName}" = i.import_value
+		AND
+			'${columnName}' = i.import_field
 		AND
 			i.import_polygon_edge = true;
 EoSQL
@@ -78,7 +96,9 @@ EoSQL
 		INNER JOIN
 			feature_import i
 		ON
-			o.${columnName} = i.import_value
+			o."${columnName}" = i.import_value
+		AND
+			'${columnName}' = i.import_field
 		AND
 			i.import_point = true;
 EoSQL
@@ -93,7 +113,9 @@ echo "       --> Importing line middle points..."
 		INNER JOIN
 			feature_import i
 		ON
-			o.${columnName} = i.import_value
+			o."${columnName}" = i.import_value
+		AND
+			'${columnName}' = i.import_field
 		AND
 			i.import_line_middle = true
 EoSQL
@@ -108,7 +130,9 @@ echo "       --> Importing polygon centroid points..."
 		INNER JOIN
 			feature_import i
 		ON
-			o.${columnName} = i.import_value
+			o."${columnName}" = i.import_value
+		AND
+			'${columnName}' = i.import_field
 		AND
 			i.import_polygon_centroid = true
 EoSQL

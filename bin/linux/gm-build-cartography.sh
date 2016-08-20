@@ -82,7 +82,13 @@ convert -size ${symbolSmallPixelSize}x${symbolSmallPixelSize} \
         "picnic-site.png"
 
 echo "--> Railway stations..."
-echo "    Not yet available"
+convert -size 350x350 \
+		xc:transparent \
+		-fill yellow \
+		-stroke black \
+		-strokewidth 10 \
+		-draw "circle 175,175 175,275" \
+        "rail-station.png"
 
 echo "--> Shelter..."
 convert -size ${symbolSmallPixelSize}x${symbolSmallPixelSize} \

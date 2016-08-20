@@ -8,6 +8,7 @@ sqlDir=/vagrant/source/sql
 echo "Testing requirements..."
 set -e
 "${binDir}/gm-require-db.sh" osm polygon
+"${binDir}/gm-require-db.sh" osm line
 "${binDir}/gm-require-db.sh" os opname
 set +e
 
@@ -168,7 +169,7 @@ do
 		INNER JOIN
 			place_import i
 		ON
-			o.${columnName} = i.import_value
+			o."${columnName}" = i.import_value
 		AND
 			o.name IS NOT NULL
 		AND
@@ -177,6 +178,39 @@ do
 			looks_like_a_name(o.name) = true
 		AND
 			ST_Area(ST_Envelope(way)) / 1000000 < 500;
+EoSQL
+
+	echo "       --> Importing lines..."
+	psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	INSERT INTO
+		place
+		(
+			place_name,
+			place_centre_geom,
+			place_geom,
+			place_class_id
+		)
+		SELECT
+			o.name AS place_name,
+			ST_Centroid(way) AS place_centre_geom,
+			ST_Multi(ST_MakeValid(ST_Simplify(ST_Buffer(way, 50.0), 10.0))) AS place_geom,
+			i.import_class_id AS place_class_id
+		FROM
+			_src_osm_line o
+		INNER JOIN
+			place_import i
+		ON
+			o."${columnName}" = i.import_value
+		AND
+			'${columnName}' = i.import_field
+		AND
+			o.name IS NOT NULL
+		AND
+			ST_Length(o.way) > 100.0
+		AND
+			( o.building IS NULL OR o.building = 'no' )
+		AND
+			looks_like_a_name(o.name) = true;
 EoSQL
 done
 

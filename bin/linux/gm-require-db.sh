@@ -49,7 +49,7 @@ else
 		echo "\dt" | psql -Ugrough-map grough-map -h 127.0.0.1 -A -t | tr '|' '\n' | grep _src_${coreSource}_ > /tmp/current-tables.txt
 	
 		echo "    Import script found. Attempting to run..."
-		"$binDir/gm-import-${coreSource}.sh" "${coreProduct}"
+		"$binDir/gm-import-${coreSource}.sh" "${coreProduct}" "${coreSub}"
 		
 		requireSatisfied=0
 		IFS=$'\n'; for tableName in `echo "\dt" | psql -Ugrough-map grough-map -h 127.0.0.1 -A -t | tr '|' '\n' | grep ${tableMask}`

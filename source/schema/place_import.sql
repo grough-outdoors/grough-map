@@ -89,12 +89,20 @@ COPY place_import (import_id, import_field, import_value, import_class_id) FROM 
 25	tourism	museum	30
 26	natural	wood	8
 27	natural	forest	8
-28	boat	yes	31
 29	water	tidal	32
 30	natural	bay	33
 31	place	island	34
 32	waterway	dock	31
 33	landuse	farmland	35
+37	generator:source	coal	39
+38	generator:source	oil	39
+39	generator:source	nuclear	39
+40	generator:source	wind	39
+41	natural	valley	40
+42	natural	ridge	41
+34	amenity	prison	36
+35	tourism	camp_site	37
+36	tourism	caravan_site	38
 \.
 
 
@@ -102,7 +110,7 @@ COPY place_import (import_id, import_field, import_value, import_class_id) FROM 
 -- Name: place_import_import_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('place_import_import_id_seq', 33, true);
+SELECT pg_catalog.setval('place_import_import_id_seq', 42, true);
 
 
 --

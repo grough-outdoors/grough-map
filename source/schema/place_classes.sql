@@ -36,7 +36,8 @@ CREATE TABLE place_classes (
     class_prefer_no_expansion boolean DEFAULT false NOT NULL,
     class_label_with_type boolean DEFAULT false NOT NULL,
     class_label_min_km2 double precision DEFAULT 0 NOT NULL,
-    class_allow_text_scale boolean DEFAULT false NOT NULL
+    class_allow_text_scale boolean DEFAULT false NOT NULL,
+    class_label_with_name_over_km2 double precision
 );
 
 
@@ -74,42 +75,48 @@ ALTER TABLE ONLY place_classes ALTER COLUMN class_id SET DEFAULT nextval('place_
 -- Data for Name: place_classes; Type: TABLE DATA; Schema: public; Owner: grough-map
 --
 
-COPY place_classes (class_id, class_name, class_draw_order, class_text_size, class_wrap_width, class_aggregate_radius, class_label, class_prefer_no_expansion, class_label_with_type, class_label_min_km2, class_allow_text_scale) FROM stdin;
-10	Mountain	6	55	100	4000	t	f	f	0	f
-13	Large waterbody	7	100	100	2000	f	f	f	0	f
-2	Village	3	55	50	1500	t	f	f	0	f
-9	Hill	8	40	100	3000	t	f	f	0	f
-4	Hamlet	5	40	150	1000	t	f	f	0	f
-7	Settlement	6	40	150	1000	t	f	f	0	f
-11	Moor	9	60	150	3000	t	f	f	0	t
-14	Golf course	100	35	120	2000	t	t	t	0.200000000000000011	f
-15	Public common	100	35	120	1000	t	t	f	0.100000000000000006	t
-17	University	100	35	120	3000	t	t	t	0.100000000000000006	f
-18	Airport	100	35	120	5000	t	f	f	0	t
-19	Tourist attraction	100	35	120	1000	t	t	f	0.25	f
-20	Park	100	35	120	1000	t	f	f	0.100000000000000006	t
-21	College	100	35	120	1000	t	t	t	0.100000000000000006	f
-22	Cemetery	100	35	120	1000	t	f	t	0.0800000000000000017	f
-23	Hospital	100	35	120	1000	t	f	t	0	f
-24	Stadium	100	35	120	1000	t	f	f	0.100000000000000006	f
-25	Recreation ground	100	35	120	100	t	f	t	0.100000000000000006	f
-26	Sports centre	100	35	120	1000	t	t	f	0.100000000000000006	f
-27	Industrial park	100	35	120	2500	t	t	t	0.5	t
-28	Conservation area	100	35	120	100	t	t	f	0.5	t
-29	Military establishment	100	35	120	3000	t	f	f	0.25	t
-30	Museum	100	35	120	1000	t	t	f	0.25	t
-16	School	100	30	200	1000	t	t	t	0.100000000000000006	f
-1	Farm	11	33	120	500	t	f	f	0	f
-12	Small waterbody	7	30	150	1500	t	t	f	0	t
-8	Forest	7	30	150	2000	t	f	f	0	t
-5	Suburb	4	50	50	1500	t	f	f	0	f
-3	City	1	105	400	5000	t	f	f	0	f
-31	Port or marina	100	35	120	1000	t	f	f	0.100000000000000006	t
-33	Bay	100	35	120	1000	t	t	f	0.100000000000000006	t
-34	Island	100	35	120	1000	t	f	f	0.100000000000000006	t
-32	Tidal flats	100	35	120	1000	t	f	f	0.25	t
-35	Farm estate	100	35	120	1000	t	f	f	0.25	t
-6	Town	2	80	100	2500	t	f	f	0	f
+COPY place_classes (class_id, class_name, class_draw_order, class_text_size, class_wrap_width, class_aggregate_radius, class_label, class_prefer_no_expansion, class_label_with_type, class_label_min_km2, class_allow_text_scale, class_label_with_name_over_km2) FROM stdin;
+10	Mountain	6	55	100	4000	t	f	f	0	f	\N
+13	Large waterbody	7	100	100	2000	f	f	f	0	f	\N
+2	Village	3	55	50	1500	t	f	f	0	f	\N
+9	Hill	8	40	100	3000	t	f	f	0	f	\N
+4	Hamlet	5	40	150	1000	t	f	f	0	f	\N
+7	Settlement	6	40	150	1000	t	f	f	0	f	\N
+11	Moor	9	60	150	3000	t	f	f	0	t	\N
+15	Public common	100	35	120	1000	t	t	f	0.100000000000000006	t	\N
+18	Airport	100	35	120	5000	t	f	f	0	t	\N
+19	Tourist attraction	100	35	120	1000	t	t	f	0.25	f	\N
+20	Park	100	35	120	1000	t	f	f	0.100000000000000006	t	\N
+24	Stadium	100	35	120	1000	t	f	f	0.100000000000000006	f	\N
+25	Recreation ground	100	35	120	100	t	f	t	0.100000000000000006	f	\N
+26	Sports centre	100	35	120	1000	t	t	f	0.100000000000000006	f	\N
+28	Conservation area	100	35	120	100	t	t	f	0.5	t	\N
+29	Military establishment	100	35	120	3000	t	f	f	0.25	t	\N
+30	Museum	100	35	120	1000	t	t	f	0.25	t	\N
+1	Farm	11	33	120	500	t	f	f	0	f	\N
+12	Small waterbody	7	30	150	1500	t	t	f	0	t	\N
+8	Forest	7	30	150	2000	t	f	f	0	t	\N
+37	Campsite	100	35	120	400	t	t	t	0.100000000000000006	t	\N
+5	Suburb	4	50	50	1500	t	f	f	0	f	\N
+3	City	1	105	400	5000	t	f	f	0	f	\N
+31	Port or marina	100	35	120	1000	t	f	f	0	t	\N
+33	Bay	100	35	120	1000	t	t	f	0.100000000000000006	t	\N
+34	Island	100	35	120	1000	t	f	f	0.100000000000000006	t	\N
+32	Tidal flats	100	35	120	1000	t	f	f	0.25	t	\N
+35	Farm estate	100	35	120	1000	t	f	f	0.25	t	\N
+6	Town	2	80	100	2500	t	f	f	0	f	\N
+39	Power station	100	35	120	400	t	t	t	0.25	t	0.5
+38	Caravan park	100	35	120	400	t	t	t	0.100000000000000006	t	0.5
+36	Prison	100	35	120	1000	t	t	t	0.100000000000000006	t	0.25
+27	Industrial park	100	35	120	2500	t	t	t	0.5	t	0.75
+23	Hospital	100	35	120	1000	t	f	t	0	f	0.25
+22	Cemetery	100	35	120	1000	t	f	t	0.0800000000000000017	f	0.5
+21	College	100	35	120	1000	t	t	t	0.100000000000000006	f	0.5
+16	School	100	30	200	1000	t	t	t	0.100000000000000006	f	0.5
+17	University	100	35	120	3000	t	t	t	0.100000000000000006	f	0.5
+14	Golf course	100	35	120	2000	t	t	t	0.200000000000000011	f	0.5
+41	Ridge	100	35	120	1000	t	f	f	0	f	\N
+40	Valley	100	35	120	1000	t	f	f	0	f	\N
 \.
 
 
@@ -117,7 +124,7 @@ COPY place_classes (class_id, class_name, class_draw_order, class_text_size, cla
 -- Name: place_classes_class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('place_classes_class_id_seq', 35, true);
+SELECT pg_catalog.setval('place_classes_class_id_seq', 41, true);
 
 
 --

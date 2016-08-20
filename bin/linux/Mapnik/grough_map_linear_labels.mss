@@ -173,9 +173,9 @@
 			[watercourse_width < 60] { text-size: 50; }
 			[watercourse_width >= 60][watercourse_width < 75] { text-size: 55; }
 			[watercourse_width >= 75][watercourse_width < 100] { text-size: 60; }
-			[watercourse_width >= 100][watercourse_width < 150] { text-size: 82; }
-			[watercourse_width >= 150][watercourse_width < 200] { text-size: 125; }
-			[watercourse_width >= 200] { text-size: 150; }
+			[watercourse_width >= 100][watercourse_width < 150] { text-size: 70; }
+			[watercourse_width >= 150][watercourse_width < 200] { text-size: 90; }
+			[watercourse_width >= 200] { text-size: 125; }
 		}
 	}
 }

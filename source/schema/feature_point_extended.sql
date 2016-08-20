@@ -7,7 +7,8 @@ SELECT
 	c.class_draw_order,
 	c.class_subsurface,
 	c.class_surface,
-	c.class_overhead
+	c.class_overhead,
+	c.class_location_fixed
 FROM
 	feature_point f
 LEFT JOIN

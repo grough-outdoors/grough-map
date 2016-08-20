@@ -160,6 +160,22 @@ COPY feature_import (import_id, import_field, import_value, import_class_id, imp
 104	man_made	jetty	23	t	f	f	t	t
 105	man_made	slipway	22	t	f	f	t	t
 106	man_made	lock	21	t	f	f	t	t
+107	historic	castle	53	t	f	f	t	f
+108	ruins	yes	54	t	f	f	t	f
+109	historic	fort	55	t	f	f	t	f
+110	historic	ruins	54	t	f	f	t	f
+111	historic	wreck	56	t	f	f	t	f
+112	seamark	beacon_lateral	57	t	f	f	t	f
+113	seamark	beacon_cardinal	57	t	f	f	t	f
+114	seamark	beacon	57	t	f	f	t	f
+115	seamark	buoy	58	t	f	f	t	f
+116	seamark	buoy_lateral	58	t	f	f	t	f
+117	seamark	buoy_cardinal	58	t	f	f	t	f
+118	man_made	windmill	59	t	f	f	t	f
+119	generator:source	wind	60	t	f	f	t	f
+120	railway	station	61	t	f	f	t	f
+121	aeroway	terminal	62	t	f	f	t	f
+122	amenity	ferry_terminal	62	t	f	f	t	f
 \.
 
 
@@ -167,7 +183,7 @@ COPY feature_import (import_id, import_field, import_value, import_class_id, imp
 -- Name: feature_import_import_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('feature_import_import_id_seq', 106, true);
+SELECT pg_catalog.setval('feature_import_import_id_seq', 122, true);
 
 
 --

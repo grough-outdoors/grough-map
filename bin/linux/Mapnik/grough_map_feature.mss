@@ -26,6 +26,13 @@
 @feature_cable_dash_line:			10;
 @feature_cable_dash_space:			20;
 
+@feature_watermark_thickness:		3.0;
+@feature_watermark_colour:			@contour_label_default_colour;
+@feature_watermark_blend:			multiply;
+@feature_watermark_opacity:			1.0;
+@feature_watermark_dash_line:		50;
+@feature_watermark_dash_space:		75;
+
 @feature_pylon_shape:				ellipse;
 @feature_pylon_size:				6.0;
 @feature_pylon_colour:				@feature_cable_colour;
@@ -109,6 +116,15 @@
 		line-opacity: @feature_cable_opacity;
 		line-comp-op: @feature_cable_blend;
 		line-dasharray: @feature_cable_dash_line, @feature_cable_dash_space;
+	}
+	
+	[class_name='Mean High Water'],
+	[class_name='Mean Low Water']	{
+		line-width: @feature_watermark_thickness;
+		line-color: @feature_watermark_colour;
+		line-opacity: @feature_watermark_opacity;
+		line-comp-op: @feature_watermark_blend;
+		line-dasharray: @feature_watermark_dash_line, @feature_watermark_dash_space;
 	}
 }
 

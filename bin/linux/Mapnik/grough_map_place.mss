@@ -90,7 +90,7 @@
 	text-halo-fill: @place_label_halo_colour;
 	text-label-position-tolerance: @place_label_position_tolerance;
 	
-	[class_label_with_type=1] {
+	[class_label_with_type=1][class_label_over_name_threshold=0] {
 		text-name: @place_label_source_type;
 	}
 	
