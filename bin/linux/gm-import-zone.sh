@@ -19,7 +19,7 @@ do
 	unzip -o "$z"
 	if [[ $z = 'CROW_Access_Layer.zip' ]]; then
 		echo "        --> Dissolving boundaries in dataset..."
-		ogr2ogr CROW_Dissolved.shp CROW_Access_Layer.shp -dialect sqlite -sql "SELECT ST_Union(geometry) FROM 'CROW_Access_Layer' GROUP BY ''"
+		ogr2ogr CROW_Dissolved.shp CROW_Access_Layer.shp -explodecollections -dialect sqlite -sql "SELECT ST_Union(geometry) FROM 'CROW_Access_Layer' GROUP BY ''"
 	fi
 done
 
@@ -127,5 +127,10 @@ do
 done
 
 cd -
+
+echo "--> Intermediary tidy up..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	VACUUM FULL ANALYZE;
+EoSQL
 
 echo "--> Import complete."

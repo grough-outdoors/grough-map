@@ -73,7 +73,7 @@ EoSQL
 		INSERT INTO feature_linear (feature_class_id, feature_geom)
 		SELECT
 			i.import_class_id AS feature_class_id,
-			ST_Multi(ST_ExteriorRing(way)) AS feature_geom
+			ST_Multi(ST_ExteriorRing((ST_Dump(way)).geom)) AS feature_geom
 		FROM
 			_src_osm_polygon o
 		INNER JOIN
@@ -126,7 +126,7 @@ echo "       --> Importing polygon centroid points..."
 			i.import_class_id AS feature_class_id,
 			ST_Centroid(way) AS feature_geom
 		FROM
-			_src_osm_line o
+			_src_osm_polygon o
 		INNER JOIN
 			feature_import i
 		ON

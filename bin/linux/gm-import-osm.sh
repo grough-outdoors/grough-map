@@ -27,6 +27,18 @@ psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS _src_osm_rels
 echo "    _src_osm_roads..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS _src_osm_roads;"
 
+echo "--> Converting polygons to multipolygons..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "
+	ALTER TABLE
+		_src_osm_polygon
+	ALTER COLUMN
+		way
+	TYPE
+		geometry(MultiPolygon, 27700)
+	USING
+		ST_Multi(way);
+"
+
 echo "--> Performing full vacuum..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "VACUUM FULL;"
 

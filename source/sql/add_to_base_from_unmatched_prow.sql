@@ -12,12 +12,10 @@ FROM
 	LEFT JOIN
 		edge e
 	ON
-		e.edge_geom && a.geom_full
+		e.edge_geom && a.geom
 	AND
-		ST_Within(e.edge_geom, a.geom_small)
+		ST_Within(e.edge_geom, a.geom)
 	WHERE
-		a.prow_status = 'Full coverage'
-	AND
 		e.edge_class_id IN (9, 10, 11) -- Ford, path, steps
 	AND
 		e.edge_access_id = 4

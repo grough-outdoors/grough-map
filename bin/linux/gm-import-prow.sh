@@ -28,6 +28,15 @@ psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -c "CREATE TABLE IF NOT EXISTS r
    CONSTRAINT \"PKEY: raw_prow::id\" PRIMARY KEY (id) \
 );"
 
+echo "Preparing aggregate area table..."
+psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -c "CREATE TABLE IF NOT EXISTS raw_prow_authorities \
+( \
+   id bigserial,  \
+   zone_id bigint,  \
+   geom geometry(MultiPolygon, 27700), \
+   CONSTRAINT \"PKEY: raw_prow_authorities::id\" PRIMARY KEY (id) \
+);"
+
 echo "-----------------------------------"
 echo "--> Extracting archives..."
 echo "-----------------------------------"
@@ -47,6 +56,18 @@ do
 	
 	echo " --> Attempting import..."
 	cd "$fileBaseDir/$d"
+	
+	sourceString=`cat "attribution.json" | python -c """
+import json, sys
+obj = json.load(sys.stdin)
+print obj['source']['name'] + '|' + obj['source']['category']
+"""`
+	IFS='|'; read -r -a sourceInfo <<< "${sourceString}"
+	sourceName="${sourceInfo[0]}"
+	sourceType="${sourceInfo[1]}"
+	
+	echo "    Authority name: ${sourceName}"
+	echo "    Authority type: ${sourceType}"
 	
 	echo " --> Proceeding to extract archives..."
 	for z in *.{zip,kmz}; do
@@ -102,11 +123,11 @@ do
 		echo "     --> Deleting directory $e..."
 		rm -rf "$e"
 	done
-	for f in `ls -I*.zip -I*.sql -Idownload-url.txt -I*.kmz -I*.kml`; do
+	for f in `ls -I*.zip -I*.sql -Idownload-url.txt -I*.json -I*.kmz -I*.kml`; do
 		echo "     --> Deleting file $f..."
 		rm -rf "$f"
 	done
-	for f in `ls -I*.zip -I*.sql -Idownload-url.txt -I*.kmz`; do
+	for f in `ls -I*.zip -I*.sql -Idownload-url.txt -I*.json -I*.kmz`; do
 		if [ $(ls *.kmz | wc -l) -gt 0 ]; then
 			echo "     --> Deleting file $f..."
 			rm -rf "$f"
@@ -190,6 +211,34 @@ do
 				"$tableName" \
 			WHERE \
 				ST_GeometryType(geom) = 'ST_MultiLineString' OR ST_GeometryType(geom) = 'ST_LineString';"
+				
+		echo "     --> Appending data to master PRoW areas table..."
+		psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -c "
+			DELETE FROM
+				raw_prow_authorities
+			WHERE zone_id = (
+				SELECT
+					zone_id
+				FROM
+					zone_extended
+				WHERE
+					zone_name = '"${sourceName}"'
+				AND
+					class_name = '"${sourceType}"'
+			);
+
+			INSERT INTO
+				raw_prow_authorities
+				(zone_id, geom)
+			SELECT
+				zone_id,
+				zone_geom
+			FROM
+				zone_extended
+			WHERE
+				zone_name = '"${sourceName}"'
+			AND
+				class_name = '"${sourceType}"';"
 	done
 	
 	echo " --> Removing SQL files..."
@@ -204,8 +253,17 @@ done
 echo "Populating geometry columns..."
 psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -c "SELECT Populate_Geometry_Columns('raw_prow'::regclass);"
 
-echo "Updating highway authority statuses..."
-psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/prow_identify_authorities.sql"
+echo "Building index and final touches..."
+psql -A -t -Ugrough-map grough-map -h 127.0.0.1 -c "
+	DROP INDEX IF EXISTS
+		\"Idx: raw_prow::geom\";
+
+	CREATE INDEX \"Idx: raw_prow::geom\"
+		ON raw_prow USING gist (geom);
+		   
+	ALTER TABLE raw_prow
+		CLUSTER ON \"Idx: raw_prow::geom\";
+"
 
 echo " --> Removing temporary tables..."
 IFS=$'\n'; for tableName in `echo "\dt" | psql -Ugrough-map grough-map -h 127.0.0.1 -A -t | tr '|' '\n' | grep _src_prow`

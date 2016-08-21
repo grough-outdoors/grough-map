@@ -83,40 +83,40 @@ COPY place_classes (class_id, class_name, class_draw_order, class_text_size, cla
 4	Hamlet	5	40	150	1000	t	f	f	0	f	\N
 7	Settlement	6	40	150	1000	t	f	f	0	f	\N
 11	Moor	9	60	150	3000	t	f	f	0	t	\N
-15	Public common	100	35	120	1000	t	t	f	0.100000000000000006	t	\N
-18	Airport	100	35	120	5000	t	f	f	0	t	\N
 19	Tourist attraction	100	35	120	1000	t	t	f	0.25	f	\N
-20	Park	100	35	120	1000	t	f	f	0.100000000000000006	t	\N
-24	Stadium	100	35	120	1000	t	f	f	0.100000000000000006	f	\N
 25	Recreation ground	100	35	120	100	t	f	t	0.100000000000000006	f	\N
-26	Sports centre	100	35	120	1000	t	t	f	0.100000000000000006	f	\N
-28	Conservation area	100	35	120	100	t	t	f	0.5	t	\N
-29	Military establishment	100	35	120	3000	t	f	f	0.25	t	\N
 30	Museum	100	35	120	1000	t	t	f	0.25	t	\N
 1	Farm	11	33	120	500	t	f	f	0	f	\N
-12	Small waterbody	7	30	150	1500	t	t	f	0	t	\N
 8	Forest	7	30	150	2000	t	f	f	0	t	\N
-37	Campsite	100	35	120	400	t	t	t	0.100000000000000006	t	\N
 5	Suburb	4	50	50	1500	t	f	f	0	f	\N
 3	City	1	105	400	5000	t	f	f	0	f	\N
-31	Port or marina	100	35	120	1000	t	f	f	0	t	\N
-33	Bay	100	35	120	1000	t	t	f	0.100000000000000006	t	\N
-34	Island	100	35	120	1000	t	f	f	0.100000000000000006	t	\N
 32	Tidal flats	100	35	120	1000	t	f	f	0.25	t	\N
-35	Farm estate	100	35	120	1000	t	f	f	0.25	t	\N
 6	Town	2	80	100	2500	t	f	f	0	f	\N
 39	Power station	100	35	120	400	t	t	t	0.25	t	0.5
-38	Caravan park	100	35	120	400	t	t	t	0.100000000000000006	t	0.5
-36	Prison	100	35	120	1000	t	t	t	0.100000000000000006	t	0.25
-27	Industrial park	100	35	120	2500	t	t	t	0.5	t	0.75
-23	Hospital	100	35	120	1000	t	f	t	0	f	0.25
 22	Cemetery	100	35	120	1000	t	f	t	0.0800000000000000017	f	0.5
 21	College	100	35	120	1000	t	t	t	0.100000000000000006	f	0.5
-16	School	100	30	200	1000	t	t	t	0.100000000000000006	f	0.5
-17	University	100	35	120	3000	t	t	t	0.100000000000000006	f	0.5
 14	Golf course	100	35	120	2000	t	t	t	0.200000000000000011	f	0.5
-41	Ridge	100	35	120	1000	t	f	f	0	f	\N
-40	Valley	100	35	120	1000	t	f	f	0	f	\N
+16	School	100	30	200	1000	t	t	t	0.0500000000000000028	f	0.5
+12	Small waterbody	7	30	150	1500	t	t	f	0	t	\N
+17	University	50	35	120	3000	t	t	t	0.100000000000000006	f	0.25
+15	Public common	50	35	120	1000	t	t	f	0.0500000000000000028	t	\N
+18	Airport	50	35	120	5000	t	f	f	0	t	\N
+20	Park	25	35	120	1000	t	f	f	0.0500000000000000028	t	\N
+24	Stadium	25	35	120	1000	t	f	f	0.0500000000000000028	f	\N
+26	Sports centre	100	35	120	1000	t	t	f	0.0500000000000000028	t	0.200000000000000011
+27	Industrial park	50	35	120	2500	t	t	t	0.5	t	0.75
+28	Conservation area	50	35	120	100	t	t	f	0.5	t	\N
+29	Military establishment	50	35	120	3000	t	f	f	0.25	t	\N
+31	Port or marina	50	35	120	1000	t	f	f	0	t	\N
+35	Farm estate	11	35	120	1000	t	f	f	0.25	t	\N
+36	Prison	100	35	120	1000	t	t	t	0.0500000000000000028	t	0.25
+40	Valley	6	35	120	1000	t	f	f	0	f	\N
+41	Ridge	6	35	120	1000	t	f	f	0	f	\N
+34	Island	50	35	120	1000	t	f	f	0.0500000000000000028	t	\N
+37	Campsite	25	35	120	400	t	t	t	0.0500000000000000028	t	0.25
+38	Caravan park	25	35	120	400	t	t	t	0.0500000000000000028	t	0.25
+33	Bay	25	35	120	1000	t	t	f	0.100000000000000006	t	\N
+23	Hospital	100	35	120	1000	t	f	t	0	f	0.100000000000000006
 \.
 
 

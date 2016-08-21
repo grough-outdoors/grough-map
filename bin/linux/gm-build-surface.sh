@@ -7,8 +7,14 @@ sqlDir=/vagrant/source/sql
 
 echo "Testing requirements..."
 set -e
-"${binDir}/gm-require-db.sh" os vmdvec
-"${binDir}/gm-require-db.sh" os opmplc
+"${binDir}/gm-require-db.sh" os vmdvec ornament
+"${binDir}/gm-require-db.sh" os opmplc foreshore
+"${binDir}/gm-require-db.sh" os opmplc named_place
+"${binDir}/gm-require-db.sh" os opmplc road
+"${binDir}/gm-require-db.sh" os opmplc surface_water
+"${binDir}/gm-require-db.sh" os opmplc tidal_water
+"${binDir}/gm-require-db.sh" os opmplc tidal_boundary
+"${binDir}/gm-require-db.sh" os opmplc woodland
 "${binDir}/gm-require-db.sh" osm polygon
 set +e
 

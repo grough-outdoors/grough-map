@@ -7,6 +7,7 @@ sqlDir=/vagrant/source/sql
 
 echo "Testing requirements..."
 set -e
+"${binDir}/gm-require-db.sh" os bdline
 "${binDir}/gm-require-db.sh" zone national_parks
 "${binDir}/gm-require-db.sh" zone c_r_dissolved
 "${binDir}/gm-require-db.sh" zone c_r_access_layer
@@ -55,23 +56,25 @@ EoSQL
 echo "--> Adding national parks..."
 echo "    --> England..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-	INSERT INTO zone (zone_class_id, zone_geom)
+	INSERT INTO zone (zone_class_id, zone_geom, zone_name)
 	SELECT
-		3, geom
+		3, geom, initcap("name") AS name
 	FROM (
 		SELECT
-			ST_MakeValid(geom) AS geom
+			ST_MakeValid(geom) AS geom,
+			"name"
 		FROM _src_zone_national_parks
 	) SA
 EoSQL
 echo "    --> Wales..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-	INSERT INTO zone (zone_class_id, zone_geom)
+	INSERT INTO zone (zone_class_id, zone_geom, zone_name)
 	SELECT
-		3, geom
+		3, geom, "name"
 	FROM (
 		SELECT
-			ST_MakeValid(geom) AS geom
+			ST_MakeValid(geom) AS geom,
+			"name"
 		FROM _src_zone_w_national_parkspolygon
 	) SA
 EoSQL
@@ -203,9 +206,19 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	DELETE FROM "zone" WHERE ST_Area("zone_geom") < 1.0;
 EoSQL
 
+echo "--> Intermediary clean up..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	VACUUM FULL ANALYZE zone;
+EoSQL
+
 echo "--> Removing small holes..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-	UPDATE "zone" SET "zone_geom" = ST_Multi(filter_rings("zone_geom", 250));
+	UPDATE 
+		"zone" 
+	SET 
+		"zone_geom" = ST_Multi(filter_rings("zone_geom", 250)) 
+	WHERE 
+		zone_class_id = 1;
 EoSQL
 
 echo "--> Indexing and clustering..."

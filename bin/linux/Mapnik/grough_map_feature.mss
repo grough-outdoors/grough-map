@@ -26,7 +26,7 @@
 @feature_cable_dash_line:			10;
 @feature_cable_dash_space:			20;
 
-@feature_watermark_thickness:		3.0;
+@feature_watermark_thickness:		5.0;
 @feature_watermark_colour:			@contour_label_default_colour;
 @feature_watermark_blend:			multiply;
 @feature_watermark_opacity:			1.0;
@@ -39,7 +39,7 @@
 @feature_pylon_blend:				src-over;
 @feature_pylon_opacity:				1.0;
 
-@feature_label_default_size:		35;
+@feature_label_default_size:		30;
 @feature_label_default_margin:		30;
 @feature_label_default_wrap_width:	1;
 @feature_label_source:				[feature_name];

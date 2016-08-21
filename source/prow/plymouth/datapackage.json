@@ -1,0 +1,16 @@
+{
+    "description": "An overlay showing all public rights of way within the Plymouth City Council boundary.", 
+    "license": "OGL-UK-3.0", 
+    "title": "Public Rights of Way - Plymouth City Council", 
+    "filepath": "/media/hulk/packagezip/public-rights-of-way-plymouth-city-council.zip", 
+    "id": "aade8877-c9e8-4ad6-bfd4-95a57e472e69", 
+    "resources": [
+        {
+            "description": "prow", 
+            "url": "http://www.plymouth.gov.uk/prow.zip", 
+            "included_in_zip": true, 
+            "path": "data/prow.zip"
+        }
+    ], 
+    "name": "public-rights-of-way-plymouth-city-council"
+}

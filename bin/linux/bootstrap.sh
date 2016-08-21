@@ -52,6 +52,12 @@ function createDatabaseServer {
 	echo $HBA | sudo sh
 	
 	echo "-----------------------------------"
+	echo "--> Changing PostgreSQL memory sizes..."  
+	echo "-----------------------------------"
+	sudo sed -i.bak1 's/max_connections = 100/max_connections = 10/g' /etc/postgresql/9.3/main/postgresql.conf
+	sudo sed -i.bak2 's/#work_mem = 1MB/work_mem = 150MB/g' /etc/postgresql/9.3/main/postgresql.conf
+	
+	echo "-----------------------------------"
 	echo "--> Restarting PostgreSQL server..."  
 	echo "-----------------------------------"
 	sudo /etc/init.d/postgresql restart

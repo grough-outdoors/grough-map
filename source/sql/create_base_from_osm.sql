@@ -57,29 +57,83 @@ LEFT JOIN
 	edge_access a
 ON
 	a.access_id = 
-	CASE WHEN o.__COLUMNNAME__ = 'construction' THEN 13 -- Under construction (no access)
-		 WHEN c.class_name IN ('Path', 'Steps') THEN -- Footpaths, bridleways
-	          CASE WHEN o.highway IN ('cycleway') THEN 8								-- Cycle path (bridleway)
-		       WHEN o.bicycle IN ('yes', 'designated') OR o.highway IN ('bridleway') THEN 8			-- Legal bridleway
-	               WHEN o.access IN ('yes', 'designated') OR o.highway IN ('footway') OR o.foot IN ('yes', 'designated') THEN 4	-- Legal public footpath
-		       WHEN o.access IN ('permissive', 'customers') OR o.foot IN ('permissive', 'customers') THEN 5	-- Private permissive path
-		       WHEN o.access IN ('no', 'private') OR o.foot IN ('no', 'private') THEN 11			-- Private restricted use path
-	               ELSE 3 -- Default footpath of some description
+	CASE WHEN o.__COLUMNNAME__ = 'construction' THEN 13 			-- Under construction (no access)
+		 WHEN c.class_name IN ('Path', 'Steps') THEN 			-- Footpaths, bridleways
+	          CASE WHEN o.highway IN ('cycleway') THEN 8				-- Cycle path (bridleway)
+		       WHEN o.bicycle IN ('yes', 'designated') 				-- Legal bridleway
+		         OR o.highway IN ('bridleway') 
+		         OR o.designation = 'bridleway'
+		         OR o.designation LIKE '%public_bridleway%'
+		         OR ((o.ncn IS NOT NULL OR o.ncn_ref IS NOT NULL OR o.route = 'ncn' OR o.network = 'ncn') AND o.ncn != 'proposed' AND o.state != 'proposed') 
+		         OR ((o.rcn IS NOT NULL OR o.rcn_ref IS NOT NULL OR o.route = 'rcn' OR o.network = 'rcn') AND o.rcn != 'proposed' AND o.state != 'proposed')
+		         OR ((o.lcn IS NOT NULL OR o.lcn_ref IS NOT NULL OR o.route = 'lcn' OR o.network = 'lcn') AND o.lcn != 'proposed' AND o.state != 'proposed')  
+		       THEN 8
+	               WHEN o.access IN ('yes', 'designated') 				-- Legal public footpath
+	                 OR o.highway IN ('footway') 
+	                 OR o.foot IN ('yes', 'designated')
+		         OR o.designation LIKE '%public_footpath%'
+		         OR o.designation = 'core_path' 
+		         OR o.route IN ('hiking', 'foot')
+		         OR o.network IN ('nwn', 'rwn', 'lcn')
+		       THEN 4
+		       WHEN o.access IN ('permissive', 'customers') 			-- Private permissive path
+		         OR o.foot IN ('permissive', 'customers')
+		         OR o.designation = 'permissive_footpath'
+		         OR o.designation LIKE '%permissive_footpath%' 
+		       THEN 5	
+		       WHEN o.access IN ('no', 'private') 				-- Private restricted use path
+		         OR o.foot IN ('no', 'private') 
+		       THEN 11 
+	               ELSE 3 								-- Default footpath of some description
 	          END
-	      WHEN c.class_name IN ('Track', 'Service road') THEN -- Tracks and bridleways
-	          CASE WHEN o.access IN ('no') THEN 2											-- No access track
-	               WHEN o.highway IN ('service', 'services', 'depot', 'construction_route', 'access') THEN 2			-- Private access roads
-	               WHEN o.highway IN ('bridleway') THEN 8										-- Explicit bridleway
-	               WHEN ( o.bicycle IN ('yes', 'designated') OR o.horse IN ('yes', 'designated') OR o.highway = 'cycleway' ) AND o.motorcar IN ('yes', 'designated', 'discouraged') AND o.highway  = 'byway' THEN 6 -- Byway open to all traffic
-	               WHEN ( o.bicycle IN ('yes', 'designated') OR o.horse IN ('yes', 'designated') OR o.highway = 'cycleway' ) AND ( o.motorcar IN ('permissive', 'private', 'no') OR o.motorcar IS NULL ) AND o.highway  = 'byway' THEN 10 -- Legal bridleway OR restricted byway.. don't know which
-	               WHEN ( o.bicycle IN ('yes', 'designated') OR o.horse IN ('yes', 'designated') OR o.highway = 'cycleway' ) AND ( o.motorcar IN ('permissive', 'private', 'no') OR o.motorcar IS NULL ) AND o.highway != 'byway' THEN 8 -- Legal bridleway OR restricted byway.. don't know which
-	               WHEN o.foot IN ('yes', 'designated') AND ( o.bicycle IN ('no', 'dismount') OR o.bicycle IS NULL ) THEN 4		-- Legal public footpath
+	      WHEN c.class_name IN ('Track', 'Service road') THEN 		-- Tracks and bridleways
+	          CASE WHEN o.access IN ('no') THEN 2					-- No access track
+	               WHEN o.highway IN ('service', 'services', 'depot', 		-- Private access roads
+	                                  'construction_route', 'access') 
+	               THEN 2
+	               WHEN o.highway IN ('bridleway')					-- Explicit bridleway
+	                 OR o.designation = 'bridleway'
+		         OR o.designation LIKE '%public_bridleway%' 
+		         OR ((o.ncn IS NOT NULL OR o.ncn_ref IS NOT NULL OR o.route = 'ncn' OR o.network = 'ncn') AND o.ncn != 'proposed' AND o.state != 'proposed') 
+		         OR ((o.rcn IS NOT NULL OR o.rcn_ref IS NOT NULL OR o.route = 'rcn' OR o.network = 'rcn') AND o.rcn != 'proposed' AND o.state != 'proposed')
+		         OR ((o.lcn IS NOT NULL OR o.lcn_ref IS NOT NULL OR o.route = 'lcn' OR o.network = 'lcn') AND o.lcn != 'proposed' AND o.state != 'proposed')  
+		       THEN 8
+	               WHEN ( o.bicycle IN ('yes', 'designated') 			-- Byway open to all traffic
+	                      OR o.horse IN ('yes', 'designated') 
+	                      OR o.highway = 'cycleway' ) 
+	                 AND o.motorcar IN ('yes', 'designated', 'discouraged') 
+	                 AND o.highway  = 'byway'
+	                 OR o.designation LIKE '%byway_open_to_all_traffic%' 
+	               THEN 6 
+	               WHEN ( o.bicycle IN ('yes', 'designated') 			-- Legal bridleway OR restricted byway.. don't know which
+	                      OR o.horse IN ('yes', 'designated') 
+	                      OR o.highway = 'cycleway' ) 
+	                 AND ( o.motorcar IN ('permissive', 'private', 'no') 
+	                      OR o.motorcar IS NULL ) 
+	                 AND o.highway  = 'byway'
+	                 OR o.designation LIKE '%restricted_byway%' 
+	               THEN 10 
+	               WHEN ( o.bicycle IN ('yes', 'designated') 			-- Legal bridleway OR restricted byway.. don't know which
+	                      OR o.horse IN ('yes', 'designated') 
+	                      OR o.highway = 'cycleway' ) 
+	                 AND ( o.motorcar IN ('permissive', 'private', 'no') 
+	                      OR o.motorcar IS NULL ) 
+	                 AND o.highway != 'byway' 
+	               THEN 8 								-- Legal public footpath
+	               WHEN o.foot IN ('yes', 'designated') 
+	                 AND ( o.bicycle IN ('no', 'dismount') 
+	                      OR o.bicycle IS NULL ) 
+		         OR o.route IN ('hiking', 'foot')
+		         OR o.network IN ('nwn', 'rwn', 'lcn')
+	               THEN 4
 	               ELSE 12
 	          END
-	      WHEN c.class_name IN ('Local street', 'Motorway', 'Minor road', 'B road', 'A road', 'Trunk road', 'Service road', 'Parking') THEN  -- Proper roads
-	          CASE WHEN o.access IN ('no', 'emergency', 'controlled') THEN 2							-- Private road
-		       WHEN o.motorcar IN ('no') or o.highway IN ('pedestrian') THEN 7							-- Pedestrianised
-	               WHEN o.highway IN ('access') THEN 2										-- Private road
+	      WHEN c.class_name IN ('Local street', 'Motorway', 'Minor road', 	-- Proper roads
+	                            'B road', 'A road', 'Trunk road', 
+	                            'Service road', 'Parking') THEN  
+	          CASE WHEN o.access IN ('no', 'emergency', 'controlled') THEN 2	-- Private road
+		       WHEN o.motorcar IN ('no') or o.highway IN ('pedestrian') THEN 7	-- Pedestrianised
+	               WHEN o.highway IN ('access') THEN 2				-- Private road
 	               ELSE c.class_default_access_id
 	          END
 	     ELSE c.class_default_access_id

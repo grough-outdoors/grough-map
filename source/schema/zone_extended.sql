@@ -3,7 +3,8 @@ SELECT
 	z.zone_id,
 	z.zone_class_id,
 	z.zone_geom,
-	c.class_name
+	c.class_name,
+	z.zone_name
 FROM
 	zone z
 LEFT JOIN
