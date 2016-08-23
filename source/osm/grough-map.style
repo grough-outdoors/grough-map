@@ -152,18 +152,19 @@ node,way   z_order      int4         linear # This is calculated during import
 way        way_area     real         linear # This is calculated during import
 
 # Additions for grough map
-node,way   network      text         linear # Used to define walking/cycling networks nationally/regionally etc
-node,way   state        text         linear # Used to define proposed versus actual routes
-node,way   designation  text         linear # Used to define legal status, unofficially
-node,way   ruins        text         linear # Used to define proposed versus actual routes
-node,way   seamark      text         linear # Used to define proposed versus actual routes
-node,way   ncn          text         linear # National cycling network
-node,way   ncn_ref      text         linear # National cycling network
-node,way   lcn          text         linear # Local cycling network
-node,way   lcn_ref      text         linear # Local cycling network
-node,way   rcn          text         linear # Regional cycling network
-node,way   rcn_ref      text         linear # Regional cycling network
-node,way   osm_timestamp timestamptz(0) linear # Useful for tracking whether OSM or OS have most recent data etc.
+way   		network      text         linear # Used to define walking/cycling networks nationally/regionally etc
+way   		state        text         linear # Used to define proposed versus actual routes
+way   		designation  text         linear # Used to define legal status, unofficially
+way   		ruins        text         linear # Used to define proposed versus actual routes
+way   		seamark      text         linear # Used to define proposed versus actual routes
+way   		route_name   text         linear # Name for walking routes etc.
+way   		ncn          text         linear # National cycling network
+way   		ncn_ref      text         linear # National cycling network
+way   		lcn          text         linear # Local cycling network
+way  		lcn_ref      text         linear # Local cycling network
+way   		rcn          text         linear # Regional cycling network
+way   		rcn_ref      text         linear # Regional cycling network
+node,way 	osm_timestamp text 		  linear # Useful for tracking whether OSM or OS have most recent data etc.
 
 # Area tags
 # We don't make columns for these tags, but objects with them are areas.

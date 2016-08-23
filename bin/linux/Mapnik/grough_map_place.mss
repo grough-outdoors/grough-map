@@ -7,7 +7,7 @@
 @place_label_avoid_edges:					false;
 @place_label_character_spacing:				2;
 @place_label_minimum_padding:				20;
-@place_label_halo_radius:					4;
+@place_label_halo_radius:					5;
 @place_label_halo_colour:					rgba(255, 255, 255, 0.6);
 @place_label_default_margin:				30;
 @place_label_position_tolerance:			400;
@@ -72,7 +72,7 @@
 @place_label_autoscale_huge_size:			70;
 @place_label_autoscale_huge_wrap_width:		150;
 
-@place_label_waterbody_halo_radius:			2;
+@place_label_waterbody_halo_radius:			3;
 
 .place-label {
 	text-name: @place_label_source;

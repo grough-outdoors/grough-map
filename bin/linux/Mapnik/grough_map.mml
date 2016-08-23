@@ -10,6 +10,7 @@
 		"grough_map_elevation.mss",
 		"grough_map_grid.mss",
 		"grough_map_linear_labels.mss",
+		"grough_map_route.mss",
 		"grough_map_place.mss",
 		"grough_map_feature.mss",
 		"grough_map_zone.mss",
@@ -184,6 +185,11 @@
 	},
 	
 	{
+		"id": "route_markings", "name": "route_markings", "class": "route-markings",
+		"Datasource": { "table": "\"map_render_route_markers\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
+	},
+	
+	{
 		"id": "feature_line_overhead", "name": "feature_line_overhead", "class": "feature-line",
 		"Datasource": { "table": "\"map_render_feature_line_overhead\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},
@@ -216,6 +222,10 @@
 	{
 		"id": "edge_labels", "name": "edge_labels", "class": "edge-label",
 		"Datasource": { "table": "\"map_render_edge_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
+	},	
+	{
+		"id": "route_labels", "name": "route_labels", "class": "route-label",
+		"Datasource": { "table": "\"map_render_route_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	},	
 	{
 		"id": "grid_labels", "name": "grid_labels", "class": "grid-label",

@@ -15,6 +15,9 @@ set -e
 "${binDir}/gm-require-db.sh" os oproad
 set +e
 
+echo "Running full PRoW generation..."
+"${binDir}/gm-import-prow.sh"
+
 echo "-----------------------------------"
 echo "--> Extracting OSM highways data..."
 echo "-----------------------------------"
@@ -133,6 +136,14 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	  CLUSTER ON "Idx: edge::edge_geom";
 	VACUUM FULL ANALYZE edge;
 EoSQL
+
+echo "-----------------------------------"
+echo "--> Building routes..."
+echo "-----------------------------------"
+echo "--> Preparing routes for generating relations..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/prepare_route_relations.sql" > /dev/null
+echo "--> Generating relations between edges and long-distance routes..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/add_route_relations.sql" > /dev/null
 
 echo "-----------------------------------"
 echo "--> Final steps..."

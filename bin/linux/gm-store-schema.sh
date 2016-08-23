@@ -16,6 +16,9 @@ pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t edge_access -c > edge_access.sql
 echo "--> Storing edge schema..."
 pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t edge --schema-only > edge.sql
 
+echo "--> Storing edge route relation schema..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t edge_route --schema-only > edge_route.sql
+
 echo "--> Storing edge import highways..."
 pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t edge_import_highways -c > edge_import_highways.sql
 
@@ -75,6 +78,12 @@ pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t place_import > place_import.sql
 
 echo "--> Storing licences..."
 pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t licence > licence.sql
+
+echo "--> Storing route schema..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t route --schema-only > route.sql
+
+echo "--> Storing route classes..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t route_classes > route_classes.sql
 
 echo ""
 echo "Export complete. Run gm-restore-schema to return."

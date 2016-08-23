@@ -52,7 +52,7 @@
 @feature_label_character_spacing:	2;
 @feature_label_minimum_padding:		75;
 @feature_label_displacement:		50;
-@feature_label_halo_radius:			3;
+@feature_label_halo_radius:			5;
 @feature_label_halo_colour:			rgba(255, 255, 255, 0.6);
 @feature_label_alignment:			left;
 

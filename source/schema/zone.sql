@@ -66,6 +66,15 @@ ALTER TABLE ONLY zone
 
 
 --
+-- Name: Idx: zone::zone_geom; Type: INDEX; Schema: public; Owner: grough-map; Tablespace: 
+--
+
+CREATE INDEX "Idx: zone::zone_geom" ON zone USING gist (zone_geom);
+
+ALTER TABLE zone CLUSTER ON "Idx: zone::zone_geom";
+
+
+--
 -- PostgreSQL database dump complete
 --
 

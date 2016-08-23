@@ -666,6 +666,65 @@ for level in xrange(-4, 5):
     )
     pg_conn.commit()
 
+	
+print('Creating SQL views for routes')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_route_markers\" AS 
+	SELECT 
+		ST_Multi(ST_LineMerge(ST_Collect(edge_geom))) AS edge_geom,
+		class_name,
+		route_ref,
+		route_name, 
+		edge_class_name,
+		edge_access_name
+	FROM 
+	(
+		SELECT
+			edge_id,
+			edge_name,
+			edge_level,
+			edge_bridge,
+			edge_slip, 
+			edge_oneway, 
+			edge_roundabout, 
+			edge_geom,
+			edge_class_name,
+			edge_access_name,
+			string_agg(route_name, ', ') AS route_name,
+			string_agg(route_ref, ', ') AS route_ref,
+			string_agg(class_name, ', ') AS class_name
+		FROM
+			route_extended r
+		WHERE 
+			edge_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+		GROUP BY
+			edge_id, edge_name, edge_level, edge_bridge, edge_slip, edge_oneway, edge_roundabout, edge_geom, edge_class_name, edge_access_name
+	) SA
+	GROUP BY
+		route_name, route_ref, class_name, edge_class_name, edge_access_name;
+	"""
+)
+pg_conn.commit()
+
+print('Creating SQL views for route labels')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_route_labels\" AS 
+	SELECT 
+		ST_Multi(ST_LineMerge(ST_Collect(edge_geom))) AS edge_geom,
+		class_name,
+		route_ref,
+		route_name, 
+		edge_class_name
+	FROM 
+		route_extended r
+	WHERE 
+		edge_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+	GROUP BY
+		route_name, route_ref, class_name, edge_class_name;
+	"""
+)
+pg_conn.commit()
+	
 # Generate a relief image
 print('Creating hillshade...')
 call( "../relief.sh " + map_ref_idx, shell=True )

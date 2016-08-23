@@ -11,6 +11,10 @@ symbolSmallPixelSize=35
 symbolSurveyColour="#000000"
 symbolStructureColour="#505050"
 
+symbolNCNColour="#E35D5D"
+symbolRCNColour="#5050e0"
+symbolFootColour="#70a050"
+
 echo "-----------------------------------"
 echo "--> Generating symbols..."
 echo "-----------------------------------"
@@ -82,12 +86,12 @@ convert -size ${symbolSmallPixelSize}x${symbolSmallPixelSize} \
         "picnic-site.png"
 
 echo "--> Railway stations..."
-convert -size 350x350 \
+convert -size 500x500 \
 		xc:transparent \
 		-fill yellow \
 		-stroke black \
-		-strokewidth 10 \
-		-draw "circle 175,175 175,275" \
+		-strokewidth 20 \
+		-draw "circle 250,250 250,450" \
         "rail-station.png"
 
 echo "--> Shelter..."
@@ -110,6 +114,74 @@ convert -size ${symbolLargePixelSize}x${symbolLargePixelSize} \
 
 echo "--> Towers..."
 echo "    Not yet available"
+
+echo "--> Cycling network: National..."
+convert -size ${symbolLargePixelSize}x${symbolLargePixelSize} \
+		-density 1200 \
+		-background none \
+		-fill "red" \
+		-opaque black \
+		"$iconDir/cycle-route/bicycle.svg" \
+        "route-ncn.png"
+		
+echo "--> Cycling network: National..."
+convert -size 250x250 \
+		xc:transparent \
+		-fill "${symbolNCNColour}" \
+		-draw "circle 125,125 125,240" \
+        "route-dot-ncn.png"
+
+echo "--> Cycling network: Regional..."
+convert -size 250x250 \
+		xc:transparent \
+		-fill "${symbolRCNColour}" \
+		-draw "circle 125,125 125,240" \
+        "route-dot-rcn.png"
+		
+echo "--> Walking trail..."
+convert -size 250x250 \
+		xc:transparent \
+		-fill "${symbolFootColour}" \
+		-draw "circle 125,125 125,240" \
+        "route-dot-trail.png"
+		
+echo "--> Cycling network: National and regional..."
+convert -size 500x250 \
+		xc:transparent \
+		-fill "${symbolNCNColour}" \
+		-draw "circle 125,125 125,240" \
+		-fill "${symbolRCNColour}" \
+		-draw "circle 375,125 375,240" \
+        "route-dot-ncn-rcn.png"
+		
+echo "--> Cycling network: Regional and trail..."
+convert -size 500x250 \
+		xc:transparent \
+		-fill "${symbolRCNColour}" \
+		-draw "circle 125,125 125,240" \
+		-fill "${symbolFootColour}" \
+		-draw "circle 375,125 375,240" \
+        "route-dot-rcn-trail.png"
+		
+echo "--> Cycling network: National and trail..."
+convert -size 500x250 \
+		xc:transparent \
+		-fill "${symbolNCNColour}" \
+		-draw "circle 125,125 125,240" \
+		-fill "${symbolFootColour}" \
+		-draw "circle 375,125 375,240" \
+        "route-dot-ncn-trail.png"
+		
+echo "--> Cycling network: National and regional and trail..."
+convert -size 750x250 \
+		xc:transparent \
+		-fill "${symbolNCNColour}" \
+		-draw "circle 125,125 125,240" \
+		-fill "${symbolRCNColour}" \
+		-draw "circle 375,125 375,240" \
+		-fill "${symbolFootColour}" \
+		-draw "circle 625,125 625,240" \
+        "route-dot-ncn-rcn-trail.png"
 		
 echo "--> Build complete."
 cd - > /dev/null

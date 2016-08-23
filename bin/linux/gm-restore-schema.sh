@@ -19,6 +19,12 @@ psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_access.sql" > /
 echo "--> Restoring edge schema..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge.sql" > /dev/null 
 
+echo "--> Restoring edge route relation schema..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_route.sql" > /dev/null 
+
+echo "--> Restoring route schema..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}route.sql" > /dev/null 
+
 echo "--> Restoring edge import highways..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS edge_import_highways CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_import_highways.sql" > /dev/null 
@@ -78,6 +84,10 @@ echo "--> Restoring licences..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS licence CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}licence.sql" > /dev/null 
 
+echo "--> Restoring route classes..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS route_classes CASCADE;"
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}route_classes.sql" > /dev/null 
+
 echo "--> Restoring feature import classes..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS feature_import CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_import.sql" > /dev/null 
@@ -121,5 +131,8 @@ psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_label.sql" >
 
 echo "--> Restoring view for raw obstructions..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}raw_obstructions.sql" > /dev/null 
+
+echo "--> Restoring view for route extended..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}route_extended.sql" > /dev/null 
 
 echo "--> Restore complete."

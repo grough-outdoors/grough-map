@@ -17,12 +17,12 @@ Load in the basic schema required...
 
 Fetch the required data from the web...
 - gm-download-grid
-- gm-download-ne
+- gm-download-zone (includes data from Natural England and Natural Resources Wales)
 - gm-download-os (Requires source_email.txt)
 - gm-download-prow	(TODO: Only covers updates from GeoServer)
  
 LiDAR tiles can be downloaded manually, or will be pulled when required...
-- gm-download-ea \<tile\>
+- gm-download-eagg \<tile\>
 - gm-download-nrw \<tile\>
  
 The grid is required and should be imported straight away...
