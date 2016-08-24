@@ -1,6 +1,4 @@
 @route_marker_default_size:					20;
-@route_marker_double_size:					@route_marker_default_size * 2;
-@route_marker_treble_size:					@route_marker_default_size * 3;
 @route_marker_default_blend:				src-over;
 @route_marker_default_opacity:				0.7;
 @route_marker_default_multi:				each;
@@ -37,7 +35,6 @@
 @route_marker_ncn_rcn_trail_file:			url("/vagrant/source/cartography/route-dot-ncn-rcn-trail.png");
 
 .route-markings {
-	marker-width: @route_marker_default_size;
 	marker-height: @route_marker_default_size;
 	marker-opacity: @route_marker_default_opacity;
 	marker-comp-op: @route_marker_default_blend;
@@ -60,45 +57,40 @@
 		marker-file: @route_marker_rcn_file;
 	}
 	
-	[class_name=~'.*National trail.*'] {
-		marker-file: @route_marker_trail_file;
-	}
-	
-	[class_name=~'.*Regional trail.*'] {
+	[class_name=~'.*National trail.*'],
+	[class_name=~'.*Regional trail.*']	{
 		marker-file: @route_marker_trail_file;
 	}
 	
 	[class_name=~'.*National cycle network.*']
 	[class_name=~'.*Regional cycle network.*']	{
-		marker-width: @route_marker_double_size;
 		marker-file: @route_marker_ncn_rcn_file;
 	}
 	
 	[class_name=~'.*National cycle network.*']
-	[class_name=~'.*National trail.*']	{
-		marker-width: @route_marker_double_size;
+	[class_name=~'.*National trail.*'],
+	[class_name=~'.*National cycle network.*']
+	[class_name=~'.*Regional trail.*'],	{
 		marker-file: @route_marker_ncn_trail_file;
 	}
 	
-	[class_name=~'.*Regional cycle network.*']
-	[class_name=~'.*National trail.*']	{
-		marker-width: @route_marker_double_size;
+	[class_name=~'.*Regional cycle network.*'][class_name=~'.*National trail.*'],
+	[class_name=~'.*Regional cycle network.*'][class_name=~'.*Regional trail.*'] {
 		marker-file: @route_marker_rcn_trail_file;
 	}
 	
 	[class_name=~'.*National cycle network.*']
 	[class_name=~'.*Regional cycle network.*']
 	[class_name=~'.*National trail.*']	{
-		marker-width: @route_marker_treble_size;
 		marker-file: @route_marker_ncn_rcn_trail_file;
 	}
 }
 
 .route-label {
 	[class_name='National cycle network'],
-	[class_name='Regional cycle network'] {
+	[class_name='Regional cycle network'],
+	[class_name='National trail'] {
 		marker-height: 43;
-		marker-spacing: 2000;
 		marker-opacity: 0.7;
 		marker-max-error: 50;
 		marker-comp-op: multiply;
@@ -106,22 +98,33 @@
 		marker-placement: line;
 		marker-multi-policy: each;
 		marker-transform: translate(0, 35);
+		[class_name='National cycle network'] { marker-spacing: 1800; }
+		[class_name='Regional cycle network'] { marker-spacing: 1500; }
+		[class_name='National trail'] { marker-spacing: 1300; }
 	}
 	
 	[edge_max_length < 2000] {
-		marker-spacing: 1500;
+		[class_name='National cycle network'] { marker-spacing: 1200; }
+		[class_name='Regional cycle network'] { marker-spacing: 1000; }
+		[class_name='National trail'] { marker-spacing: 800; }
 	}
 	
 	[edge_max_length < 1500] {
-		marker-spacing: 1000;
+		[class_name='National cycle network'] { marker-spacing: 750; }
+		[class_name='Regional cycle network'] { marker-spacing: 600; }
+		[class_name='National trail'] { marker-spacing: 450; }
 	}
 	
 	[edge_max_length < 1000] {
-		marker-spacing: 500;
+		[class_name='National cycle network'] { marker-spacing: 500; }
+		[class_name='Regional cycle network'] { marker-spacing: 400; }
+		[class_name='National trail'] { marker-spacing: 300; }
 	}
 	
 	[edge_max_length < 500] {
-		marker-spacing: 250;
+		[class_name='National cycle network'] { marker-spacing: 300; }
+		[class_name='Regional cycle network'] { marker-spacing: 200; }
+		[class_name='National trail'] { marker-spacing: 100; }
 	}
 }
 

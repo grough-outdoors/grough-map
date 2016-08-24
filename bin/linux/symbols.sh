@@ -12,6 +12,7 @@ rm -rf /vagrant/volatile/symbols
 echo " --> Generating generic symbols..."
 "${binDir}/symbol-generator.sh" "NCN"
 "${binDir}/symbol-generator.sh" "RCN"
+"${binDir}/symbol-generator.sh" "NT"
 
 echo " --> Starting volatile carto file..."
 echo ".route-label {
@@ -20,6 +21,9 @@ echo ".route-label {
 	}
 	[class_name='Regional cycle network'] {
 		marker-file: url('/vagrant/volatile/symbols/symbol-RCN.png');
+	}
+	[class_name='National trail'] {
+		marker-file: url('/vagrant/volatile/symbols/symbol-NT.png');
 	}
 " > "$binDir/Mapnik/grough_map_volatile.mss"
 

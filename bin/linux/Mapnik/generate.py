@@ -692,7 +692,7 @@ pg_cursor.execute("""\
 			edge_slip, 
 			edge_oneway, 
 			edge_roundabout, 
-			ST_SnapToGrid(edge_geom, 5.0) AS edge_geom,
+			ST_SnapToGrid(ST_Simplify(edge_geom, 10.0), 5.0) AS edge_geom,
 			edge_class_name,
 			edge_access_name,
 			string_agg(route_name, ', ') AS route_name,
@@ -756,7 +756,7 @@ pg_cursor.execute("""\
 					SELECT 
 						a.edge_id,
 						ST_SnapToGrid(
-							ST_Multi(ST_Difference(a.edge_geom, ST_Union(ST_Buffer(b.edge_geom, 100.0, 'endcap=square join=mitre mitre_limit=20.0')))),
+							ST_Simplify(ST_Multi(ST_Difference(a.edge_geom, ST_Union(ST_Buffer(b.edge_geom, 100.0, 'endcap=square join=mitre mitre_limit=20.0')))), 20),
 							5.0
 						) AS edge_geom,
 						a.edge_geom AS edge_geom_original
@@ -868,7 +868,7 @@ pg_cursor.execute("""\
 										edge_access_name,
 										ST_SnapToGrid(
 											ST_Multi(ST_Intersection(
-												ST_Simplify(edge_geom, 10.0),
+												ST_Simplify(edge_geom, 20.0),
 												ST_Expand(ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """), -50)
 											)),
 											5.0
@@ -876,7 +876,7 @@ pg_cursor.execute("""\
 									FROM
 										map_render_route_labels
 									WHERE
-										class_name IN ('National cycle network', 'Regional cycle network')
+										class_name IN ('National cycle network', 'Regional cycle network', 'National trail')
 								) SAA
 							) SBB
 							GROUP BY
