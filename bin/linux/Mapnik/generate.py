@@ -7,6 +7,18 @@ import mapnik
 import psycopg2
 import sys
 
+# Fetch command line argument
+map_ref_idx = str(sys.argv[1]).strip().upper()
+map_target = 'output/' + map_ref_idx.lower() + '.png'
+
+map_major_grid_idx = map_ref_idx[0:2]
+map_minor_grid_idx = map_ref_idx
+
+# Generate symbols
+print('Creating symbols...')
+call( "../symbols.sh " + map_ref_idx, shell=True )
+print('Finished creating symbols')
+
 # Convert MML to XML
 print('Creating XML file...')
 call( "carto grough_map.mml > grough_map.xml", shell=True )
@@ -24,13 +36,6 @@ print('Connecting to PG database...')
 pg_conn = psycopg2.connect( pg_conn_string )
 pg_cursor = pg_conn.cursor()
 print('Connected to database.')
-
-# Fetch command line argument
-map_ref_idx = str(sys.argv[1]).strip().upper()
-map_target = 'output/' + map_ref_idx.lower() + '.png'
-
-map_major_grid_idx = map_ref_idx[0:2]
-map_minor_grid_idx = map_ref_idx
 
 print('Target grid square is ', map_ref_idx, '...')
 print('Target major grid is ', map_major_grid_idx, '...')
@@ -671,7 +676,7 @@ print('Creating SQL views for routes')
 pg_cursor.execute("""\
 	CREATE OR REPLACE VIEW "map_render_route_markers\" AS 
 	SELECT 
-		ST_Multi(ST_LineMerge(ST_Collect(edge_geom))) AS edge_geom,
+		(ST_Dump(ST_Multi(ST_LineMerge(ST_Collect(edge_geom))))).geom AS edge_geom,
 		class_name,
 		route_ref,
 		route_name, 
@@ -687,7 +692,7 @@ pg_cursor.execute("""\
 			edge_slip, 
 			edge_oneway, 
 			edge_roundabout, 
-			edge_geom,
+			ST_SnapToGrid(edge_geom, 5.0) AS edge_geom,
 			edge_class_name,
 			edge_access_name,
 			string_agg(route_name, ', ') AS route_name,
@@ -714,13 +719,182 @@ pg_cursor.execute("""\
 		class_name,
 		route_ref,
 		route_name, 
-		edge_class_name
-	FROM 
-		route_extended r
-	WHERE 
-		edge_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+		edge_class_name,
+		edge_access_name
+	FROM
+	(
+		SELECT
+			(ST_Dump(edge_geom)).geom AS edge_geom,
+			class_name,
+			route_ref,
+			route_name, 
+			edge_class_name,
+			edge_access_name
+		FROM
+		(
+			SELECT
+				ST_Multi(ST_LineMerge(ST_Collect(SA.edge_geom))) AS edge_geom,
+				r.class_name,
+				r.route_ref,
+				r.route_name, 
+				r.edge_class_name,
+				r.edge_access_name
+			FROM 
+				route_extended r
+			INNER JOIN
+			(
+				SELECT
+					edge_id,
+					(ST_Dump(
+						CASE WHEN ST_Length(edge_geom) > ST_Length(edge_geom_original) * 0.50
+							 THEN edge_geom
+							 ELSE ST_Multi(edge_geom_original)
+						END
+					)).geom AS edge_geom
+				FROM
+				(
+					SELECT 
+						a.edge_id,
+						ST_SnapToGrid(
+							ST_Multi(ST_Difference(a.edge_geom, ST_Union(ST_Buffer(b.edge_geom, 100.0, 'endcap=square join=mitre mitre_limit=20.0')))),
+							5.0
+						) AS edge_geom,
+						a.edge_geom AS edge_geom_original
+					FROM 
+						route_extended a, edge b
+					WHERE
+						a.edge_geom && ST_MakeBox2D(ST_Point(""" + str(map_ll_x) + """, """ + str(map_ll_y) + """), ST_Point(""" + str(map_ur_x) + """, """ + str(map_ur_y) + """))
+					AND
+						a.route_name IS NOT NULL
+					AND
+						a.edge_id != b.edge_id
+					AND
+						ST_DWithin(a.edge_geom, b.edge_geom, 20.0)
+					GROUP BY
+						a.edge_id, a.edge_geom
+				) SB
+			) SA
+			ON
+				SA.edge_id = r.edge_id
+			WHERE 
+				r.edge_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+			GROUP BY
+				route_name, route_ref, class_name, edge_class_name, edge_access_name
+		) SB
+	) SC
 	GROUP BY
-		route_name, route_ref, class_name, edge_class_name;
+		route_name, route_ref, class_name, edge_class_name, edge_access_name;
+	"""
+)
+pg_conn.commit()
+
+print('Creating SQL views for route image labels')
+pg_cursor.execute("""\
+	CREATE OR REPLACE VIEW "map_render_route_label_images\" AS 
+	SELECT
+		class_name,
+		route_ref,
+		route_name,
+		CASE WHEN ST_X(ST_StartPoint(edge_geom)) < ST_X(ST_EndPoint(edge_geom))
+			THEN edge_geom
+			ELSE ST_Reverse(edge_geom)
+		END AS edge_geom,
+		ST_Length(edge_geom) AS edge_length,
+		max(ST_Length(edge_geom)) OVER (PARTITION BY route_name) AS edge_max_length
+	FROM
+	(
+		SELECT
+			id,
+			class_name,
+			route_ref,
+			route_name,
+			(ST_Dump(ST_LineMerge(ST_Collect(edge_geom)))).geom AS edge_geom
+		FROM
+		(
+			SELECT
+				*,
+				CASE WHEN degrees(ST_Azimuth(ST_StartPoint(edge_geom), ST_EndPoint(edge_geom))) > 180.0
+					 THEN -1
+					 ELSE 1
+				END AS edge_geom_dir
+			FROM
+			(
+				SELECT 
+					id,
+					class_name,
+					route_ref,
+					route_name,
+					ST_MakeLine(sp,ep) AS edge_geom
+				FROM
+				(
+					SELECT
+						ROW_NUMBER() OVER () AS id,
+						class_name,
+						route_ref,
+						route_name,
+						ST_PointN(edge_geom, generate_series(1, ST_NPoints(edge_geom)-1)) as sp,
+						ST_PointN(edge_geom, generate_series(2, ST_NPoints(edge_geom)  )) as ep
+					FROM
+					(
+						SELECT
+							class_name,
+							route_ref,
+							route_name,
+							(ST_Dump(ST_CollectionExtract(edge_geom, 2))).geom AS edge_geom
+						FROM
+						(
+							SELECT
+								class_name,
+								route_ref,
+								route_name,
+								ST_Multi(ST_LineMerge(ST_Collect(edge_geom))) AS edge_geom
+							FROM
+							(
+								SELECT
+									class_name,
+									route_ref,
+									route_name,
+									edge_class_name,
+									edge_access_name,
+									(ST_Dump(ST_CollectionExtract(edge_geom, 2))).geom AS edge_geom,
+									ST_Length(edge_geom) AS edge_geom_len
+								FROM
+								(
+									SELECT
+										class_name,
+										route_ref,
+										route_name,
+										edge_class_name,
+										edge_access_name,
+										ST_SnapToGrid(
+											ST_Multi(ST_Intersection(
+												ST_Simplify(edge_geom, 10.0),
+												ST_Expand(ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """), -50)
+											)),
+											5.0
+										) AS edge_geom
+									FROM
+										map_render_route_labels
+									WHERE
+										class_name IN ('National cycle network', 'Regional cycle network')
+								) SAA
+							) SBB
+							GROUP BY
+								class_name,
+								route_ref,
+								route_name
+						) SCC
+					) SDD
+				) SA
+			) SB
+		) SC
+		GROUP BY
+			id,
+			class_name,
+			route_ref,
+			route_name,
+			edge_geom_dir
+	) SD
 	"""
 )
 pg_conn.commit()

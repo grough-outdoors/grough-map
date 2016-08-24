@@ -17,6 +17,7 @@ source/typefaces/*
 bin/linux/Cascadenik
 bin/linux/Mapnik/constants/*
 bin/linux/Mapnik/output/*
+bin/linux/Mapnik/*volatile*
 bin/linux/Mapnik/*.xml
 bin/linux/LASTools
 source/env.sh

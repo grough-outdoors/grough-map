@@ -12,7 +12,7 @@ symbolSurveyColour="#000000"
 symbolStructureColour="#505050"
 
 symbolNCNColour="#E35D5D"
-symbolRCNColour="#5050e0"
+symbolRCNColour="#0047AB"
 symbolFootColour="#70a050"
 
 echo "-----------------------------------"
@@ -138,7 +138,7 @@ convert -size 250x250 \
 		-draw "circle 125,125 125,240" \
         "route-dot-rcn.png"
 		
-echo "--> Walking trail..."
+echo "--> Walking national trail..."
 convert -size 250x250 \
 		xc:transparent \
 		-fill "${symbolFootColour}" \
