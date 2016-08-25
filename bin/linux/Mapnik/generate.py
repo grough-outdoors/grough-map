@@ -800,7 +800,8 @@ pg_cursor.execute("""\
 			ELSE ST_Reverse(edge_geom)
 		END AS edge_geom,
 		ST_Length(edge_geom) AS edge_length,
-		max(ST_Length(edge_geom)) OVER (PARTITION BY route_name) AS edge_max_length
+		max(ST_Length(edge_geom)) OVER (PARTITION BY route_name) AS edge_max_length,
+		sum(ST_Length(edge_geom)) OVER (PARTITION BY route_name) AS edge_sum_length
 	FROM
 	(
 		SELECT

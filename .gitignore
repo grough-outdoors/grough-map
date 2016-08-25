@@ -1,6 +1,7 @@
 .vagrant
 .vagrant-aws
 .git
+*.lnk
 Open pgAdmin.bat
 bin/win32/msys-*.dll
 bin/win32/ssh.exe

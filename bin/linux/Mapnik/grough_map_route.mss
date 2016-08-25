@@ -103,28 +103,22 @@
 		[class_name='National trail'] { marker-spacing: 1300; }
 	}
 	
-	[edge_max_length < 2000] {
+	[edge_max_length < 2000][edge_sum_length > 2000] {
 		[class_name='National cycle network'] { marker-spacing: 1200; }
 		[class_name='Regional cycle network'] { marker-spacing: 1000; }
 		[class_name='National trail'] { marker-spacing: 800; }
 	}
 	
-	[edge_max_length < 1500] {
-		[class_name='National cycle network'] { marker-spacing: 750; }
+	[edge_max_length < 1250][edge_sum_length > 1250] {
+		[class_name='National cycle network'] { marker-spacing: 700; }
 		[class_name='Regional cycle network'] { marker-spacing: 600; }
+		[class_name='National trail'] { marker-spacing: 500; }
+	}
+	
+	[edge_max_length < 500][edge_sum_length > 500] {
+		[class_name='National cycle network'] { marker-spacing: 650; }
+		[class_name='Regional cycle network'] { marker-spacing: 550; }
 		[class_name='National trail'] { marker-spacing: 450; }
-	}
-	
-	[edge_max_length < 1000] {
-		[class_name='National cycle network'] { marker-spacing: 500; }
-		[class_name='Regional cycle network'] { marker-spacing: 400; }
-		[class_name='National trail'] { marker-spacing: 300; }
-	}
-	
-	[edge_max_length < 500] {
-		[class_name='National cycle network'] { marker-spacing: 300; }
-		[class_name='Regional cycle network'] { marker-spacing: 200; }
-		[class_name='National trail'] { marker-spacing: 100; }
 	}
 }
 
