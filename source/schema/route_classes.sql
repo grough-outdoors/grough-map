@@ -65,7 +65,8 @@ COPY route_classes (class_id, class_name) FROM stdin;
 3	Local cycle network
 4	Other cycle route
 5	National trail
-6	Other trail
+6	Regional trail
+7	Other trail route
 \.
 
 
@@ -73,7 +74,7 @@ COPY route_classes (class_id, class_name) FROM stdin;
 -- Name: route_classes_class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('route_classes_class_id_seq', 6, true);
+SELECT pg_catalog.setval('route_classes_class_id_seq', 7, true);
 
 
 --

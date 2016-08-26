@@ -15,3 +15,6 @@ ON
 	e.edge_geom && r.route_geom
 AND
 	ST_Within(r.route_geom, e.edge_geom);
+
+DROP TABLE IF EXISTS _tmp_routes;
+DROP TABLE IF EXISTS _tmp_route_segments;

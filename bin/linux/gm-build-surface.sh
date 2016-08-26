@@ -160,6 +160,28 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	) SA;
 EoSQL
 
+echo "--> Removing duplicates of forests..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	DELETE FROM
+		surface
+	WHERE
+		surface_id IN 
+	(
+		SELECT
+			s2.surface_id
+		FROM
+			surface s
+		INNER JOIN
+			surface s2
+		ON
+			s2.surface_id > s.surface_id
+		AND
+			ST_Equals(s2.surface_geom, s.surface_geom)
+		WHERE
+			s.surface_class_id = 2
+	);
+EoSQL
+
 echo "--> Cleaning up..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	VACUUM FULL ANALYZE surface;

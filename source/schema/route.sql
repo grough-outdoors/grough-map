@@ -75,6 +75,13 @@ ALTER TABLE route CLUSTER ON "Idx: route::route_id";
 
 
 --
+-- Name: Idx: route::route_name; Type: INDEX; Schema: public; Owner: grough-map; Tablespace: 
+--
+
+CREATE INDEX "Idx: route::route_name" ON route USING btree (route_name);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
