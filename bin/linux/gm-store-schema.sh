@@ -25,6 +25,9 @@ pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t edge_import_highways -c > edge_i
 echo "--> Storing edge import railways..."
 pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t edge_import_railways -c > edge_import_railways.sql
 
+echo "--> Storing edge import routes..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t edge_import_routes -c > edge_import_routes.sql
+
 echo "--> Storing surface classes..."
 pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t surface_classes -c > surface_classes.sql
 

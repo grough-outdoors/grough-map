@@ -79,6 +79,8 @@ COPY edge_access (access_id, access_name) FROM stdin;
 4	Legal footpath
 12	Unknown access
 13	Under construction
+14	Vehicle ferry
+15	Pedestrian ferry
 \.
 
 
@@ -86,7 +88,7 @@ COPY edge_access (access_id, access_name) FROM stdin;
 -- Name: edge_access_access_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('edge_access_access_id_seq', 13, true);
+SELECT pg_catalog.setval('edge_access_access_id_seq', 15, true);
 
 
 --

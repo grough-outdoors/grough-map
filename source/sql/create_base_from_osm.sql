@@ -58,19 +58,20 @@ LEFT JOIN
 ON
 	a.access_id = 
 	CASE WHEN o.__COLUMNNAME__ = 'construction' THEN 13 			-- Under construction (no access)
-		 WHEN c.class_name IN ('Path', 'Steps') THEN 			-- Footpaths, bridleways
+             WHEN c.class_name IN ('Path', 'Steps') THEN 			-- Footpaths, bridleways
 	          CASE WHEN o.highway IN ('cycleway') THEN 8				-- Cycle path (bridleway)
 		       WHEN o.bicycle IN ('yes', 'designated') 				-- Legal bridleway
 		         OR o.highway IN ('bridleway') 
 		         OR o.designation = 'bridleway'
 		         OR o.designation LIKE '%public_bridleway%'
-		         OR ((o.ncn IS NOT NULL OR o.ncn_ref IS NOT NULL OR o.route = 'ncn' OR o.network = 'ncn') AND o.ncn != 'proposed' AND o.state != 'proposed') 
-		         OR ((o.rcn IS NOT NULL OR o.rcn_ref IS NOT NULL OR o.route = 'rcn' OR o.network = 'rcn') AND o.rcn != 'proposed' AND o.state != 'proposed')
-		         OR ((o.lcn IS NOT NULL OR o.lcn_ref IS NOT NULL OR o.route = 'lcn' OR o.network = 'lcn') AND o.lcn != 'proposed' AND o.state != 'proposed')  
+		         OR ((o.ncn IN ('yes', 'y', 'true') OR o.ncn_ref IN ('yes', 'y', 'true') OR o.route = 'ncn' OR o.network = 'ncn') AND o.ncn != 'proposed' AND o.state != 'proposed') 
+		         OR ((o.rcn IN ('yes', 'y', 'true') OR o.rcn_ref IN ('yes', 'y', 'true') OR o.route = 'rcn' OR o.network = 'rcn') AND o.rcn != 'proposed' AND o.state != 'proposed')
+		         OR ((o.lcn IN ('yes', 'y', 'true') OR o.lcn_ref IN ('yes', 'y', 'true') OR o.route = 'lcn' OR o.network = 'lcn') AND o.lcn != 'proposed' AND o.state != 'proposed')  
 		       THEN 8
-	               WHEN o.access IN ('yes', 'designated') 				-- Legal public footpath
+	               WHEN o.access IN ('designated') 					-- Legal public footpath OR one intended for walking
 	                 OR o.highway IN ('footway') 
-	                 OR o.foot IN ('yes', 'designated')
+	                 OR o.foot IN ('designated')
+	                 OR o.surface IN ('paved', 'asphalt', 'cobblestone', 'sett', 'concrete', 'paving_stones', 'compacted', 'gravel')
 		         OR o.designation LIKE '%public_footpath%'
 		         OR o.designation = 'core_path' 
 		         OR o.route IN ('hiking', 'foot')
@@ -80,7 +81,7 @@ ON
 		         OR o.foot IN ('permissive', 'customers')
 		         OR o.designation = 'permissive_footpath'
 		         OR o.designation LIKE '%permissive_footpath%' 
-		       THEN 5	
+		       THEN 5
 		       WHEN o.access IN ('no', 'private') 				-- Private restricted use path
 		         OR o.foot IN ('no', 'private') 
 		       THEN 11 
@@ -136,5 +137,12 @@ ON
 	               WHEN o.highway IN ('access') THEN 2				-- Private road
 	               ELSE c.class_default_access_id
 	          END
+	     WHEN c.class_name IN ('Ferry') THEN				-- Ferry 
+	          CASE WHEN o.motorcar IN ('yes', 'true') THEN 14			-- Vehicle ferry
+	               ELSE 15								-- Pedestrian ferry
+	          END
 	     ELSE c.class_default_access_id
-	END;
+	END
+WHERE
+	-- Relations will have negative indices
+	osm_id >= 0;

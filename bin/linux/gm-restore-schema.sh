@@ -33,6 +33,10 @@ echo "--> Restoring edge import railways..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS edge_import_railways CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_import_railways.sql" > /dev/null 
 
+echo "--> Restoring edge import routes..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS edge_import_routes CASCADE;"
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_import_routes.sql" > /dev/null 
+
 echo "--> Restoring surface classes..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS surface_classes CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}surface_classes.sql" > /dev/null 

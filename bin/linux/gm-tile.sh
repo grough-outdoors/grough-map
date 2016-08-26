@@ -71,7 +71,7 @@ echo "--> Removing temporary tables..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	DROP TABLE IF EXISTS _tmp_contour_label_primary CASCADE;
 	DROP TABLE IF EXISTS _tmp_contour_label_rings CASCADE;
-	--DROP TABLE IF EXISTS _tmp_label_zone CASCADE;
+	DROP TABLE IF EXISTS _tmp_label_zone CASCADE;
 EoSQL
 
 cd $currentDir

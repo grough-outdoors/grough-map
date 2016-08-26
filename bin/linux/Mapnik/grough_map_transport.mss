@@ -65,16 +65,16 @@
 @edge_access_decorator_construction_dash_line:		10;
 @edge_access_decorator_construction_dash_space:		10;
 
-@edge_access_decorator_minor_width:					3.5;
+@edge_access_decorator_minor_width:					3.25;
 @edge_access_decorator_major_width:					4.75;
 
-@edge_access_decorator_path_colour:					#707070;
-@edge_access_decorator_path_dash_line:				18;
-@edge_access_decorator_path_dash_space:				13;
+@edge_access_decorator_path_colour:					#808080;
+@edge_access_decorator_path_dash_line:				14;
+@edge_access_decorator_path_dash_space:				10;
 
 @edge_access_decorator_legalpath_colour:			#70a050;
-@edge_access_decorator_legalpath_dash_line:			@edge_access_decorator_path_dash_line;
-@edge_access_decorator_legalpath_dash_space:		@edge_access_decorator_path_dash_space;
+@edge_access_decorator_legalpath_dash_line:			18;
+@edge_access_decorator_legalpath_dash_space:		13;
 
 @edge_access_decorator_pedestrianised_width:		@edge_service_road_width;
 @edge_access_decorator_pedestrianised_colour:		@edge_access_decorator_legalpath_colour;
@@ -82,12 +82,12 @@
 @edge_access_decorator_pedestrianised_dash_space:	5;
 
 @edge_access_decorator_bridleway_colour:			@edge_access_decorator_legalpath_colour;
-@edge_access_decorator_bridleway_dash_line:			@edge_access_decorator_path_dash_line * 2;
-@edge_access_decorator_bridleway_dash_space:		@edge_access_decorator_path_dash_space;
+@edge_access_decorator_bridleway_dash_line:			@edge_access_decorator_legalpath_dash_line * 2;
+@edge_access_decorator_bridleway_dash_space:		@edge_access_decorator_legalpath_dash_space;
 
 @edge_access_decorator_permpath_colour:				orange;
-@edge_access_decorator_permpath_dash_line:			@edge_access_decorator_path_dash_line;
-@edge_access_decorator_permpath_dash_space: 		@edge_access_decorator_path_dash_space;
+@edge_access_decorator_permpath_dash_line:			@edge_access_decorator_legalpath_dash_line;
+@edge_access_decorator_permpath_dash_space: 		@edge_access_decorator_legalpath_dash_space;
 
 @edge_tunnel_border_lighten:				 		30%;
 @edge_tunnel_border_dash_line:						10;
@@ -609,11 +609,17 @@
 			}
 		}
 		
+		/*
+		 *	We only mark 'footpath' as though it were a legal footpath in areas where it probably
+		 *  is, which is those where we don't have the definitive record from the authority.
+		 */
+		/*
 		[access_name="Footpath"] {
 			decoration/line-width: @edge_access_decorator_major_width;
 			decoration/line-dasharray: @edge_access_decorator_legalpath_dash_line, @edge_access_decorator_legalpath_dash_space;
 			decoration/line-color: @edge_access_decorator_legalpath_colour;
 		}
+		*/
 		
 		[access_name="Pedestrianised road"] {
 			decoration/line-width: @edge_access_decorator_pedestrianised_width;

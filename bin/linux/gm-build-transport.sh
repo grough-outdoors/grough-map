@@ -32,7 +32,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	FROM
 		_src_osm_line
 	WHERE
-		highway IS NOT NULL OR railway IS NOT NULL;
+		highway IS NOT NULL OR railway IS NOT NULL OR route IS NOT NULL;
 EoSQL
  > /dev/null
 	
@@ -76,6 +76,8 @@ echo "--> Generating base data from highways..."
 sed -e "s/__COLUMNNAME__/highway/g" "$sqlDir/create_base_from_osm.sql" | psql -Ugrough-map grough-map -h 127.0.0.1
 echo "--> Adding railway data..."
 sed -e "s/__COLUMNNAME__/railway/g" "$sqlDir/create_base_from_osm.sql" | psql -Ugrough-map grough-map -h 127.0.0.1
+echo "--> Adding ferry data..."
+sed -e "s/__COLUMNNAME__/route/g" "$sqlDir/create_base_from_osm.sql" | psql -Ugrough-map grough-map -h 127.0.0.1
 
 echo "--> Indexing..."	
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
@@ -144,6 +146,8 @@ echo "--> Preparing routes for generating relations..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/prepare_route_relations.sql" > /dev/null
 echo "--> Generating relations between edges and long-distance routes..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/add_route_relations.sql" > /dev/null
+echo "--> Correcting access data when part of national routes..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/promote_route_relation_access.sql" > /dev/null
 
 echo "-----------------------------------"
 echo "--> Final steps..."

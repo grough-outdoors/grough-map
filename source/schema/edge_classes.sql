@@ -84,6 +84,7 @@ COPY edge_classes (class_id, class_name, class_default_access_id, class_draw_ord
 13	Railway	9	-1	t
 10	Path	3	1	t
 16	Other railway	9	-1	t
+18	Ferry	15	-1	t
 \.
 
 
@@ -91,7 +92,7 @@ COPY edge_classes (class_id, class_name, class_default_access_id, class_draw_ord
 -- Name: edge_classes_class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('edge_classes_class_id_seq', 17, true);
+SELECT pg_catalog.setval('edge_classes_class_id_seq', 18, true);
 
 
 --
