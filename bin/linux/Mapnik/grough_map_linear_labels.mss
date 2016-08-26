@@ -66,7 +66,7 @@
 @watercourse_label_large_halo_radius:		0;
 @watercourse_label_large_offset_y:			0;
 @watercourse_label_large_opacity:			0.7;
-@watercourse_label_large_max_delta:			35;
+@watercourse_label_large_max_delta:			15;
 @watercourse_label_large_minimum_padding:	0;
 
 .edge-label {

@@ -68,9 +68,12 @@
 @place_label_autoscale_large_threshold:		2;
 @place_label_autoscale_large_size:			60;
 @place_label_autoscale_large_wrap_width:	100;
-@place_label_autoscale_huge_threshold:		5;
+@place_label_autoscale_huge_threshold:		3.5;
 @place_label_autoscale_huge_size:			70;
 @place_label_autoscale_huge_wrap_width:		150;
+@place_label_autoscale_mega_threshold:		5;
+@place_label_autoscale_mega_size:			90;
+@place_label_autoscale_mega_wrap_width:		250;
 
 @place_label_waterbody_halo_radius:			3;
 
@@ -175,6 +178,10 @@
 		[place_square_km >= @place_label_autoscale_huge_threshold] {
 			text-size: @place_label_autoscale_huge_size;
 			text-wrap-width: @place_label_autoscale_huge_wrap_width;
+		}
+		[place_square_km >= @place_label_autoscale_mega_threshold] {
+			text-size: @place_label_autoscale_mega_size;
+			text-wrap-width: @place_label_autoscale_mega_wrap_width;
 		}
 	}
 }

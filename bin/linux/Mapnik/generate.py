@@ -103,7 +103,10 @@ pg_cursor.execute("""\
 							""" + str(distanceRoads) + """ AS buffer_distance
 						FROM
 							edge e 
-						WHERE e.edge_geom && ST_SetSRID('BOX(""" + str(map_ll_x - bufferSize) + ' ' + str(map_ll_y - bufferSize) + ',' + str(map_ur_x + bufferSize) + ' ' + str(map_ur_y + bufferSize) + """)'::box2d, 27700) 
+						WHERE 
+							e.edge_geom && ST_SetSRID('BOX(""" + str(map_ll_x - bufferSize) + ' ' + str(map_ll_y - bufferSize) + ',' + str(map_ur_x + bufferSize) + ' ' + str(map_ur_y + bufferSize) + """)'::box2d, 27700) 
+						AND
+							e.edge_class_id NOT IN (18)
 						UNION SELECT
 							watercourse_geom AS buffer_geom,
 							CASE WHEN watercourse_class_id = 2 THEN """ + str(distanceStreams) + """
@@ -429,68 +432,89 @@ print('Creating SQL view for watercourse feature labels')
 pg_cursor.execute("""\
 	CREATE OR REPLACE VIEW "map_render_watercourse_labels\" AS 
 	SELECT 
-		w.watercourse_id,
-		w.watercourse_class_id,
-		w.watercourse_width,
-		CASE WHEN ST_GeometryType(SB.watercourse_geom_trim) = 'ST_MultiLineString'
-		     THEN SB.watercourse_geom_trim
-			 ELSE ST_Multi(w.watercourse_geom)
-		END as watercourse_geom,
-		w.watercourse_name,
-		w.class_name,
-		w.class_draw_order,
-		w.class_draw_line,
-		SB.watercourse_label_side 
-	FROM 
-		watercourse_label w
-	LEFT JOIN
+		watercourse_class_id,
+		min(watercourse_width) AS watercourse_width,
+		ST_Multi(ST_CollectionExtract(ST_Multi(ST_LineMerge(ST_Collect(watercourse_geom))), 2)) AS watercourse_geom,
+		watercourse_name,
+		class_draw_order,
+		class_draw_line,
+		class_name,
+		watercourse_label_side
+	FROM
 	(
 		SELECT
-			watercourse_id,
-			CASE WHEN Sum(watercourse_label_direction) > 0 THEN 'r'
-				 WHEN Sum(watercourse_label_direction) < 0 THEN 'l'
-				 ELSE 'b'
-			END AS watercourse_label_side,
-			CASE WHEN ST_Length(ST_Multi(ST_Difference(watercourse_geom, ST_Union(watercourse_edge_near)))) > 0.5 * ST_Length(watercourse_geom)
-				 THEN ST_Multi(ST_Difference(watercourse_geom, ST_Union(watercourse_edge_near)))
-				 ELSE ST_Multi(watercourse_geom)
-			END AS watercourse_geom_trim
-		FROM
+			w.watercourse_id,
+			w.watercourse_class_id,
+			w.watercourse_width,
+			(ST_Dump(CASE WHEN ST_GeometryType(SB.watercourse_geom_trim) = 'ST_MultiLineString'
+				 THEN SB.watercourse_geom_trim
+				 ELSE ST_Multi(w.watercourse_geom)
+			END)).geom as watercourse_geom,
+			w.watercourse_name,
+			w.class_name,
+			w.class_draw_order,
+			w.class_draw_line,
+			SB.watercourse_label_side 
+		FROM 
+			watercourse_label w
+		LEFT JOIN
 		(
 			SELECT
 				watercourse_id,
-				CASE WHEN 
-						degrees(ST_Azimuth(
-							ST_Line_Interpolate_Point(w.watercourse_split_geom, 0.5),
-							ST_Line_Interpolate_Point(w.watercourse_split_geom, least(1.0, 0.5 + 100.0 / ST_Length(watercourse_split_geom)))
-						)) >
-						degrees(ST_Azimuth(
-							ST_Line_Interpolate_Point(w.watercourse_split_geom, 0.5),
-							ST_ClosestPoint(e.edge_geom, ST_Line_Interpolate_Point(w.watercourse_split_geom, 0.5))
-						)) 
-					THEN 1
-					ELSE -1
-				END AS watercourse_label_direction,
-				watercourse_split_geom AS watercourse_geom,
-				ST_Buffer(e.edge_geom, 25.0) AS watercourse_edge_near
+				CASE WHEN Avg(watercourse_width) > 35.0 THEN 'w'
+				     WHEN Sum(watercourse_label_direction) > 0 THEN 'r'
+					 WHEN Sum(watercourse_label_direction) < 0 THEN 'l'
+					 ELSE 'b'
+				END AS watercourse_label_side,
+				CASE WHEN ST_Length(ST_Multi(ST_Difference(watercourse_geom, ST_Union(watercourse_edge_near)))) > 0.5 * ST_Length(watercourse_geom)
+					 THEN ST_Multi(ST_Difference(watercourse_geom, ST_Union(watercourse_edge_near)))
+					 ELSE ST_Multi(watercourse_geom)
+				END AS watercourse_geom_trim
 			FROM
-				( SELECT *, (ST_Dump(ST_Segmentize(watercourse_geom, 1000.0))).geom AS watercourse_split_geom FROM watercourse ) w, edge e
-			WHERE
-				watercourse_name IS NOT NULL
-			AND
-				watercourse_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
-			AND
-				w.watercourse_geom && e.edge_geom
-			AND
-				ST_DWithin(w.watercourse_geom, e.edge_geom, 50.0)
-		) SA
-		GROUP BY
-			watercourse_id, watercourse_geom
-	) SB
-	ON
-		SB.watercourse_id = w.watercourse_id
-	WHERE 
-		watercourse_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
+			(
+				SELECT
+					watercourse_id,
+					watercourse_width,
+					CASE WHEN 
+							degrees(ST_Azimuth(
+								ST_Line_Interpolate_Point(w.watercourse_split_geom, 0.5),
+								ST_Line_Interpolate_Point(w.watercourse_split_geom, least(1.0, 0.5 + 100.0 / ST_Length(watercourse_split_geom)))
+							)) >
+							degrees(ST_Azimuth(
+								ST_Line_Interpolate_Point(w.watercourse_split_geom, 0.5),
+								ST_ClosestPoint(e.edge_geom, ST_Line_Interpolate_Point(w.watercourse_split_geom, 0.5))
+							)) 
+						THEN 1
+						ELSE -1
+					END AS watercourse_label_direction,
+					watercourse_split_geom AS watercourse_geom,
+					ST_Buffer(e.edge_geom, 25.0) AS watercourse_edge_near
+				FROM
+					( SELECT *, (ST_Dump(ST_Segmentize(watercourse_geom, 250.0))).geom AS watercourse_split_geom FROM watercourse ) w, edge e
+				WHERE
+					watercourse_name IS NOT NULL
+				AND
+					watercourse_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+				AND
+					w.watercourse_geom && e.edge_geom
+				AND
+					ST_DWithin(w.watercourse_geom, e.edge_geom, 50.0)
+			) SA
+			GROUP BY
+				watercourse_id, watercourse_geom
+		) SB
+		ON
+			SB.watercourse_id = w.watercourse_id
+		WHERE 
+			watercourse_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+	) SC
+	GROUP BY
+		watercourse_name,
+		watercourse_class_id,
+		class_name,
+		class_draw_order,
+		class_draw_line,
+		watercourse_label_side
 	"""
 )
 pg_conn.commit()

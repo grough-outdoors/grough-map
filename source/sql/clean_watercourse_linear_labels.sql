@@ -1,60 +1,42 @@
-﻿-- Disable labels on waterbodies (reservoirs and lakes) which are too small for a linear label to really work
-UPDATE
+﻿UPDATE
 	watercourse
 SET
 	watercourse_allow_linear_label = false
 WHERE
 	watercourse_id
-IN
-(
+IN (
 	SELECT
 		watercourse_id
 	FROM
 	(
 		SELECT
-			watercourse_id,
-			ST_Length(watercourse_geom) AS watercourse_full_length,
-			ST_Length(ST_Intersection(watercourse_geom, surface_shrink)) AS watercourse_shrink_length,
-			surface_full_area,
-			ST_Area(surface_shrink) AS surface_shrink_area
+			*,
+			ST_CollectionExtract(ST_Multi(ST_Intersection(watercourse_geom, surface_geom)), 2) AS watercourse_clip_geom
 		FROM
 		(
 			SELECT
 				watercourse_id,
 				watercourse_geom,
-				surface_full_area,
-				CASE WHEN ST_Area(surface_shrink_400m) >= surface_full_area * 0.25 THEN surface_shrink_400m
-				     WHEN ST_Area(surface_shrink_200m) >= surface_full_area * 0.25 THEN surface_shrink_200m
-				     WHEN ST_Area(surface_shrink_50m) >= surface_full_area * 0.25 THEN surface_shrink_50m
-				     ELSE surface_0m
-				END AS surface_shrink
+				ST_Multi(ST_MakeValid(ST_Simplify(ST_Difference(
+					surface_geom_clip,
+					ST_MakeValid(ST_Buffer(surface_geom, -50.0))
+				), 20.0))) AS surface_geom
 			FROM
 			(
 				SELECT
-					w.watercourse_id,
-					w.watercourse_geom,
-					ST_Area(s.surface_geom) AS surface_full_area,
-					ST_CollectionExtract(ST_Multi(s.surface_geom), 3) AS surface_0m,
-					ST_CollectionExtract(ST_MakeValid(ST_Buffer(s.surface_geom, -50.0)), 3) AS surface_shrink_50m,
-					ST_CollectionExtract(ST_MakeValid(ST_Buffer(s.surface_geom, -200.0)), 3) AS surface_shrink_200m,
-					ST_CollectionExtract(ST_MakeValid(ST_Buffer(s.surface_geom, -400.0)), 3) AS surface_shrink_400m
+					watercourse_id,
+					watercourse_geom,
+					surface_geom,
+					ST_Buffer(ST_MakeValid(ST_Buffer(surface_geom, -30.0)), 30.0) AS surface_geom_clip
 				FROM
-					_tmp_surface_coarse s
-				INNER JOIN
-					watercourse w
-				ON
-					s.watercourse_id = w.watercourse_id
-				AND
-					w.watercourse_class_id IN (1, 4, 5)
-				AND
-					ST_Within(w.watercourse_geom, s.surface_geom)
-			) SAA
-		) SA
+					_tmp_surface_coarse
+			) SA
+		) SAA
 	) SB
 	WHERE
-		watercourse_shrink_length <= watercourse_full_length * 0.5
+		ST_GeometryType(surface_geom) = 'ST_MultiPolygon'
+	AND
+		ST_Length(watercourse_clip_geom) > 0.05 * ST_Length(watercourse_geom)
+	AND
+		ST_NumGeometries(watercourse_clip_geom) <= 1
 );
-
--- TODO: Remove labels from anything which isn't near a surface (could be culverts, could just be rubbish line quality)
-
--- TODO: Limit the labels only to the most central parts of a waterbody (e.g. Windermere)
