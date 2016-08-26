@@ -20,6 +20,7 @@
 @edge_label_b_road_colour:					darken(@edge_b_road_fill_colour, 20%);
 @edge_label_other_road_colour:				@edge_label_default_colour;
 @edge_label_path_colour:					#707070;
+@edge_label_ferry_colour:					@river_default_casing_colour;
 
 @edge_label_motorway_typeface:				'Open Sans Semibold';
 @edge_label_trunk_typeface:					@edge_label_motorway_typeface;
@@ -27,6 +28,7 @@
 @edge_label_b_road_typeface:				@edge_label_motorway_typeface;
 @edge_label_other_road_typeface:			@edge_label_default_typeface;
 @edge_label_path_typeface:					'Open Sans Regular';
+@edge_label_ferry_typeface:					@edge_label_path_typeface;
 
 @edge_label_motorway_halo_radius:			@edge_label_default_halo_radius;
 @edge_label_trunk_halo_radius:				@edge_label_default_halo_radius;
@@ -34,11 +36,13 @@
 @edge_label_b_road_halo_radius:				@edge_label_default_halo_radius;
 @edge_label_other_road_halo_radius:			3;
 @edge_label_path_halo_radius:				3;
+@edge_label_ferry_halo_radius:				0;
 
 @edge_label_motorway_size:					55;
 @edge_label_trunk_size:						55;
 @edge_label_a_road_size:					50;
 @edge_label_b_road_size:					50;
+@edge_label_ferry_size:						30;
 
 @watercourse_label_default_source:			[watercourse_name];
 @watercourse_label_default_colour:			@stream_default_colour;
@@ -120,6 +124,12 @@
 		text-fill: @edge_label_path_colour;
 		text-face-name: @edge_label_path_typeface;
 		text-halo-radius: @edge_label_path_halo_radius;
+	}
+	
+	[class_name='Ferry'] {
+		text-fill: @edge_label_ferry_colour;
+		text-face-name: @edge_label_ferry_typeface;
+		text-halo-radius: @edge_label_ferry_halo_radius;
 	}
 }
 

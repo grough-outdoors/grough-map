@@ -96,7 +96,12 @@
 @edge_tunnel_fill_dash_line:						0;
 @edge_tunnel_fill_dash_space: 						0;
 
-.edge-outer {
+@edge_ferry_width:									2;
+@edge_ferry_colour:									@river_default_casing_colour;
+@edge_ferry_dash_line:								10;
+@edge_ferry_dash_space:								50;
+
+.edge-outer[class_name!='Ferry'] {
 	::outline {
 		line-width: (@edge_default_width + 2 * @edge_default_border_thickness);
 		line-color: @edge_default_casing_colour;
@@ -115,7 +120,7 @@
 	}
 }
 
-.edge-inner {
+.edge-inner[class_name!='Ferry'] {
 	::inline {
 		line-width: @edge_default_width;
 		line-color: @edge_default_fill_colour;
@@ -645,4 +650,11 @@
 			decoration/line-color: @edge_access_decorator_permpath_colour;
 		}
 	}
+}
+
+.edge-inner[class_name="Ferry"] {
+	decoration/line-width: @edge_ferry_width;
+	decoration/line-dasharray: @edge_ferry_dash_line, @edge_ferry_dash_space;
+	decoration/line-color: @edge_ferry_colour;
+	decoration/line-cap: butt;	
 }
