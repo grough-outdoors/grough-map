@@ -62,6 +62,7 @@
 
 @watercourse_label_river_halo_radius:		3;
 
+@watercourse_label_large_width:				22;
 @watercourse_label_large_typeface:			'Open Sans Regular';
 @watercourse_label_large_halo_radius:		0;
 @watercourse_label_large_offset_y:			0;
@@ -158,29 +159,26 @@
 	[class_name='Canal'],
 	[class_name='Reservoir'],
 	[class_name='Tidal river/estuary'] {
-		[watercourse_width < @watercourse_label_default_size] {
+		[watercourse_width < @watercourse_label_large_width] {
 			text-halo-radius: @watercourse_label_river_halo_radius;
-			[watercourse_width < 5] { text-dy: 10 + @watercourse_label_default_size / 2; }
-			[watercourse_width >= 5][watercourse_width < 15] { text-dy: 15 + @watercourse_label_default_size / 2; }
-			[watercourse_width >= 15][watercourse_width < 25] { text-dy: 25 + @watercourse_label_default_size / 2; }
-			[watercourse_width >= 25][watercourse_width < 35] { text-dy: 35 + @watercourse_label_default_size / 2; }
-			[watercourse_width >= 35] { text-dy: @watercourse_label_default_size + @watercourse_label_default_size / 2; }
-			[watercourse_label_side='r'] { 
-				[watercourse_width < 5] { text-dy: -5 - @watercourse_label_default_size / 2; }
-				[watercourse_width >= 5][watercourse_width < 15] { text-dy: -15 - @watercourse_label_default_size / 2; }
-				[watercourse_width >= 15][watercourse_width < 25] { text-dy: -25 - @watercourse_label_default_size / 2; }
-				[watercourse_width >= 25][watercourse_width < 35] { text-dy: -35 - @watercourse_label_default_size / 2; }
-				[watercourse_width >= 35] { text-dy: 0 - @watercourse_label_default_size - @watercourse_label_default_size / 2; }
-			}
+			[watercourse_label_side='l'][watercourse_width < 5] { text-dy: 10 + @watercourse_label_default_size / 2; }
+			[watercourse_label_side='l'][watercourse_width >= 5][watercourse_width < 15] { text-dy: 15 + @watercourse_label_default_size / 2; }
+			[watercourse_label_side='l'][watercourse_width >= 15][watercourse_width < 25] { text-dy: 25 + @watercourse_label_default_size / 2; }
+			/* [watercourse_label_side='l'][watercourse_width >= 25][watercourse_width < 35] { text-dy: 35 + @watercourse_label_default_size / 2; } */
+			[watercourse_label_side='r'][watercourse_width < 5] { text-dy: -5 - @watercourse_label_default_size / 2; }
+			[watercourse_label_side='r'][watercourse_width >= 5][watercourse_width < 15] { text-dy: -15 - @watercourse_label_default_size / 2; }
+			[watercourse_label_side='r'][watercourse_width >= 15][watercourse_width < 25] { text-dy: -25 - @watercourse_label_default_size / 2; }
+			/* [watercourse_label_side='r'][watercourse_width >= 25][watercourse_width < 40] { text-dy: -35 - @watercourse_label_default_size / 2; } */
 		}
-		[watercourse_width > @watercourse_label_default_size] {
+		[watercourse_width >= @watercourse_label_large_width] {
 			text-face-name: @watercourse_label_large_typeface;
 			text-dy: @watercourse_label_large_offset_y;
 			text-halo-radius: @watercourse_label_large_halo_radius;
 			text-opacity: @watercourse_label_large_opacity;
 			text-max-char-angle-delta: @watercourse_label_large_max_delta;
 			text-min-padding: @watercourse_label_large_minimum_padding;
-			[watercourse_width < 60] { text-size: 50; }
+			[watercourse_width < 50] { text-size: 40; }
+			[watercourse_width >= 50][watercourse_width < 60] { text-size: 50; }
 			[watercourse_width >= 60][watercourse_width < 75] { text-size: 55; }
 			[watercourse_width >= 75][watercourse_width < 100] { text-size: 60; }
 			[watercourse_width >= 100][watercourse_width < 150] { text-size: 70; }

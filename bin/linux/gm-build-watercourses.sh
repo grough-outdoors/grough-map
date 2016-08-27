@@ -9,7 +9,7 @@ echo "Testing requirements..."
 set -e
 "${binDir}/gm-require-db.sh" osm line
 "${binDir}/gm-require-db.sh" os oprvrs
-"${binDir}/gm-require-db.sh" os opmplc
+"${binDir}/gm-require-db.sh" os opmplc surface_water
 set +e
 
 echo "-----------------------------------"
@@ -255,6 +255,16 @@ EoSQL
 
 echo "--> Removing labels from areas around the extremities of watercourses..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/clean_watercourse_linear_labels.sql" > /dev/null
+
+echo "--> Ensuring all watercourses have a width set..."
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	UPDATE
+		watercourse
+	SET
+		watercourse_width = 0.0
+	WHERE
+		watercourse_width IS NULL;
+EoSQL
 
 echo "--> Removing temporary tables..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL

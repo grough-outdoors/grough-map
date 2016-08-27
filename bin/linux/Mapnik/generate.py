@@ -433,7 +433,7 @@ pg_cursor.execute("""\
 	CREATE OR REPLACE VIEW "map_render_watercourse_labels\" AS 
 	SELECT 
 		watercourse_class_id,
-		min(watercourse_width) AS watercourse_width,
+		min(watercourse_width) + (avg(watercourse_width) - min(watercourse_width)) * 0.4 AS watercourse_width,
 		ST_Multi(ST_CollectionExtract(ST_Multi(ST_LineMerge(ST_Collect(watercourse_geom))), 2)) AS watercourse_geom,
 		watercourse_name,
 		class_draw_order,
@@ -461,7 +461,7 @@ pg_cursor.execute("""\
 		(
 			SELECT
 				watercourse_id,
-				CASE WHEN Avg(watercourse_width) > 35.0 THEN 'w'
+				CASE WHEN Avg(watercourse_width) > 22.0 THEN 'w'
 				     WHEN Sum(watercourse_label_direction) > 0 THEN 'r'
 					 WHEN Sum(watercourse_label_direction) < 0 THEN 'l'
 					 ELSE 'b'
