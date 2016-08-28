@@ -1,0 +1,21 @@
+{
+	"dataset": "National Park Boundaries in England",
+	"source": {
+		"name":	"Natural England",
+		"category": "Public Body",
+		"url": "https://www.gov.uk/government/organisations/natural-england"
+	},
+	"download": {
+		"format": "site",
+		"url": "http://environment.data.gov.uk/ds/catalogue/#/catalogue"
+	},
+	"licence": {
+		"code": "OGLv3",
+		"details": "https://data.gov.uk/publisher/natural-england"
+	},
+	"statement": "© Natural England copyright. Contains Ordnance Survey data © Crown copyright and database right {YYYY}.",
+	"date": {
+		"method": "archive",
+		"value": "nationalparks_eng.zip"
+	}
+}

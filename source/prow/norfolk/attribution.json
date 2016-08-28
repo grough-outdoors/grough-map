@@ -1,6 +1,26 @@
 {
+	"dataset": "Public rights of way",
 	"source": {
 		"name":	"Norfolk",
-		"category": "Highway Authority"
-	}
+		"category": "Highway Authority",
+		"url": "https://www.norfolk.gov.uk/"
+	},
+	"download": {
+		"format": "file",
+		"url": "http://maps.norfolk.gov.uk/inspire/data/norfolk_county_council/prow/Norfolk_Public_Rights_of_Way.kmz"
+	},
+	"licence": {
+		"code": "OGLv3",
+		"details": "https://www.norfolk.gov.uk/out-and-about-in-norfolk/public-rights-of-way/map-and-statement-of-public-rights-of-way-in-norfolk"
+	},
+	"statement": "Contains Ordnance Survey data © Crown copyright and database right {YYYY}.",
+	"coattribution": ["Ordnance Survey"],
+	"date": {
+		"method": "file",
+		"value": "Norfolk_Public_Rights_of_Way.kmz"
+	},
+	"disclaimers": [
+		"The details of the public rights of way network contained in an authority's data are for information only, and are an interpretation of the Definitive Map, not the Definitive Map itself, and should not be relied on for determining the position or alignment of any public right of way.",
+		"Attempting to view this data with more detail than 1:10000 may produce an inaccurate rendering of the route of a public right of way."
+	]
 }

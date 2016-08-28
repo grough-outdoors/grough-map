@@ -1,0 +1,27 @@
+{
+	"dataset": "OpenStreetMap",
+	"source": {
+		"name":	"OpenStreetMap",
+		"category": "Community Project",
+		"url": "http://www.openstreetmap.org/"
+	},
+	"download": {
+		"format": "site",
+		"url": "http://www.openstreetmap.org/"
+	},
+	"licence": {
+		"code": "ODbL",
+		"details": "http://www.openstreetmap.org/copyright"
+	},
+	"statement": "© OpenStreetMap contributors {YYYY}.",
+	"date": {
+		"method": "today",
+		"value": ""
+	},
+	"disclaimers": [
+		"See http://wiki.openstreetmap.org/wiki/Disclaimer for details of disclaimers."
+	],
+	"constraints": [
+		"A derivative database must be made available under the Open Database Licence."
+	]
+}

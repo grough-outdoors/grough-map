@@ -3,10 +3,10 @@
 echo "Preparing to import Public Rights of Way products..."
 
 fileBaseDir=/vagrant/source/prow/
-binDir=../../bin/linux
+binDir=/vagrant/bin/linux
 sqlDir=/vagrant/source/sql/
 
-for s in $binDir/gm-import-prow*
+for s in $binDir/gm-import-prow-*
 do
 	dos2unix $s
 done
@@ -141,10 +141,10 @@ print obj['source']['name'] + '|' + obj['source']['category']
 		
 		IFS=$'\n'; for tableName in `echo "\dt" | psql -Ugrough-map grough-map -h 127.0.0.1 -A -t | tr '|' '\n' | grep _src_prow_$areaName`
 		do
-			if [ -e $fileBaseDir/$binDir/gm-import-prow-$(echo $areaName | tr '_' '-').sh ]
+			if [ -e $binDir/gm-import-prow-$(echo $areaName | tr '_' '-').sh ]
 			then
 				echo " --> Running product import script..."
-				$fileBaseDir/$binDir/gm-import-prow-$(echo $areaName | tr '_' '-').sh $areaName $tableName
+				$binDir/gm-import-prow-$(echo $areaName | tr '_' '-').sh $areaName $tableName
 			fi
 		done
 	done
@@ -246,6 +246,9 @@ print obj['source']['name'] + '|' + obj['source']['category']
 		echo "     --> Deleting SQL file $f..."
 		rm -rf "$f"
 	done
+	
+	echo " --> Registering source..."
+	"${binDir}/gm-require-attribution.sh" "attribution.json"
 	
 	cd $fileBaseDir
 done

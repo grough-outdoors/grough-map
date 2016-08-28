@@ -1,0 +1,21 @@
+{
+	"dataset": "Environment Agency LiDAR",
+	"source": {
+		"name":	"Environment Agency Geomatics Group",
+		"category": "Public Body",
+		"url": "http://www.geomatics-group.co.uk/"
+	},
+	"download": {
+		"format": "site",
+		"url": "http://environment.data.gov.uk/ds/survey/"
+	},
+	"licence": {
+		"code": "OGLv3",
+		"details": "http://environment.data.gov.uk/ds/survey/#/survey/tandc"
+	},
+	"statement": "© Environment Agency copyright and/or database right {YYYY}. All rights reserved.",
+	"date": {
+		"method": "file",
+		"value": ""
+	}
+}

@@ -1,0 +1,21 @@
+{
+	"dataset": "OS Open Rivers",
+	"source": {
+		"name":	"Ordnance Survey",
+		"category": "National Mapping Agency",
+		"url": "http://www.ordnancesurvey.co.uk/"
+	},
+	"download": {
+		"format": "site",
+		"url": "https://www.ordnancesurvey.co.uk/opendatadownload/products.html"
+	},
+	"licence": {
+		"code": "OGLv3",
+		"details": "https://www.ordnancesurvey.co.uk/business-and-government/licensing/using-creating-data-with-os-products/os-opendata.html"
+	},
+	"statement": "Contains OS data © Crown copyright and database right {YYYY}.",
+	"date": {
+		"method": "archive",
+		"value": "oprvrs/*.zip"
+	}
+}

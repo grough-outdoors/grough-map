@@ -24,7 +24,12 @@ CREATE TABLE source (
     source_name character varying(100),
     source_org character varying(100),
     source_url character varying(100),
-    source_licence character varying(5) DEFAULT 'OGLv3'::character varying NOT NULL
+    source_licence character varying(5) DEFAULT 'OGLv3'::character varying NOT NULL,
+    source_category character varying(100),
+    source_constraints character varying(255)[],
+    source_disclaimers character varying(255)[],
+    source_date date,
+    source_statement character varying(255)
 );
 
 

@@ -1,6 +1,26 @@
 {
+	"dataset": "Public rights of way",
 	"source": {
 		"name":	"Nottinghamshire",
-		"category": "Highway Authority"
-	}
+		"category": "Highway Authority",
+		"url": "https://www.nottinghamshire.gov.uk/"
+	},
+	"download": {
+		"format": "archive",
+		"url": "http://www.rowmaps.com/datasets/NT/Row_Work_2015_07_11.zip"
+	},
+	"licence": {
+		"code": "OGLv3",
+		"details": "http://www.rowmaps.com/datasets/NT/"
+	},
+	"statement": "Contains Ordnance Survey data © Crown copyright and database right {YYYY}.",
+	"coattribution": ["Ordnance Survey"],
+	"date": {
+		"method": "archive",
+		"value": "*.zip"
+	},
+	"disclaimers": [
+		"The details of the public rights of way network contained in an authority's data are for information only, and are an interpretation of the Definitive Map, not the Definitive Map itself, and should not be relied on for determining the position or alignment of any public right of way.",
+		"Attempting to view this data with more detail than 1:10000 may produce an inaccurate rendering of the route of a public right of way."
+	]
 }

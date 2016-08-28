@@ -128,6 +128,15 @@ done
 
 cd -
 
+echo "--> Adding sources..."
+gm-require-attribution "${fileBaseDirEng}/attribution_crow.json"
+gm-require-attribution "${fileBaseDirEng}/attribution_countryparks.json"
+gm-require-attribution "${fileBaseDirEng}/attribution_np.json"
+gm-require-attribution "${fileBaseDirEng}/attribution_trails.json"
+gm-require-attribution "${fileBaseDirWales}/attribution_crow.json"
+gm-require-attribution "${fileBaseDirWales}/attribution_countryparks.json"
+gm-require-attribution "${fileBaseDirWales}/attribution_np.json"
+
 echo "--> Intermediary tidy up..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	VACUUM FULL ANALYZE;

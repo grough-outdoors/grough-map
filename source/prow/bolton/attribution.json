@@ -1,6 +1,26 @@
 {
+	"dataset": "Public rights of way",
 	"source": {
 		"name":	"Bolton",
-		"category": "Highway Authority"
-	}
+		"category": "Highway Authority",
+		"url": "http://www.bolton.gov.uk/"
+	},
+	"download": {
+		"format": "archive",
+		"url": "http://www.bolton.gov.uk/sites/DocumentCentre/Documents/Bolton%20Public%20Rights%20of%20Way%20KMZ%20file.kmz"
+	},
+	"licence": {
+		"code": "OGLv3",
+		"details": "http://www.rowmaps.com/datasets/BO/"
+	},
+	"statement": "Contains Ordnance Survey data © Crown copyright and database right {YYYY}.",
+	"coattribution": ["Ordnance Survey"],
+	"date": {
+		"method": "file",
+		"value": "Bolton Public Rights of Way KMZ file.kmz"
+	},
+	"disclaimers": [
+		"The details of the public rights of way network contained in an authority's data are for information only, and are an interpretation of the Definitive Map, not the Definitive Map itself, and should not be relied on for determining the position or alignment of any public right of way.",
+		"Attempting to view this data with more detail than 1:10000 may produce an inaccurate rendering of the route of a public right of way."
+	]
 }

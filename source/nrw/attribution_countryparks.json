@@ -1,0 +1,21 @@
+{
+	"dataset": "Country Park Boundaries in Wales",
+	"source": {
+		"name":	"Natural Resources Wales",
+		"category": "Public Body",
+		"url": "http://naturalresources.wales/"
+	},
+	"download": {
+		"format": "site",
+		"url": "http://lle.gov.wales/catalogue/"
+	},
+	"licence": {
+		"code": "OGLv2",
+		"details": "http://lle.gov.wales/catalogue?O=2&lang=en"
+	},
+	"statement": "Contains Natural Resources Wales information © Natural Resources Wales and Database Right {YYYY}. All rights Reserved. Contains Ordnance Survey Data. Ordnance Survey Licence number 100019741. Crown Copyright and Database Right.",
+	"date": {
+		"method": "archive",
+		"value": "Country_Parks.zip"
+	}
+}

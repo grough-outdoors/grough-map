@@ -45,4 +45,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 -c "VACUUM FULL;"
 echo "--> Cleaning up files"
 rm -rf /vagrant/source/osm/great-britain-latest.osm.pbf
 
+echo "--> Adding source"
+gm-require-attribution "/vagrant/source/osm/attribution.json"
+
 echo "--> Update complete."

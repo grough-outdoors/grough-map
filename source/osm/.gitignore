@@ -1,3 +1,4 @@
 *
 !.gitignore
 !grough-map.style
+!*.json

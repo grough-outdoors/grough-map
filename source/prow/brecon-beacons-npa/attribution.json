@@ -1,6 +1,26 @@
 {
+	"dataset": "Public rights of way",
 	"source": {
 		"name":	"Brecon Beacons",
-		"category": "National Park"
-	}
+		"category": "National Park",
+		"url": "http://www.beacons-npa.gov.uk/"
+	},
+	"download": {
+		"format": "file",
+		"url": "http://www.rowmaps.com/kmls/B1/converted.kml"
+	},
+	"licence": {
+		"code": "OGLv3",
+		"details": "https://data.gov.uk/dataset/public-rights-of-way9"
+	},
+	"statement": "Contains Ordnance Survey data © Crown copyright and database right {YYYY}.",
+	"coattribution": ["Ordnance Survey"],
+	"date": {
+		"method": "file",
+		"value": "converted.kml"
+	},
+	"disclaimers": [
+		"The details of the public rights of way network contained in an authority's data are for information only, and are an interpretation of the Definitive Map, not the Definitive Map itself, and should not be relied on for determining the position or alignment of any public right of way.",
+		"Attempting to view this data with more detail than 1:10000 may produce an inaccurate rendering of the route of a public right of way."
+	]
 }

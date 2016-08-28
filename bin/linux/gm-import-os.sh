@@ -75,6 +75,9 @@ do
 			rm -rf "$f"
 		done
 		
+		echo " --> Adding attribution..."
+		gm-require-attribution "${fileBaseDir}/attribution_${productName}.json"
+		
 		cd $fileBaseDir
 	else
 		echo " --> Skipping as no import script exists"
