@@ -139,4 +139,8 @@ psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}raw_obstructions.sql
 echo "--> Restoring view for route extended..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}route_extended.sql" > /dev/null 
 
+echo "--> Restoring view for source extended..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}source_extended.sql" > /dev/null 
+
+
 echo "--> Restore complete."

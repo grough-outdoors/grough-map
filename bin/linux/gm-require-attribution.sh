@@ -69,7 +69,7 @@ fi
 
 if [[ "${attributionDateMethod}" = "file" ]]; then
 	echo "--> Cannot identify date from file accurately."
-	attributionYear="null"
+	attributionYear=`date +"%Y"`
 	attributionDate="null"
 fi
 
@@ -111,8 +111,8 @@ if [[ ! -z "$existCheck" ]]; then
 		SET
 			"source_url" = '${attributionURL}',
 			"source_licence" = '${attributionLicence}',
-			"source_constraints" = ${attributionConstraints}::character varying(255)[],
-			"source_disclaimers" = ${attributionDisclaimers}::character varying(255)[],
+			"source_constraints" = ${attributionConstraints}::text[],
+			"source_disclaimers" = ${attributionDisclaimers}::text[],
 			"source_statement" = '${attributionStatement}',
 			"source_date" = ${attributionDate}
 		WHERE
@@ -150,5 +150,7 @@ else
 		;
 EoSQL
 fi
+
+"${binDir}/gm-sources.sh" > /vagrant/product/SOURCES.txt
 
 echo "  > Done."
