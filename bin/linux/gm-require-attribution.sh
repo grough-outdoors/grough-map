@@ -151,6 +151,8 @@ else
 EoSQL
 fi
 
-"${binDir}/gm-sources.sh" > /vagrant/product/SOURCES.txt
+echo "--> Updating complete source lists..."
+"${binDir}/gm-sources.sh" TXT
+"${binDir}/gm-sources.sh" HTML
 
 echo "  > Done."
