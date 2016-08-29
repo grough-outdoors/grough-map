@@ -526,7 +526,22 @@ pg_cursor.execute("""\
 		e.*,
 		CASE WHEN e.elevation_level::integer % 50 = 0 THEN true ELSE false END AS elevation_major
 	FROM elevation e
-	WHERE elevation_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """);
+	LEFT JOIN (
+		SELECT
+			max(elevation_level) AS elevation_max,
+			min(elevation_level) AS elevation_min
+		FROM
+			elevation 
+		WHERE
+			elevation_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+	) s
+	ON true
+	WHERE elevation_geom && ST_SetSRID('BOX(""" + str(map_ll_x) + ' ' + str(map_ll_y) + ',' + str(map_ur_x) + ' ' + str(map_ur_y) + """)'::box2d, """ + str(27700) + """)
+	AND e.elevation_level::integer % (
+		CASE WHEN s.elevation_max - s.elevation_min >= 600 THEN 10.0
+		     ELSE 5.0
+		END
+	) = 0;
 	"""
 )
 pg_conn.commit()
