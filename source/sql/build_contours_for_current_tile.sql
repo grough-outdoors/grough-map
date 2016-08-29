@@ -1,41 +1,58 @@
 ﻿-- Reduce number of contour peaks by only keeping the maximum within a distance
 DELETE FROM
 	_tmp_contour_peaks
-USING
+WHERE
+	elevation_id
+IN
 (
 	SELECT
-		zone_id,
-		first(zone_geom) AS zone_geom,
-		Count(p.elevation_id) AS zone_count,
-		Max(p.elevation_level) AS zone_max
+		elevation_id
 	FROM
 	(
 		SELECT
-			ROW_NUMBER() OVER () AS zone_id,
-			zone_geom
+			*,
+			rank() OVER (PARTITION BY zone_id, elevation_level ORDER BY ST_Length(P.elevation_geom) DESC) AS zone_rank
 		FROM
+			_tmp_contour_peaks P
+		INNER JOIN
 		(
 			SELECT
-				(ST_Dump(ST_Union(ST_Buffer(elevation_geom_centroid, 500.0)))).geom AS zone_geom
+				zone_id,
+				first(zone_geom) AS zone_geom,
+				Count(p.elevation_id) AS zone_count,
+				Max(p.elevation_level) AS zone_max
 			FROM
-				_tmp_contour_peaks
-		) SAA
-	) SA
-	LEFT JOIN
-		_tmp_contour_peaks p
-	ON
-		p.elevation_geom_centroid && SA.zone_geom
-	AND
-		ST_Intersects(p.elevation_geom_centroid, SA.zone_geom)
-	GROUP BY
-		zone_id
-	HAVING
-		Count(p.elevation_id) > 0
-) SB
-WHERE
-	ST_Intersects(elevation_geom_centroid, SB.zone_geom)
-AND
-	zone_max != elevation_level;
+			(
+				SELECT
+					ROW_NUMBER() OVER () AS zone_id,
+					zone_geom
+				FROM
+				(
+					SELECT
+						(ST_Dump(ST_Union(ST_Buffer(elevation_geom_centroid, 250.0)))).geom AS zone_geom
+					FROM
+						_tmp_contour_peaks
+				) SAA
+			) SA
+			LEFT JOIN
+				_tmp_contour_peaks p
+			ON
+				p.elevation_geom_centroid && SA.zone_geom
+			AND
+				ST_Intersects(p.elevation_geom_centroid, SA.zone_geom)
+			GROUP BY
+				zone_id
+			HAVING
+				Count(p.elevation_id) > 0
+		) SB
+		ON
+			ST_Intersects(P.elevation_geom_centroid, SB.zone_geom)
+	) SZ
+	WHERE
+		zone_max != SZ.elevation_level
+	OR
+		zone_rank > 1
+);
 
 CREATE TABLE
 	_tmp_contour_lines
@@ -289,7 +306,7 @@ CREATE INDEX "Idx: _tmp_contour_ladder_zone::zone_geom"
 CREATE TABLE
 	_tmp_contour_label_primary
 AS SELECT
-	--ST_Centroid(elevation_geom) AS elevation_geom,
+	elevation_id,
 	first(ST_Line_Interpolate_Point(elevation_geom, 0.5)) AS elevation_geom,
 	first(elevation_level) AS elevation_level,
 	(360 - degrees(ST_Azimuth(ST_StartPoint(first(elevation_geom)), ST_EndPoint(first(elevation_geom)))) + 270)::integer % 360 AS elevation_text_rotate
@@ -321,48 +338,77 @@ FROM
 GROUP BY
 	ladder_id, elevation_id;
 
+-- Remove the peaks from the primary ladders, so we have rings with horizontal orientations only
+DELETE FROM
+	_tmp_contour_label_primary
+WHERE
+	elevation_id
+IN
+(
+	SELECT
+		elevation_id
+	FROM
+		_tmp_contour_label_primary c
+	INNER JOIN
+		_tmp_contour_label_rings r
+	ON
+		c.elevation_geom && r.elevation_geom
+	AND
+		ST_DWithin(c.elevation_geom, r.elevation_geom, 2.0)
+);
+
 /*
+-- Fill in some labels in areas without any yet
 CREATE TABLE
 	_tmp_contour_label_secondary
-AS SELECT 
-	elevation_id,
-	ST_Multi(ST_CollectionExtract(ST_Difference(first(e.elevation_geom), ST_Union(z.zone_geom)), 2)) AS elevation_geom,
-	first(e.elevation_level) AS elevation_level
-FROM
-	_tmp_contour_segments e
-LEFT JOIN
-	(SELECT ST_Buffer(zone_geom, 250.0, 'quad_segs=2') AS zone_geom FROM _tmp_contour_ladder_zone ) z
-ON
-	e.elevation_geom && z.zone_geom
-GROUP BY
-	e.elevation_id;
-
-CREATE INDEX "Idx: _tmp_contour_label_secondary::elevation_geom"
-	ON _tmp_contour_label_secondary
-	USING gist
-	(elevation_geom);
-
--- Clip to label zones
-UPDATE
-	_tmp_contour_label_secondary l
-SET
-	elevation_geom = ST_Multi(line_geom)
+AS SELECT
+	*,
+	-2::integer AS elevation_text_rotate
 FROM
 (
 	SELECT
-		c.elevation_id,
-		ST_Intersection(first(elevation_geom), ST_Union(label_zone)) AS line_geom
+		elevation_level,
+		ST_Multi(ST_CollectionExtract(ST_Multi(ST_Difference(elevation_geom, buffer_geom)), 2)) AS elevation_geom
 	FROM
-		_tmp_contour_label_secondary c
+	(
+		SELECT
+			ST_Intersection(first(e.elevation_geom), ST_Collect(z.label_zone)) AS elevation_geom,
+			first(e.elevation_level) AS elevation_level
+		FROM
+			_tmp_contour_segments e
+		INNER JOIN
+			_tmp_label_zone z
+		ON
+			e.elevation_geom && z.label_zone
+		AND
+			ST_Intersects(e.elevation_geom, z.label_zone)
+		GROUP BY
+			e.elevation_id
+	) SA
 	LEFT JOIN
-		_tmp_label_zone z
-	ON
-		c.elevation_geom && z.label_zone
-	GROUP BY
-		c.elevation_id
+	(
+		SELECT
+			ST_Union(ST_Buffer(elevation_geom, 50.0)) AS buffer_geom
+		FROM
+		(
+			SELECT
+				elevation_geom
+			FROM
+				_tmp_contour_label_rings
+			UNION SELECT
+				elevation_geom
+			FROM
+				_tmp_contour_label_primary
+		) SAA
+		GROUP BY
+			true
+	) SB
+	ON true
 ) SC
 WHERE
-	l.elevation_id = SC.elevation_id;
+	ST_GeometryType(elevation_geom) = 'ST_MultiLineString'
+AND
+	ST_NumGeometries(elevation_geom) > 0;
 */
 
 SELECT populate_geometry_columns('_tmp_contour_label_primary'::regclass);

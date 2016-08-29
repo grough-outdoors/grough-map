@@ -70,7 +70,8 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		elevation_id,
 		ST_Centroid(elevation_geom) AS elevation_geom_centroid,
 		elevation_geom AS elevation_geom,
-		elevation_level AS elevation_level
+		elevation_level AS elevation_level,
+		true AS elevation_true_peak
 	FROM
 	(
 		SELECT
@@ -101,6 +102,54 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 			A.elevation_id ASC,
 			B.elevation_level DESC
 	) SA;
+	
+	INSERT INTO
+		_tmp_contour_peaks
+		(elevation_id, elevation_geom, elevation_geom_centroid, elevation_level, elevation_true_peak)
+	SELECT
+		elevation_id,
+		elevation_geom,
+		ST_Centroid(elevation_geom) AS elevation_geom_centroid,
+		elevation_level,
+		false
+	FROM
+	(
+		SELECT
+			elevation_id,
+			elevation_level,
+			(ST_Dump(ST_Intersection(elevation_geom, label_zone))).geom AS elevation_geom
+		FROM
+		(
+			SELECT
+				label_zone,
+				first(elevation_id) AS elevation_id,
+				first(elevation_level) AS elevation_level,
+				first(elevation_geom) AS elevation_geom
+			FROM
+			(
+				SELECT
+					z.label_zone,
+					elevation_id,
+					elevation_geom,
+					elevation_level
+				FROM
+					_tmp_label_zone z
+				INNER JOIN
+					_tmp_contour_segments c
+				ON
+					z.label_zone && c.elevation_geom
+				AND
+					ST_Intersects(z.label_zone, c.elevation_geom)
+				ORDER BY
+					label_zone,
+					elevation_level DESC
+			) SA
+			GROUP BY
+				label_zone
+		) SB
+	) SC
+	WHERE
+		ST_Length(elevation_geom) > 250.0;
 
 	CREATE TABLE
 		_tmp_contour_label_rings
@@ -109,7 +158,9 @@ psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 		elevation_level,
 		-1 AS elevation_text_rotate
 	FROM
-		_tmp_contour_peaks;
+		_tmp_contour_peaks
+	WHERE
+		elevation_true_peak = true;
 
 	-- Delete any contours which don't fit our required interval
 	DELETE FROM
