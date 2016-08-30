@@ -3,6 +3,10 @@ High quality mapping for the outdoors. Map tiles are generated using composite d
 
 See the [grough map](http://map.grough.co.uk/) site for less technical information.
 
+We're making the code available straight away, but it's probably worth considering that documentation wasn't high on our list of priorities before the first full tileset was made available. We'll improve this over time, and feel free to ask questions.
+
+Be warned that running the build process on a single computer for the whole of Great Britain, is likely to take several days. Processing the transport network and buildings are the most intensive steps. We use Amazon EC2 to distribute processing; the Vagrantfile is configured for the AWS provider, if you also specify some environment variables. See the Vagrantfile and AWS provider documentation for details.
+
 ## Preparation...
 
 1. Install [Oracle VirtualBox](https://www.virtualbox.org/).
@@ -26,10 +30,6 @@ Fetch the required data from the web...
 - gm-download-os _(requires text of an OS OpenData download email, which you'll be prompted for)_
 - gm-download-prow	(TODO: This command doesn't yet download anything!)
  
-LiDAR tiles can be downloaded manually, or will be pulled when required...
-- gm-download-eagg \<tile\>
-- gm-download-nrw \<tile\>
- 
 The British National Grid is required and should be imported straight away...
 - gm-import-grid
 
@@ -38,7 +38,7 @@ Output tiles are sliced to provide levels of details, using the pyramid generate
 
 The OSM database is required in full for almost all commands, and so is kept within the database constantly, unlike the different layers from other sources...
 - gm-import-osm
-  
+
 Build each composite map layer, for which order is important where dependencies are shown...
 - gm-build-zone
 - gm-build-transport _(invokes gm-import-prow, requires zones)_
@@ -59,6 +59,10 @@ For each tile to be generated...
 LiDAR data can be processed using these commands for each tile...
 - gm-build-obstructions \<tile\> (for each LiDAR tile, highly intensive process)
 - gm-build-terrain \<tile\> (for each tile, but will be automatic during gm-tile when missing)
+
+LiDAR tiles can be downloaded manually, or will be pulled when required...
+- gm-download-eagg \<tile\>
+- gm-download-nrw \<tile\>
 
 ### Importing data
 

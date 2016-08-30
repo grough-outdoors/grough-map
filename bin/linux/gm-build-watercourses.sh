@@ -10,6 +10,7 @@ set -e
 "${binDir}/gm-require-db.sh" osm line
 "${binDir}/gm-require-db.sh" os oprvrs
 "${binDir}/gm-require-db.sh" os opmplc surface_water
+"${binDir}/gm-require-db.sh" os opmplc named_place
 set +e
 
 echo "-----------------------------------"
