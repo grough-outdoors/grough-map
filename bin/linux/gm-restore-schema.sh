@@ -41,6 +41,9 @@ echo "--> Restoring surface classes..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS surface_classes CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}surface_classes.sql" > /dev/null 
 
+echo "--> Restoring building schema..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}buildings.sql" > /dev/null 
+
 echo "--> Restoring surface schema..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}surface.sql" > /dev/null 
 
@@ -132,6 +135,9 @@ psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}edge_statistics.sql"
 
 echo "--> Restoring view for feature labels..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_label.sql" > /dev/null 
+
+echo "--> Restoring view for feature symbol..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}feature_symbol.sql" > /dev/null
 
 echo "--> Restoring view for raw obstructions..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}raw_obstructions.sql" > /dev/null 

@@ -29,6 +29,8 @@ Vagrant.configure("2") do |config|
 	aws.ami = ENV['AWS_AMI']
 	aws.iam_instance_profile_arn = ENV['AWS_IP_ARN']
 	
+	aws.block_device_mapping = [{ 'DeviceName' => '/dev/sda1', 'Ebs.VolumeSize' => ENV['AWS_EBS_SIZE'] }]
+	
 	aws.tags = {
 	  'Source' => 'Vagrant'
 	}
@@ -48,35 +50,39 @@ Vagrant.configure("2") do |config|
 	  rsync__rsync_path: 'sudo rsync',
 	  rsync__exclude: [
 		"*.lnk",
-		"*.bat",
-		"*.zip",
-		"*.png", 
+		"*.bat", 
 		"*.tif", 
 		"*.tiff", 
 		"*.pbf",
-		"*.zip",
-		"*.bak",
+		"*.png",
+		"*.jpg",
 		".gitignore",
 		".gitattributes",
 		".vagrant/",
 		".vagrant-aws/",
 		".git/", 
-		"volatile/*.txt",
-		"volatile/grass",
+		"volatile/*",
 		"bin/win32",
 		"bin/linux/Cascadenik", 
 		"bin/linux/CVTool/cvtool",
 		"bin/linux/LASTools",
+		"product/*",
 		"source/cartography",
 		"source/eagg",
 		"source/grid",
 		"source/natural-england",
-		"source/os",
+		"source/nrw",
+		"source/os/opname",
+		"source/os/opmplc",
+		"source/os/bdline",
+		"source/os/oprvrs",
+		"source/os/oproad",
+		"source/os/vmdvec",
+		"source/os/codepo",
+		"source/os/source_email.txt",
 		"source/os-terrain",
-		"source/prow",
 		"source/terrain-composite",
-		"source/env.sh",
-		"source/typefaces"
+		"source/env.sh"
 	  ]
   end
 end

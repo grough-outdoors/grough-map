@@ -7,6 +7,9 @@ echo "--> Storing tables..."
 echo "-----------------------------------"
 cd /vagrant/source/schema/
 
+echo "--> Storing building schema..."
+pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t buildings --schema-only > buildings.sql
+
 echo "--> Storing edge classes..."
 pg_dump -Ugrough-map grough-map -h 127.0.0.1 -t edge_classes -c > edge_classes.sql
 

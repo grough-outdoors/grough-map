@@ -218,7 +218,7 @@ sudo apt-get install -y mapnik-input-plugin-gdal mapnik-input-plugin-ogr\
 echo "-----------------------------------"
 echo "--> Installing cloud utilities..."
 echo "-----------------------------------"
-sudo apt-get install -y cloud-utils
+sudo apt-get install -y cloud-utils awscli
 
 if [[ "`ec2metadata --ami-id`" == "ami-"* ]]; then
 	regionName=`ec2metadata --availability-zone | sed 's/[a-z]$//i'`

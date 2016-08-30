@@ -51,7 +51,7 @@ do
 
 	if [ -z "$extraOption" ]; then
 		echo "Moving output..."
-		mv "$mapnikOutputDir/$tileName.png" "$outputDir"
+		mv "$mapnikOutputDir/"`echo "$tileName" | tr '[:upper:]' '[:lower:]'`".png" "${outputDir}/${tileName}.png"
 	else
 		if [ "$extraOption" != "geotiff" ]; then
 			echo "Converting output..."

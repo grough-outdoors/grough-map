@@ -19,7 +19,8 @@ echo "-----------------------------------"
 echo "--> Generating symbols..."
 echo "-----------------------------------"
 
-cd $cartoDir
+mkdir "$cartoDir" > /dev/null 2> /dev/null
+cd "$cartoDir"
 
 echo "--> CRoW line gradient pattern..."
 convert -size 50x50 \
