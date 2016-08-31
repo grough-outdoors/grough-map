@@ -4,13 +4,14 @@
 CREATE TABLE
 	_src_osm_polygon_building
 AS SELECT
-	*
+	osm_id,
+	building,
+	layer,
+	(ST_Dump(way)).geom AS way
 FROM
 	_src_osm_polygon
 WHERE
-	building IS NOT NULL
-AND
-	ST_GeometryType(way) = 'ST_Polygon';
+	building IS NOT NULL;
 	
 ALTER TABLE _src_osm_polygon_building
 	ALTER COLUMN way 

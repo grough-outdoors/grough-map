@@ -7,7 +7,7 @@ binDir=/vagrant/bin/linux/
 targetDir=/vagrant/product/
 mapSourceDir=/vagrant/product/
 mapDbServer=localhost
-outputQuality="90%"
+outputQuality="95%"
 outputSea="#c0e0ef"
 
 echo "-----------------------------------"
@@ -72,27 +72,27 @@ do
 	tileSize=${tileData[2]}
 	tileOffsetX=${tileData[3]}
 	tileOffsetY=${tileData[4]}
-	textureSize=$(echo "1024/(${tileSize}/10000)" | bc -l)
+	textureSize=$(echo "(1024/(${tileSize}/10000))*2" | bc -l)
 	
 	if [ -e "${mapSourceDir}${tileName}.png" ]; then
 		echo "   Resizing ${tileName}..."
 		if [[ "$tileSize" -lt 10000 ]]; then
 			echo "   No size reduction required because of resolution..."
-			convert "${mapSourceDir}${tileName}.png" "/tmp/texture/${tileName}.jpg"
+			convert "${mapSourceDir}${tileName}.png" "/tmp/texture/${tileName}.png"
 		else
-			convert "${mapSourceDir}${tileName}.png" -resize ${textureSize}x${textureSize} "/tmp/texture/${tileName}.jpg"
+			convert "${mapSourceDir}${tileName}.png" -resize ${textureSize}x${textureSize} "/tmp/texture/${tileName}.png"
 		fi
-		tileList+="/tmp/texture/${tileName}.jpg " # "${mapSourceDir}${tileName}.png "
+		tileList+="/tmp/texture/${tileName}.png "
 	else
 		# Attempt to create the tile
 		gm-tile ${tileName}
 		if [ -e "${mapSourceDir}${tileName}.png" ]; then
 			echo "   Resizing ${tileName}..."
-			convert "${mapSourceDir}${tileName}.png" -resize ${textureSize}x${textureSize} "/tmp/texture/${tileName}.jpg"
-			tileList+="/tmp/texture/${tileName}.jpg "
+			convert "${mapSourceDir}${tileName}.png" -resize ${textureSize}x${textureSize} "/tmp/texture/${tileName}.png"
+			tileList+="/tmp/texture/${tileName}.png "
 		else
-			convert -size ${textureSize}x${textureSize} -xc:"${outputSea}" /tmp/texture/${tileName}.jpg
-			tileList+="/tmp/texture/${tileName}.jpg "
+			convert -size ${textureSize}x${textureSize} -xc:"${outputSea}" /tmp/texture/${tileName}.png
+			tileList+="/tmp/texture/${tileName}.png "
 		fi
 	fi
 	tileCount=$((tileCount+1))
@@ -100,7 +100,10 @@ done
 
 tileCols=$(echo "${tileSize}/10000" | bc -l)
 tileCols=$(round ${tileCols} 0)
-tileDims=1024
+if [[ "${tileCols}" -le 0 ]]; then
+	tileCols=1
+fi
+tileDims=$(echo "1024/${tileCols}" | bc -l)
 
 echo "Have ${tileCount} tiles to merge in ${tileCols} x ${tileCols}."
 echo "Tile is LOD${tileLOD} and texture size per image is ${tileDims}"

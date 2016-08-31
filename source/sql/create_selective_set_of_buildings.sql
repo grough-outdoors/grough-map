@@ -2,7 +2,7 @@
 DROP INDEX IF EXISTS
 	"Idx: buildings::geom";
 DROP TABLE IF EXISTS
-	buildings;
+	buildings CASCADE;
 COMMIT;
 
 BEGIN;
