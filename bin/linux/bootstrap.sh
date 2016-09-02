@@ -151,6 +151,11 @@ echo "-----------------------------------"
 sudo apt-get install -y zip
 
 echo "-----------------------------------"
+echo "--> Installing PV..."  
+echo "-----------------------------------"
+sudo apt-get install -y pv
+
+echo "-----------------------------------"
 echo "--> Installing GDAL binaries..."  
 echo "-----------------------------------"
 sudo apt-get install -y gdal-bin

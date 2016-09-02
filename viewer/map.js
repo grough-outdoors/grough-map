@@ -1,30 +1,37 @@
 (function (window, document) {
 'use strict';
 
-document.addEventListener( "DOMContentLoaded", initMap, false );
+document.addEventListener( "DOMContentLoaded", initAll, false );
 
-var map, mapLayer, mapAttribution, mapBounds, mapProjection, mapExtent, mapResolutions, mapTileSize, mapOffsets;
+var mapSuperScale   = 1.5;
+var mapExtent  		= [0.0, 0.0, 700000, 1400000];
+var mapTilePrefix   = '../product/pyramid/';
+
+var map
+var mapLayer;
+var mapAttribution;
+var mapBounds;
+var mapProjection;
+var mapResolutions;
+var mapTileSize;
+var mapOffsets;
+var mapControlBeta;
+
+function initAll() {
+	initMap();
+	initSearch();
+}
 
 function initMap() {
 	proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs');
 	
-	mapExtent = [0.0, 0.0, 700000, 1400000];
-	mapTileSize = 1024;
-	mapResolutions = [
-		160000 / mapTileSize, 	// LOD0
-		80000 / mapTileSize, 	// LOD1
-		40000 / mapTileSize, 	// LOD2
-		20000 / mapTileSize, 	// LOD3
-		10000 / mapTileSize, 	// LOD4
-		5000 / mapTileSize, 	// LOD5
-		2500 / mapTileSize,		// LOD6
-		1250 / mapTileSize		// LOD7
-	];
-	
+	mapTileSize = 1024 / mapSuperScale;
+	mapResolutions = [160000 / mapTileSize];
+
 	mapOffsets = [1];
 	for (var i = 1; i <= 7; i++) {
 		mapOffsets[i] = mapOffsets[i - 1] + 40 * Math.pow(Math.pow(2, i - 1), 2);
-		console.log('Offset ' + i + ' is ' + mapOffsets[i]);
+		mapResolutions[i] = mapResolutions[i - 1] / 2;
 	}
 	
 	mapProjection = new ol.proj.Projection({
@@ -36,7 +43,7 @@ function initMap() {
 	
 	mapAttribution = new ol.Attribution({
 		html: '&copy; grough Ltd, OpenStreetMap contributors, Ordnance Survey. ' +
-			  '<a href="http://map.grough.co.uk/sources/">Legal</a>.'
+			  '<a href="http://map.grough.co.uk/sources/">Legal information and sources</a>.'
 	});
 	
     mapLayer = new ol.layer.Tile({
@@ -45,6 +52,7 @@ function initMap() {
             extent: mapExtent,
             projection: mapProjection,
 			attributions: [mapAttribution],
+			tilePixelRatio: mapSuperScale,
             tileGrid: new ol.tilegrid.TileGrid({
                 extent: mapExtent,
 				tileSize: [mapTileSize, mapTileSize],
@@ -61,23 +69,45 @@ function initMap() {
 						8 * Math.pow(2, level)
 					];
 					var id = mapOffsets[level] + x * gridSize[1] + y;
-					console.log('Tile URL Data: ', mapOffsets[level], coordinate, x, y, gridSize, id);
-					return '../product/pyramid/LOD' + level + '/' + id + '.jpg';
+					return mapTilePrefix + '/LOD' + level + '/' + id + '.jpg';
 				}
 			})(mapOffsets)
         })
     });
 	
+	mapControlBeta = document.createElement('div');
+	mapControlBeta.innerHTML = '<div class="logo"><img src="gm-logo.png" alt="grough map"/></div><div class="text">1:25,000 BETA</div>';
+	mapControlBeta.className = 'ol-unselectable ol-control gm-version';
+	
 	map = new ol.Map({
 		target: 'map',
 		layers: [mapLayer],
+		controls: ol.control
+			.defaults({attribution: false})
+			.extend([
+				new ol.control.Control({
+					className: 'gm-version',
+					element: mapControlBeta
+				}),
+				new ol.control.Attribution({
+					collapsible: false
+				})
+			]),
 		view: new ol.View({
 			projection: mapProjection,
 			center: [425218,564812],
-			//center: [500, 500],
 			zoom: 10
 		})
 	});
 }
+
+function zoomToExtent(extent) {
+	var mapView = map.getView();
+	mapView.fit(extent, map.getSize());
+}
+
+window.map = {
+	zoomToExtent: zoomToExtent
+};
 
 })(window, document);

@@ -65,7 +65,7 @@ do
 		for f in *.sql
 		do
 			echo "     --> Importing SQL file $f..."
-			psql -Ugrough-map grough-map -h 127.0.0.1 -f $f > /dev/null 
+			pv "$f" | psql -Ugrough-map grough-map -h 127.0.0.1 > /dev/null
 		done
 		
 		echo " --> Removing SQL files..."

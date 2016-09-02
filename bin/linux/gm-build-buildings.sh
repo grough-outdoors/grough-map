@@ -20,10 +20,7 @@ psql -Ugrough-map grough-map -h 127.0.0.1 -f "$sqlDir/prepare_building_tables.sq
 
 echo "--> Cleaning up..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-	VACUUM FULL ANALYZE _src_os_opmplc_building;
-EoSQL
-psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
-	VACUUM FULL ANALYZE _src_osm_polygon_building;
+	VACUUM FULL;
 EoSQL
 
 echo "-----------------------------------"
@@ -36,7 +33,9 @@ echo "--> Cleaning up..."
 psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
 	VACUUM FULL ANALYZE buildings;
 EoSQL
-
+psql -Ugrough-map grough-map -h 127.0.0.1 << EoSQL
+	VACUUM FULL;
+EoSQL
 
 echo "-----------------------------------"
 echo "--> Ensuring validity of features..."

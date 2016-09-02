@@ -10,3 +10,61 @@ html, body {
 	height: 100%;
 	border: 0;
 }
+
+.ol-control.gm-version,
+.ol-control.gm-version:hover {
+	bottom: 1.1em;
+	right: 0em;
+	height: 40%;
+	max-height: 5em;
+	background: none;
+	font-weight: bold;
+	opacity: 0.5;
+	font-size: 1.1em;
+	padding: 0.15em;
+	box-sizing: border-box;
+}
+
+.gm-version div.text {
+	height: 1.7em;
+	box-sizing: border-box;
+	font-size: 1.4em;
+	padding: 0 0.2em;
+}
+
+.gm-version div.logo {
+	height: 3em;
+}
+
+.gm-version div.logo img {
+	height: 100%;
+	font-size: 2.5em;
+	line-height: 100%;
+	float: left;
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
+
+#search {
+	top: 0.7em;
+	left: 3.0em;
+	width: 75%;
+	max-width: 300px;
+	height: 1.8em;
+	position: absolute;
+	background: rgba(255, 255, 255, 0.9);
+	border-radius: 2px;
+	border: 1px solid #888;
+}
+
+#search input {
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	padding: 0.1em;
+	font-size: 1.1em;
+	background: transparent;
+	text-indent: 0.2em;
+	border: none;
+}

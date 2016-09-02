@@ -78,18 +78,22 @@ do
 		echo "   Resizing ${tileName}..."
 		if [[ "$tileSize" -lt 10000 ]]; then
 			echo "   No size reduction required because of resolution..."
-			convert "${mapSourceDir}${tileName}.png" "/tmp/texture/${tileName}.png"
+			tileList+="${mapSourceDir}${tileName}.png " # convert "${mapSourceDir}${tileName}.png" "/tmp/texture/${tileName}.png"
 		else
 			convert "${mapSourceDir}${tileName}.png" -resize ${textureSize}x${textureSize} "/tmp/texture/${tileName}.png"
+			tileList+="/tmp/texture/${tileName}.png "
 		fi
-		tileList+="/tmp/texture/${tileName}.png "
 	else
 		# Attempt to create the tile
 		gm-tile ${tileName}
 		if [ -e "${mapSourceDir}${tileName}.png" ]; then
-			echo "   Resizing ${tileName}..."
-			convert "${mapSourceDir}${tileName}.png" -resize ${textureSize}x${textureSize} "/tmp/texture/${tileName}.png"
-			tileList+="/tmp/texture/${tileName}.png "
+			if [[ "$tileSize" -lt 10000 ]]; then
+				echo "   No size reduction required because of resolution..."
+				tileList += "${mapSourceDir}${tileName}.png " # convert "${mapSourceDir}${tileName}.png" "/tmp/texture/${tileName}.png"
+			else
+				convert "${mapSourceDir}${tileName}.png" -resize ${textureSize}x${textureSize} "/tmp/texture/${tileName}.png"
+				tileList+="/tmp/texture/${tileName}.png "
+			fi
 		else
 			convert -size ${textureSize}x${textureSize} -xc:"${outputSea}" /tmp/texture/${tileName}.png
 			tileList+="/tmp/texture/${tileName}.png "
