@@ -2,12 +2,17 @@
 
 echo "Preparing to generate LOD down the chain for a pyramid..."
 
-pyramidID=`echo $1 | tr '[:lower:]' '[:upper:]'`
+pyramidID="$1"
+pyramidMaxLOD="$2"
 binDir=/vagrant/bin/linux/
 mapDbServer=localhost
 
+if [[ -z "$pyramidMaxLOD" ]]; then
+	pyramidMaxLOD = 999
+fi
+
 echo "-----------------------------------"
-echo "> Generating pyramid chain for ID ${pyramidID}..."
+echo "> Generating pyramid chain for ID ${pyramidID} (Max LOD: ${pyramidMaxLOD})..."
 echo "-----------------------------------"
 
 IFS=$'\n'; for tileRow in `psql -Ugrough-map grough-map -h ${mapDbServer} -A -t -c "
@@ -20,7 +25,9 @@ IFS=$'\n'; for tileRow in `psql -Ugrough-map grough-map -h ${mapDbServer} -A -t 
 	ON
 		ST_Within(ST_Centroid(p2.grid_square), p.grid_square)
 	WHERE
-		p.grid_id = ${pyramidID}" 2> /dev/null`
+		p.grid_id = ${pyramidID}
+	AND
+		p2.grid_lod <= ${pyramidMaxLOD}" 2> /dev/null`
 do
 	IFS='|'; read -r -a tileData <<< "$tileRow"
 	pyramidSelected=${tileData[0]}

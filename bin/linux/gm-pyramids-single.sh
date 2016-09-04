@@ -7,8 +7,8 @@ binDir=/vagrant/bin/linux/
 targetDir=/vagrant/product/
 mapSourceDir=/vagrant/product/
 mapDbServer=localhost
-outputQuality="95%"
-outputSea="#c0e0ef"
+outputQuality="90%"
+outputSea="#C0E0EF"
 
 echo "-----------------------------------"
 echo "--> Generating pyramid for ID ${pyramidID}..."
@@ -95,7 +95,7 @@ do
 				tileList+="/tmp/texture/${tileName}.png "
 			fi
 		else
-			convert -size ${textureSize}x${textureSize} -xc:"${outputSea}" /tmp/texture/${tileName}.png
+			convert -size ${textureSize}x${textureSize} xc:"${outputSea}" /tmp/texture/${tileName}.png
 			tileList+="/tmp/texture/${tileName}.png "
 		fi
 	fi

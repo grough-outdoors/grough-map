@@ -19,5 +19,5 @@ echo "   Tile count for this system is "`cat /tmp/partition_list.txt | wc -l`
 
 IFS=$'\n'; for tileName in `cat /tmp/partition_list.txt`
 do
-	"$partitionCommand" "$tileName"
+	"$partitionCommand" "$tileName" "${@:4}"
 done
