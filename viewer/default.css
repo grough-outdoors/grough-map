@@ -9,6 +9,7 @@ html, body {
 	width: 100%;
 	height: 100%;
 	border: 0;
+	background: #C0E0EF;
 }
 
 .ol-control.gm-version,
@@ -67,4 +68,31 @@ html, body {
 	background: transparent;
 	text-indent: 0.2em;
 	border: none;
+}
+
+@media only screen and (max-width: 640px) {
+	.ol-control.gm-version,
+	.ol-control.gm-version:hover {
+		height: 3.5em;
+	}
+	
+	.gm-version div.text {
+		height: 1.2em;
+		box-sizing: border-box;
+		font-size: 0.9em;
+		padding: 0 0.1em;
+	}
+
+	.gm-version div.logo {
+		height: 2em;
+	}
+
+	.gm-version div.logo img {
+		height: 100%;
+		font-size: 1.5em;
+	}
+	
+	.ol-attribution li {
+		font-size: 85%;
+	}
 }

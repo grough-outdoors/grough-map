@@ -3,8 +3,10 @@
 
 document.addEventListener( "DOMContentLoaded", initAll, false );
 
-var mapSuperScale   = 1.5;
-var mapExtent  		= [0.0, 0.0, 700000, 1400000];
+// Note only modern browsers support this, but then if you're using
+// a retina screen you've no excuse for not using a modern browser :-)
+var mapSuperScale   = Math.min(window.devicePixelRatio || 1.0, 2.0);
+var mapExtent  		= [0.0, 0.0, 700000, 1280000];
 var mapTilePrefix   = '../product/pyramid/';
 
 var map
@@ -42,8 +44,8 @@ function initMap() {
 	ol.proj.addProjection(mapProjection);
 	
 	mapAttribution = new ol.Attribution({
-		html: '&copy; grough Ltd, OpenStreetMap contributors, Ordnance Survey. ' +
-			  '<a href="http://map.grough.co.uk/sources/">Legal information and sources</a>.'
+		html: '&copy; grough Ltd, OpenStreetMap contributors, OS. ' +
+			  '<a href="http://map.grough.co.uk/sources/">More info</a>.'
 	});
 	
     mapLayer = new ol.layer.Tile({
@@ -95,8 +97,8 @@ function initMap() {
 			]),
 		view: new ol.View({
 			projection: mapProjection,
-			center: [425218,564812],
-			zoom: 10
+			center: [700000 / 2, 1280000 / 2],
+			zoom: 2
 		})
 	});
 }

@@ -7,7 +7,7 @@ binDir=/vagrant/bin/linux/
 targetDir=/vagrant/product/
 mapSourceDir=/vagrant/product/
 mapDbServer=localhost
-outputQuality="90%"
+outputQuality="80%"
 outputSea="#C0E0EF"
 
 echo "-----------------------------------"
@@ -95,8 +95,13 @@ do
 				tileList+="/tmp/texture/${tileName}.png "
 			fi
 		else
-			convert -size ${textureSize}x${textureSize} xc:"${outputSea}" /tmp/texture/${tileName}.png
-			tileList+="/tmp/texture/${tileName}.png "
+			if [[ "$tileSize" -lt 10000 ]]; then
+				convert -size 8096x8096 xc:"${outputSea}" /tmp/texture/${tileName}.png
+				tileList+="/tmp/texture/${tileName}.png "
+			else
+				convert -size ${textureSize}x${textureSize} xc:"${outputSea}" /tmp/texture/${tileName}.png
+				tileList+="/tmp/texture/${tileName}.png "
+			fi
 		fi
 	fi
 	tileCount=$((tileCount+1))

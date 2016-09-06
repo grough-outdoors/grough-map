@@ -8,7 +8,7 @@ binDir=/vagrant/bin/linux/
 mapDbServer=localhost
 
 if [[ -z "$pyramidMaxLOD" ]]; then
-	pyramidMaxLOD = 999
+	pyramidMaxLOD=999
 fi
 
 echo "-----------------------------------"
