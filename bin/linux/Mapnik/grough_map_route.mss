@@ -120,6 +120,12 @@
 		[class_name='Regional cycle network'] { marker-spacing: 550; }
 		[class_name='National trail'] { marker-spacing: 450; }
 	}
+	
+	[edge_max_length < 0][edge_sum_length < 0] {
+		[class_name='National cycle network'] { marker-spacing: 500; }
+		[class_name='Regional cycle network'] { marker-spacing: 500; }
+		[class_name='National trail'] { marker-spacing: 400; }
+	}
 }
 
 .route-text {

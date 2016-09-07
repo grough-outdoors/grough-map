@@ -91,6 +91,10 @@ echo "--> Restoring licences..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS licence CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}licence.sql" > /dev/null 
 
+echo "--> Restoring legend text..."
+psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS legend_text CASCADE;"
+psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}legend_text.sql" > /dev/null 
+
 echo "--> Restoring route classes..."
 psql -Ugrough-map grough-map -h 127.0.0.1 -c "DROP TABLE IF EXISTS route_classes CASCADE;"
 psql -Ugrough-map grough-map -h 127.0.0.1 -f "${fileBaseDir}route_classes.sql" > /dev/null 

@@ -124,7 +124,7 @@ COPY place_classes (class_id, class_name, class_draw_order, class_text_size, cla
 -- Name: place_classes_class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grough-map
 --
 
-SELECT pg_catalog.setval('place_classes_class_id_seq', 41, true);
+SELECT pg_catalog.setval('place_classes_class_id_seq', 42, true);
 
 
 --

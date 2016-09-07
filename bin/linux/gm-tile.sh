@@ -49,20 +49,26 @@ do
 	cd $mapnikDir
 	$mapnikCommand $tileName
 
-	if [ -z "$extraOption" ]; then
-		echo "Moving output..."
-		mv "$mapnikOutputDir/"`echo "$tileName" | tr '[:upper:]' '[:lower:]'`".png" "${outputDir}/${tileName}.png"
+	if [[ "$tileName" = "LGND" ]]; then
+		echo "Trimming output..."
+		convert "$mapnikOutputDir/LGND.png" -trim -bordercolor white -border 50 "$outputDir/legend.png"
+		rm -rf "$mapnikOutputDir/LGND.png"
 	else
-		if [ "$extraOption" != "geotiff" ]; then
-			echo "Converting output..."
-			convert "$mapnikOutputDir/$tileName.png" -compress LZW "$outputDir/$tileName.tiff"
-			echo "Assigning georeference..."
-			# TODO: Convert this to not rely on the ASC file
-			#IFS=' ' read -r -a tileBounds <<< `gdalinfo ${terrainDir}/${tileName}.asc | awk '/(Upper Left)|(Lower Right)/' | awk '{gsub(/,|\)|\(/," ");print $3 " " $4}' | sed ':a;N;$!ba;s/\\n/ /g'`
-			tileData=`psql -Ugrough-map grough-map -h 127.0.0.1 -A -t -c "SELECT ST_XMin(tile_geom), ST_YMin(tile_geom), ST_XMax(tile_geom), ST_YMax(tile_geom) FROM grid WHERE tile_name='${tileName}'"`
-			IFS='|'; read -r -a tileBounds <<< "$tileData"
-			gdal_edit.py -a_ullr ${tileBounds[0]} ${tileBounds[3]} ${tileBounds[2]} ${tileBounds[1]} -a_srs "EPSG:27700" "$outputDir/$tileName.tiff"
-			rm -f "$mapnikOutputDir/$tileName.png"
+		if [ -z "$extraOption" ]; then
+			echo "Moving output..."
+			mv "$mapnikOutputDir/"`echo "$tileName" | tr '[:upper:]' '[:lower:]'`".png" "${outputDir}/${tileName}.png"
+		else
+			if [ "$extraOption" != "geotiff" ]; then
+				echo "Converting output..."
+				convert "$mapnikOutputDir/$tileName.png" -compress LZW "$outputDir/$tileName.tiff"
+				echo "Assigning georeference..."
+				# TODO: Convert this to not rely on the ASC file
+				#IFS=' ' read -r -a tileBounds <<< `gdalinfo ${terrainDir}/${tileName}.asc | awk '/(Upper Left)|(Lower Right)/' | awk '{gsub(/,|\)|\(/," ");print $3 " " $4}' | sed ':a;N;$!ba;s/\\n/ /g'`
+				tileData=`psql -Ugrough-map grough-map -h 127.0.0.1 -A -t -c "SELECT ST_XMin(tile_geom), ST_YMin(tile_geom), ST_XMax(tile_geom), ST_YMax(tile_geom) FROM grid WHERE tile_name='${tileName}'"`
+				IFS='|'; read -r -a tileBounds <<< "$tileData"
+				gdal_edit.py -a_ullr ${tileBounds[0]} ${tileBounds[3]} ${tileBounds[2]} ${tileBounds[1]} -a_srs "EPSG:27700" "$outputDir/$tileName.tiff"
+				rm -f "$mapnikOutputDir/$tileName.png"
+			fi
 		fi
 	fi
 done

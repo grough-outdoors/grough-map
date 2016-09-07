@@ -12,6 +12,10 @@ html, body {
 	background: #C0E0EF;
 }
 
+.ol-attribution a {
+	color: black;
+}
+
 .ol-control.gm-version,
 .ol-control.gm-version:hover {
 	bottom: 1.1em;

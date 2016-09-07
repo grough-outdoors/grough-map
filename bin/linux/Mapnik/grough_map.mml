@@ -15,7 +15,8 @@
 		"grough_map_feature.mss",
 		"grough_map_zone.mss",
 		"grough_map_symbols.mss",
-		"grough_map_volatile.mss"
+		"grough_map_volatile.mss",
+		"grough_map_legend.mss"
 	],
 	"Layer": [
 	
@@ -235,5 +236,9 @@
 	{
 		"id": "grid_labels", "name": "grid_labels", "class": "grid-label",
 		"Datasource": { "table": "\"map_render_grid_labels\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
+	},	
+	{
+		"id": "legend_labels", "name": "legend_labels", "class": "legend-text",
+		"Datasource": { "table": "\"legend_text\"", "type": "postgis", "host": "localhost", "db-name": "grough-map", "user": "grough-map", "srid": 27700, "max_async_connection": 2 }
 	}]
 }

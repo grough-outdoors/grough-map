@@ -10,6 +10,11 @@ targetDir="/vagrant/source/terrain-composite/"
 currentDir=`pwd`
 workingDir="contours"
 
+if [[ "$tileName"="LGND" ]]; then
+	convert -size 100x100 xc:white "${binDir}/Mapnik/relief/ReliefGeo.tif"
+	exit 0
+fi
+
 rm -rf "${scratchDir}/${workingDir}"
 cd $scratchDir
 mkdir $workingDir

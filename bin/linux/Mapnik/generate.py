@@ -82,52 +82,64 @@ distanceStreams = 10.0
 pg_cursor.execute("DROP VIEW IF EXISTS map_render_place;")
 pg_cursor.execute("DROP TABLE IF EXISTS _tmp_label_zone;")
 pg_conn.commit()
-pg_cursor.execute("""\
-	CREATE TABLE _tmp_label_zone AS SELECT
-		ST_MakeValid(label_zone)::geometry(Polygon, 27700) AS label_zone
-	FROM (
-		SELECT
-			(ST_Dump(ST_Difference(
-				g.tile_geom,
-				( 
-					SELECT ST_Union(
-						ST_Buffer(
-							buffer_geom, 
-							buffer_distance, 
-							'endcap=square join=bevel'
-						)
-				    ) AS buffer_geom 
-					FROM (
-						SELECT
-							edge_geom AS buffer_geom,
-							""" + str(distanceRoads) + """ AS buffer_distance
-						FROM
-							edge e 
-						WHERE 
-							e.edge_geom && ST_SetSRID('BOX(""" + str(map_ll_x - bufferSize) + ' ' + str(map_ll_y - bufferSize) + ',' + str(map_ur_x + bufferSize) + ' ' + str(map_ur_y + bufferSize) + """)'::box2d, 27700) 
-						AND
-							e.edge_class_id NOT IN (18)
-						UNION SELECT
-							watercourse_geom AS buffer_geom,
-							CASE WHEN watercourse_class_id = 2 THEN """ + str(distanceStreams) + """
-							     ELSE """ + str(distanceWatercourses) + """
-							END AS buffer_distance
-						FROM
-							watercourse w 
-						WHERE w.watercourse_geom && ST_SetSRID('BOX(""" + str(map_ll_x - bufferSize) + ' ' + str(map_ll_y - bufferSize) + ',' + str(map_ur_x + bufferSize) + ' ' + str(map_ur_y + bufferSize) + """)'::box2d, 27700)
-					) SA
-				)
-			))).geom AS label_zone
+
+if map_ref_idx == 'LGND':
+	pg_cursor.execute("""\
+		CREATE TABLE _tmp_label_zone AS SELECT
+			ST_MakeValid(tile_geom)::geometry(Polygon, 27700) AS label_zone
 		FROM
 			grid g
 		WHERE
-			g.tile_name = '""" + map_ref_idx + """'
-	) SA
-	WHERE
-		ST_XMax(label_zone) - ST_XMin(label_zone) > 50.0
-	AND ST_YMax(label_zone) - ST_YMin(label_zone) > 50.0;
-	"""
-)
+			g.tile_name = '""" + map_ref_idx + """;'
+		"""
+	)
+else:
+	pg_cursor.execute("""\
+		CREATE TABLE _tmp_label_zone AS SELECT
+			ST_MakeValid(label_zone)::geometry(Polygon, 27700) AS label_zone
+		FROM (
+			SELECT
+				(ST_Dump(ST_Difference(
+					g.tile_geom,
+					( 
+						SELECT ST_Union(
+							ST_Buffer(
+								buffer_geom, 
+								buffer_distance, 
+								'endcap=square join=bevel'
+							)
+						) AS buffer_geom 
+						FROM (
+							SELECT
+								edge_geom AS buffer_geom,
+								""" + str(distanceRoads) + """ AS buffer_distance
+							FROM
+								edge e 
+							WHERE 
+								e.edge_geom && ST_SetSRID('BOX(""" + str(map_ll_x - bufferSize) + ' ' + str(map_ll_y - bufferSize) + ',' + str(map_ur_x + bufferSize) + ' ' + str(map_ur_y + bufferSize) + """)'::box2d, 27700) 
+							AND
+								e.edge_class_id NOT IN (18)
+							UNION SELECT
+								watercourse_geom AS buffer_geom,
+								CASE WHEN watercourse_class_id = 2 THEN """ + str(distanceStreams) + """
+									 ELSE """ + str(distanceWatercourses) + """
+								END AS buffer_distance
+							FROM
+								watercourse w 
+							WHERE w.watercourse_geom && ST_SetSRID('BOX(""" + str(map_ll_x - bufferSize) + ' ' + str(map_ll_y - bufferSize) + ',' + str(map_ur_x + bufferSize) + ' ' + str(map_ur_y + bufferSize) + """)'::box2d, 27700)
+						) SA
+					)
+				))).geom AS label_zone
+			FROM
+				grid g
+			WHERE
+				g.tile_name = '""" + map_ref_idx + """'
+		) SA
+		WHERE
+			ST_XMax(label_zone) - ST_XMin(label_zone) > 50.0
+		AND ST_YMax(label_zone) - ST_YMin(label_zone) > 50.0;
+		"""
+	)
 pg_conn.commit()
 
 print('Creating SQL view for gridlines')
@@ -149,7 +161,7 @@ pg_cursor.execute("""\
 		LEFT JOIN 
 			generate_series(0,9000,1000) AS subgrid_north ON true
 		WHERE 
-			tile_name = '""" + map_ref_idx + """';
+			tile_name = '""" + map_ref_idx + """' AND tile_name != 'LGND';
 	"""
 )
 pg_conn.commit()
@@ -168,7 +180,7 @@ pg_cursor.execute("""\
 		LEFT JOIN 
 			generate_series(0,10000,1000) AS subgrid_step ON true 
 		WHERE 
-			tile_name = '""" + map_ref_idx + """'
+			tile_name = '""" + map_ref_idx + """' AND tile_name != 'LGND'
 		UNION SELECT  
 			( ( ( ST_YMin( tile_geom )::integer + subgrid_step ) % 100000 ) / 10000 )::text || ( ( subgrid_step / 1000 ) % 10 ) AS grid_id_text,
 			'n' AS grid_id_dir,
@@ -180,7 +192,7 @@ pg_cursor.execute("""\
 		LEFT JOIN 
 			generate_series(0,10000,1000) AS subgrid_step ON true 
 		WHERE 
-			tile_name = '""" + map_ref_idx + """';
+			tile_name = '""" + map_ref_idx + """' AND tile_name != 'LGND';
 	"""
 )
 pg_conn.commit()
@@ -661,17 +673,15 @@ pg_cursor.execute("""\
 	(
 		SELECT 
 			a.edge_id,
-			CASE WHEN a.edge_class_id IN (1,2,3,4) THEN a.edge_geom
+			CASE WHEN a.edge_class_id IN (1,2,3,4) OR first(b.edge_id) IS NULL THEN a.edge_geom
 				 WHEN ST_GeometryType(ST_Multi(ST_Difference(a.edge_geom, ST_Union(ST_Buffer(b.edge_geom, 40.0, 'endcap=square join=mitre mitre_limit=20.0'))))) != 'ST_MultiLineString' THEN NULL
 				 ELSE ST_Multi(ST_Difference(a.edge_geom, ST_Union(ST_Buffer(b.edge_geom, 40.0, 'endcap=square join=mitre mitre_limit=20.0')))) 
 			END AS edge_geom
 		FROM 
-			edge a, edge b
-		WHERE
-			a.edge_geom && ST_MakeBox2D(ST_Point(""" + str(map_ll_x) + """, """ + str(map_ll_y) + """), ST_Point(""" + str(map_ur_x) + """, """ + str(map_ur_y) + """))
-		AND
-			a.edge_name IS NOT NULL
-		AND
+			edge a
+		LEFT JOIN
+			edge b
+		ON
 			( a.edge_name != b.edge_name OR a.edge_class_id != b.edge_class_id OR b.edge_name IS NULL )
 		AND
 			a.edge_geom && b.edge_geom
@@ -679,6 +689,10 @@ pg_cursor.execute("""\
 			a.edge_id != b.edge_id
 		AND
 			ST_DWithin(a.edge_geom, b.edge_geom, 20.0)
+		WHERE
+			a.edge_geom && ST_MakeBox2D(ST_Point(""" + str(map_ll_x) + """, """ + str(map_ll_y) + """), ST_Point(""" + str(map_ur_x) + """, """ + str(map_ur_y) + """))
+		AND
+			a.edge_name IS NOT NULL
 		GROUP BY
 			a.edge_id, a.edge_geom
 	) SA
@@ -828,6 +842,14 @@ pg_cursor.execute("""\
 pg_conn.commit()
 
 print('Creating SQL views for route image labels')
+
+if map_ref_idx == 'LGND':
+	maxTerm="-1.0::double precision"
+	sumTerm="-1.0::double precision"	
+else:
+	maxTerm="max(ST_Length(edge_geom)) OVER (PARTITION BY route_name)"
+	sumTerm="sum(ST_Length(edge_geom)) OVER (PARTITION BY route_name)"	
+
 pg_cursor.execute("""\
 	CREATE OR REPLACE VIEW "map_render_route_label_images\" AS 
 	SELECT
@@ -839,8 +861,8 @@ pg_cursor.execute("""\
 			ELSE ST_Reverse(edge_geom)
 		END AS edge_geom,
 		ST_Length(edge_geom) AS edge_length,
-		max(ST_Length(edge_geom)) OVER (PARTITION BY route_name) AS edge_max_length,
-		sum(ST_Length(edge_geom)) OVER (PARTITION BY route_name) AS edge_sum_length
+		""" + maxTerm + """ AS edge_max_length,
+		""" + sumTerm + """ AS edge_sum_length
 	FROM
 	(
 		SELECT
