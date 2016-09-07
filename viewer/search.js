@@ -33,7 +33,7 @@ function submitSearch(e) {
 function resolveGridReference(gridString) {
 	var gridChars = 'ABCDEFGHJKLMNOPQRSTUVWXYZ';
 	
-	gridString = gridString.toUpperCase().trim();
+	gridString = gridString.toUpperCase().trim().replace(/\s/g, '');
 	if (gridString.length < 4 ||
 		gridString.length > 12 ||
 	    gridString.length % 2 !== 0) {
